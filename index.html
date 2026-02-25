@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Crafty Mixologist — Premium Cocktail Infusion Kits</title>
+  <meta name="description" content="Premium cocktail infusion kits for the modern mixologist. Handcrafted ingredients, elegant packaging, unforgettable flavors."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+/*═══════════════════════════════════════════════════════════════
+  RESET & VARIABLES
+═══════════════════════════════════════════════════════════════*/
+:root{
+  --gold:#D4A847;--gold-hover:#c49b3f;--gold-light:#f5e6c4;--gold-bg:rgba(212,168,71,.07);
+  --black:#1a1a1a;--white:#ffffff;--bg:#ffffff;--bg-alt:#fafaf8;--bg-warm:#f7f5f0;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+  --gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --radius:10px;--radius-lg:14px;--radius-xl:20px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow:0 4px 20px rgba(0,0,0,.06);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.08);--shadow-gold:0 4px 24px rgba(212,168,71,.18);
+  --transition:.25s cubic-bezier(.4,0,.2,1);
+  --nav-h:60px;--banner-h:40px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + var(--banner-h) + 20px)}
+body{font-family:var(--font);background:var(--bg);color:var(--black);line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--font);cursor:pointer}
+
+/*═══════════════════════════════════════════════════════════════
+  UTILITY
+═══════════════════════════════════════════════════════════════*/
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.section-label{display:inline-block;font-size:11px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.section-title{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.5px;
+  line-height:1.15;margin-bottom:12px}
+.section-sub{font-size:16px;color:var(--gray-500);max-width:540px;line-height:1.7}
+.text-center{text-align:center}
+.text-center .section-sub{margin-left:auto;margin-right:auto}
+
+.btn-gold{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--gold);color:var(--white);border:none;padding:14px 32px;
+  border-radius:var(--radius);font-size:15px;font-weight:700;transition:all var(--transition);
+  letter-spacing:.2px}
+.btn-gold:hover{background:var(--gold-hover);transform:translateY(-1px);box-shadow:var(--shadow-gold)}
+.btn-gold-outline{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:transparent;color:var(--gold);border:2px solid var(--gold);padding:12px 28px;
+  border-radius:var(--radius);font-size:14px;font-weight:600;transition:all var(--transition)}
+.btn-gold-outline:hover{background:var(--gold);color:var(--white)}
+
+/*═══════════════════════════════════════════════════════════════
+  TOP BANNER
+═══════════════════════════════════════════════════════════════*/
+.top-banner{background:var(--gold);color:var(--white);text-align:center;padding:10px 20px;
+  font-size:13px;font-weight:600;letter-spacing:1.2px;height:var(--banner-h);
+  display:flex;align-items:center;justify-content:center}
+
+/*═══════════════════════════════════════════════════════════════
+  NAVIGATION
+═══════════════════════════════════════════════════════════════*/
+.nav{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--gray-200);height:var(--nav-h)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;
+  align-items:center;justify-content:space-between;height:100%}
+.nav-logo img{height:36px;width:auto}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:14px;font-weight:500;color:var(--gray-600);transition:color var(--transition)}
+.nav-links a:hover{color:var(--gold)}
+.burger{display:none;background:none;border:none;flex-direction:column;gap:5px;padding:6px}
+.burger span{display:block;width:22px;height:2px;background:var(--black);transition:var(--transition)}
+
+/*═══════════════════════════════════════════════════════════════
+  PRODUCT SECTION — VARIANT SWITCHER
+═══════════════════════════════════════════════════════════════*/
+.product-hero-badge{display:inline-flex;align-items:center;gap:6px;
+  background:var(--gold-bg);border:1px solid rgba(212,168,71,.2);border-radius:100px;
+  padding:8px 20px;font-size:15px;font-weight:600;color:var(--gold);margin:10px 0 14px}
+.product-section{padding:80px 0;background:var(--bg-alt)}
+.product-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+
+/* Gallery */
+.gallery{position:sticky;top:calc(var(--nav-h) + var(--banner-h) + 24px)}
+.gallery-main{width:100%;aspect-ratio:1/1;border-radius:var(--radius-lg);overflow:hidden;
+  border:1px solid var(--gray-200);background:var(--white);margin-bottom:12px;position:relative}
+.gallery-main img{width:100%;height:100%;object-fit:contain;transition:opacity .3s}
+.gallery-badge{position:absolute;top:14px;left:14px;background:var(--gold);color:var(--white);
+  font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;letter-spacing:.5px;
+  text-transform:uppercase;display:none}
+.gallery-thumbs{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.gallery-thumbs::-webkit-scrollbar{height:0}
+.thumb{width:72px;height:72px;border-radius:8px;overflow:hidden;border:2px solid transparent;
+  cursor:pointer;flex-shrink:0;transition:border-color var(--transition);background:var(--white)}
+.thumb:hover{border-color:var(--gray-300)}
+.thumb.active{border-color:var(--gold)}
+.thumb img{width:100%;height:100%;object-fit:contain}
+
+/* Product Info */
+.product-info{padding:8px 0}
+.product-info .variant-label{font-size:12px;font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gray-400);margin-bottom:14px}
+.variant-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:28px}
+.variant-btn{padding:12px 8px;border-radius:var(--radius);border:1px solid var(--gray-200);
+  background:var(--white);font-size:12px;font-weight:600;color:var(--gray-600);
+  transition:all var(--transition);text-align:center;line-height:1.3}
+.variant-btn:hover{border-color:var(--gold);color:var(--gold)}
+.variant-btn.active{border-color:var(--gold);background:var(--gold-bg);color:var(--gold);
+  box-shadow:0 0 0 1px var(--gold)}
+
+.product-title{font-size:28px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+.product-price{font-size:26px;font-weight:800;color:var(--gold);margin-bottom:14px}
+.product-desc{font-size:15px;color:var(--gray-500);line-height:1.7;margin-bottom:24px}
+.product-rating{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.product-rating .stars{color:var(--gold);font-size:16px;letter-spacing:1px}
+.product-rating .count{font-size:13px;color:var(--gray-400)}
+
+.includes-box{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);
+  padding:24px;margin-bottom:28px}
+.includes-box h4{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.includes-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.includes-list li{font-size:13px;color:var(--gray-600);display:flex;align-items:center;gap:8px;line-height:1.4}
+.includes-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
+.buy-actions{display:flex;gap:12px;margin-bottom:16px}
+.buy-actions .btn-gold{flex:1;padding:16px 24px;font-size:16px}
+.trust-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-400)}
+.trust-item svg{flex-shrink:0}
+
+/*═══════════════════════════════════════════════════════════════
+  UPSELL SECTION
+═══════════════════════════════════════════════════════════════*/
+.upsell-section{padding:64px 0 80px;background:var(--bg-alt);border-top:1px solid var(--gray-100)}
+.upsell-scroll{display:flex;gap:20px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+.upsell-scroll::-webkit-scrollbar{height:4px}
+.upsell-scroll::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:4px}
+.upsell-card{min-width:280px;max-width:300px;background:var(--white);border:1px solid var(--gray-200);
+  border-radius:var(--radius-lg);overflow:hidden;scroll-snap-align:start;flex-shrink:0;transition:all var(--transition)}
+.upsell-card:hover{box-shadow:var(--shadow)}
+.upsell-img{height:200px;overflow:hidden;background:var(--gray-50)}
+.upsell-img img{width:100%;height:100%;object-fit:contain}
+.upsell-body{padding:18px}
+.upsell-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.upsell-prices{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.upsell-price{font-size:17px;font-weight:700;color:var(--gold)}
+.upsell-compare{font-size:13px;color:var(--gray-400);text-decoration:line-through}
+.upsell-variants{font-size:12px;color:var(--gray-400);margin-bottom:12px}
+.btn-upsell{width:100%;padding:10px;border-radius:var(--radius);font-size:13px;font-weight:600;
+  border:1px solid var(--gold);background:transparent;color:var(--gold);transition:all var(--transition)}
+.btn-upsell:hover{background:var(--gold);color:var(--white)}
+.btn-upsell.sold-out{border-color:var(--gray-300);color:var(--gray-400);cursor:not-allowed;opacity:.6}
+.btn-upsell.sold-out:hover{background:transparent;color:var(--gray-400)}
+
+/*═══════════════════════════════════════════════════════════════
+  REVIEWS
+═══════════════════════════════════════════════════════════════*/
+.reviews-section{padding:80px 0;background:var(--bg)}
+.reviews-header{margin-bottom:48px}
+.reviews-badge{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;
+  color:var(--gold);margin-top:8px}
+.reviews-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.review-card{background:var(--bg-alt);border:1px solid var(--gray-100);border-radius:var(--radius-lg);
+  padding:28px;transition:all var(--transition)}
+.review-card:hover{border-color:var(--gold-light);box-shadow:var(--shadow-sm)}
+.review-stars{color:var(--gold);font-size:15px;letter-spacing:2px;margin-bottom:14px}
+.review-text{font-size:14px;color:var(--gray-600);line-height:1.75;margin-bottom:18px;font-style:italic}
+.review-author{display:flex;align-items:center;gap:12px}
+.review-avatar{width:38px;height:38px;border-radius:50%;background:var(--gold);display:flex;
+  align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--white)}
+.review-name{font-weight:600;font-size:14px}
+.review-tag{font-size:11px;color:var(--gray-400);display:flex;align-items:center;gap:4px}
+.review-tag svg{color:var(--gold)}
+
+/*═══════════════════════════════════════════════════════════════
+  WHY US
+═══════════════════════════════════════════════════════════════*/
+.why-section{padding:80px 0;background:var(--bg-warm)}
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:48px}
+.why-card{text-align:center;padding:32px 20px;background:var(--white);
+  border:1px solid var(--gray-100);border-radius:var(--radius-lg);transition:all var(--transition)}
+.why-card:hover{box-shadow:var(--shadow);border-color:var(--gold-light)}
+.why-icon{width:52px;height:52px;margin:0 auto 16px;background:var(--gold-bg);
+  border:1px solid rgba(212,168,71,.15);border-radius:14px;display:flex;
+  align-items:center;justify-content:center;font-size:24px}
+.why-card h4{font-size:15px;font-weight:700;margin-bottom:6px}
+.why-card p{font-size:13px;color:var(--gray-500);line-height:1.6}
+
+/*═══════════════════════════════════════════════════════════════
+  FINAL CTA
+═══════════════════════════════════════════════════════════════*/
+.final-cta{padding:80px 0;background:var(--bg);text-align:center;
+  border-top:1px solid var(--gray-100)}
+
+/*═══════════════════════════════════════════════════════════════
+  FOOTER
+═══════════════════════════════════════════════════════════════*/
+.site-footer{background:var(--black);color:var(--white);padding:48px 24px 32px}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:32px;
+  margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08)}
+.footer-brand-text{font-size:20px;font-weight:800;color:var(--gold);margin-bottom:8px}
+.footer-tagline{font-size:13px;color:rgba(255,255,255,.4);max-width:280px}
+.footer-links{display:flex;flex-wrap:wrap;gap:20px 36px}
+.footer-links a{font-size:13px;color:rgba(255,255,255,.5);transition:color var(--transition)}
+.footer-links a:hover{color:var(--gold)}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.25);text-align:center}
+
+/*═══════════════════════════════════════════════════════════════
+  POPUP
+═══════════════════════════════════════════════════════════════*/
+.popup-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);
+  backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .35s}
+.popup-overlay.show{opacity:1;pointer-events:auto}
+.popup{background:var(--white);border-radius:var(--radius-xl);padding:40px;max-width:420px;
+  width:90%;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.15);
+  transform:translateY(20px) scale(.96);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.popup-overlay.show .popup{transform:translateY(0) scale(1)}
+.popup-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;
+  border:none;background:var(--gray-100);font-size:18px;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;color:var(--gray-500);transition:all var(--transition)}
+.popup-close:hover{background:var(--gray-200);color:var(--black)}
+.popup h3{font-size:22px;font-weight:800;margin-bottom:6px;text-align:center}
+.popup .popup-sub{font-size:14px;color:var(--gray-500);text-align:center;margin-bottom:24px}
+.popup form{display:flex;flex-direction:column;gap:12px}
+.popup input[type="email"]{width:100%;padding:14px 16px;border:1px solid var(--gray-200);
+  border-radius:var(--radius);font-size:14px;font-family:var(--font);outline:none;
+  transition:border-color var(--transition)}
+.popup input[type="email"]:focus{border-color:var(--gold)}
+.popup input[type="email"]::placeholder{color:var(--gray-400)}
+.popup .consent-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray-400)}
+.popup .consent-row input{accent-color:var(--gold);width:16px;height:16px;cursor:pointer}
+.popup .btn-gold{width:100%}
+.popup-thanks{display:none;text-align:center;padding:16px 0}
+.popup-thanks h4{color:var(--gold);font-size:18px;margin-bottom:4px}
+.popup-thanks p{color:var(--gray-500);font-size:14px}
+.popup-note{font-size:11px;color:var(--gray-400);text-align:center;margin-top:8px}
+
+/*═══════════════════════════════════════════════════════════════
+  SCROLL REVEAL
+═══════════════════════════════════════════════════════════════*/
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.vis{opacity:1;transform:none}
+
+/*═══════════════════════════════════════════════════════════════
+  ADMIN
+═══════════════════════════════════════════════════════════════*/
+.admin-bar{display:flex;justify-content:center;gap:10px;padding:18px;background:var(--black)}
+.admin-btn{background:transparent;color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.1);
+  padding:7px 16px;border-radius:var(--radius);font-size:12px;transition:all var(--transition)}
+.admin-btn:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3)}
+
+/*═══════════════════════════════════════════════════════════════
+  RESPONSIVE
+═══════════════════════════════════════════════════════════════*/
+@media(max-width:1024px){
+  .product-layout{grid-template-columns:1fr;gap:32px}
+  .gallery{position:static}
+  .why-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:var(--nav-h);left:0;right:0;
+    background:var(--white);border-bottom:1px solid var(--gray-200);flex-direction:column;
+    padding:20px 24px;gap:16px;box-shadow:var(--shadow)}
+  .nav-links.open{display:flex}
+  .burger{display:flex}
+  .reviews-grid{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr 1fr}
+  .includes-list{grid-template-columns:1fr}
+  .buy-actions{flex-direction:column}
+  .variant-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .variant-btn{padding:10px 6px;font-size:11px}
+  .footer-top{flex-direction:column}
+}
+@media(max-width:480px){
+  .why-grid{grid-template-columns:1fr}
+  .gallery-thumbs .thumb{width:60px;height:60px}
+  .trust-row{flex-direction:column;align-items:flex-start;gap:8px}
+}
+  </style>
+</head>
+<body>
+
+<!-- ═══ Top Banner ═══ -->
+<div class="top-banner">&#x2713;&ensp;FREE Shipping on orders $100+</div>
+
+<!-- ═══ Navigation ═══ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="https://craftymixologist.com/cdn/shop/files/Logo_2_Preview_File_d216aa01-808f-4958-9f00-33897e054208.png?width=200" alt="Crafty Mixologist" />
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#products">Shop</a>
+      <a href="#about">About Us</a>
+      <a href="#faq">FAQ</a>
+      <a href="#wholesale">Wholesale</a>
+      <a href="#reviews">Reviews</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ Product Section ═══ -->
+<section class="product-section" id="products">
+  <div class="container">
+    <div class="text-center reveal" style="margin-bottom:40px">
+      <h2 class="section-title">Premium Cocktail Kits</h2>
+      <div class="product-hero-badge">&#9733;&#9733;&#9733;&#9733;&#9733;&ensp;4.6 from 427+ reviews</div>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">Everything you need to craft bar-quality cocktails at home. Select a kit below to explore.</p>
+    </div>
+
+    <!-- Product Layout -->
+    <div class="product-layout reveal">
+      <!-- Gallery -->
+      <div class="gallery" id="gallery">
+        <div class="gallery-main" id="galleryMain">
+          <span class="gallery-badge" id="galleryBadge">BEST SELLER</span>
+          <img id="mainImg" src="" alt="Product image"/>
+        </div>
+        <div class="gallery-thumbs" id="galleryThumbs"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="product-info" id="productInfo">
+        <div class="product-rating">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <span class="count">4.6 (427 reviews)</span>
+        </div>
+        <h2 class="product-title" id="prodTitle"></h2>
+        <div class="product-price" id="prodPrice"></div>
+        <p class="product-desc" id="prodDesc"></p>
+
+        <!-- Variant Grid (3x3) -->
+        <div class="variant-grid" id="variantGrid"></div>
+
+        <div class="includes-box">
+          <h4>&#127873;&ensp;What's Included</h4>
+          <ul class="includes-list" id="includesList"></ul>
+        </div>
+
+        <div class="buy-actions">
+          <a id="buyBtn" href="#" target="_blank" rel="noopener" class="btn-gold">Buy Now&ensp;&rarr;</a>
+        </div>
+
+        <div class="trust-row">
+          <span class="trust-item">
+            <svg width="16" height="16" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Secure checkout
+          </span>
+          <span class="trust-item">
+            <svg width="16" height="16" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+            Free shipping $100+
+          </span>
+          <span class="trust-item">
+            <svg width="16" height="16" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5a2 2 0 01-2 2h-1"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Fast delivery
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Upsell ═══ -->
+<section class="upsell-section">
+  <div class="container">
+    <div class="reveal" style="margin-bottom:28px">
+      <span class="section-label">Add-Ons</span>
+      <h3 class="section-title" style="font-size:24px">Complete Your Bar</h3>
+    </div>
+    <div class="upsell-scroll reveal" id="upsellScroll"></div>
+  </div>
+</section>
+
+<!-- ═══ Reviews ═══ -->
+<section class="reviews-section" id="reviews">
+  <div class="container">
+    <div class="text-center reviews-header reveal">
+      <span class="section-label">Social Proof</span>
+      <h2 class="section-title">What Our Customers Say</h2>
+      <div class="reviews-badge">&#9733;&#9733;&#9733;&#9733;&#9733;&ensp;4.6 from 427+ reviews</div>
+    </div>
+    <div class="reviews-grid" id="reviewsGrid"></div>
+  </div>
+</section>
+
+<!-- ═══ Why Us ═══ -->
+<section class="why-section" id="about">
+  <div class="container text-center">
+    <div class="reveal">
+      <span class="section-label">Why Choose Us</span>
+      <h2 class="section-title">Why Crafty Mixologist</h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">We obsess over every detail so you can focus on enjoying the perfect drink.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal"><div class="why-icon">&#127807;</div><h4>Premium Ingredients</h4><p>All-natural botanicals and spices sourced for exceptional quality and flavor.</p></div>
+      <div class="why-card reveal"><div class="why-icon">&#127873;</div><h4>Everything Included</h4><p>Complete kits with everything you need — just add your spirit and start mixing.</p></div>
+      <div class="why-card reveal"><div class="why-icon">&#10024;</div><h4>Gift-Ready Packaging</h4><p>Elegant boxes crafted for any occasion. Impress before the first sip.</p></div>
+      <div class="why-card reveal"><div class="why-icon">&#9829;</div><h4>427+ Happy Customers</h4><p>Loved by mixology enthusiasts everywhere. See what they're saying.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Final CTA ═══ -->
+<section class="final-cta">
+  <div class="container reveal">
+    <h2 class="section-title text-center">Ready to Elevate Your<br>Cocktail Game?</h2>
+    <p class="section-sub text-center" style="margin:12px auto 32px">Shop our collection and start crafting bar-quality drinks at home.</p>
+    <div class="text-center"><a href="#products" class="btn-gold">Shop Now&ensp;&rarr;</a></div>
+  </div>
+</section>
+
+<!-- ═══ Footer ═══ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-text">Crafty Mixologist</div>
+        <p class="footer-tagline">Premium cocktail infusion kits for the modern mixologist.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#">About Us</a><a href="#">Wholesale</a><a href="#">FAQ</a>
+        <a href="#">Privacy Policy</a><a href="#">Shipping Policy</a><a href="#">Refund Policy</a>
+        <a href="#">Terms of Service</a><a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="footer-copy">&copy; 2025 Crafty Mixologist. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<!-- ═══ Admin ═══ -->
+<div class="admin-bar">
+  <button class="admin-btn" id="exportBtn">Export CSV</button>
+  <button class="admin-btn" id="clearBtn">Clear Local Copies</button>
+</div>
+
+<!-- ═══ Popup ═══ -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup">
+    <button class="popup-close" id="popupClose">&times;</button>
+    <h3>Get 10% Off</h3>
+    <p class="popup-sub">Your first order. Join for exclusive deals &amp; recipes.</p>
+    <form id="popupForm">
+      <input type="email" id="popupEmail" placeholder="Your email address" required/>
+      <label class="consent-row"><input type="checkbox" id="popupConsent" required/> I agree to receive emails</label>
+      <button type="submit" class="btn-gold">Claim My Discount</button>
+    </form>
+    <div class="popup-thanks" id="popupThanks">
+      <h4>Thanks — you're in!</h4>
+      <p>Check your inbox for your discount code.</p>
+    </div>
+    <p class="popup-note">No spam. Unsubscribe anytime.</p>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════════════ */
+const PRODUCTS = [
+  {
+    id:'whiskey', name:'Whiskey Infusion Kit', price:'$59.99', badge:'',
+    desc:'Craft personalized whiskey with premium wood chips and hand-selected botanicals. A perfect gift for whiskey lovers.',
+    link:'https://craftymixologist.com/products/cocktail-infusion-kit',
+    images:[
+      'https://craftymixologist.com/cdn/shop/files/Whiskey_Kit_-_Main_Image_-_Amazon.png?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81JQCollfJL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/910eVKR42LL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/912Pb9HTX2L._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/91WTA44xmeL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/71slgy2oXAL._AC_SL1500.jpg?width=800'
+    ],
+    includes:['2 whiskey bottles','3 woodchip blends','6 botanical flavors','6 metal whiskey stones','2 labels']
+  },
+  {
+    id:'tequila', name:'Tequila Infusion Kit', price:'$69.99', badge:'',
+    desc:'Create custom tequila blends with 9 unique botanical flavors. Includes ceramic shot glasses and a recipe booklet.',
+    link:'https://craftymixologist.com/products/cocktail-infusion-kit',
+    images:[
+      'https://craftymixologist.com/cdn/shop/files/TequilaMain1.png?width=800',
+      'https://craftymixologist.com/cdn/shop/files/Whiskey_Infusion_Kit_and_water_drink_tequil.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81Bl5xYrwVL._AC_SL1500__1.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81M2rPUnk7L._AC_SL1500__1.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81URVpOBRvL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81tRBK_0boL._AC_SL1500.jpg?width=800'
+    ],
+    includes:['2 tequila bottles','3 woodchip blends','9 botanical flavors','1 filter funnel','2 labels','2 ceramic shot glasses','Instruction booklet']
+  },
+  {
+    id:'smoker', name:'Cocktail Smoker Kit', price:'$49.99', badge:'',
+    desc:'Infuse smoky flavors into any cocktail with 6 premium wood chip varieties. Includes torch, glasses, and ice molds.',
+    link:'https://craftymixologist.com/products/cocktail-infusion-kit',
+    images:[
+      'https://craftymixologist.com/cdn/shop/files/mainImage.png?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81URVpOBRvL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81tRBK_0boL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/WhiskeyMainIMageFInal.png?width=800'
+    ],
+    includes:['1 high-powered torch','1 wood smoker','2 ice molds','2 whiskey glasses','6 wood chip flavors']
+  },
+  {
+    id:'espresso', name:'Espresso Martini Kit', price:'$69.99', badge:'BEST SELLER',
+    desc:'Bar-quality espresso martinis at home. Everything you need from premium coffee grounds to elegant glassware.',
+    link:'https://craftymixologist.com/products/cocktail-infusion-kit',
+    images:[
+      'https://craftymixologist.com/cdn/shop/files/BJ6A9066.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81CGMfkoNfL._AC_SL1500__1.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81W7hhz5oYL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81kKTtXB2eL._AC_SL1500.jpg?width=800'
+    ],
+    includes:['1 premium shaker with strainer','2 martini glasses','1 measuring spoon','6 tubes coffee grounds','Coffee beans','Nutmeg, cardamom, vanilla powder','Cane sugar']
+  },
+  {
+    id:'margarita', name:'Margarita Kit', price:'$69.99', badge:'',
+    desc:'Shake up perfect margaritas with premium botanicals, lime salt, and everything you need for the ultimate fiesta.',
+    link:'https://craftymixologist.com/products/cocktail-infusion-kit',
+    images:[
+      'https://craftymixologist.com/cdn/shop/files/81Gp-5X5FSL._AC_SX679.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81lgjjpShPL._AC_SX679.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81Q4RZoY4bL._AC_SL1500.jpg?width=800'
+    ],
+    includes:['550ml stainless steel shaker','Jigger','Citrus squeezer','5 botanicals','Lime margarita salt','Two 11oz margarita glasses','Recipe book']
+  },
+  {
+    id:'mule', name:'Moscow Mule Kit', price:'$69.99', badge:'',
+    desc:'Classic copper mugs, cocktail shaker, and 11 exotic botanicals — everything for the perfect Moscow Mule.',
+    link:'https://craftymixologist.com/products/cocktail-infusion-kit',
+    images:[
+      'https://craftymixologist.com/cdn/shop/files/81wVBo3yZGL._AC_SX679.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81MngYAPCIL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81qkeMpVGrL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81siPwcxAaL._AC_SL1500_73ef9b47-a60f-46d1-a2df-734f194edd72.jpg?width=800'
+    ],
+    includes:['2 copper Moscow Mule mugs','550ml cocktail shaker','Jigger','Muddler','11 botanicals','Cocktail recipe book']
+  },
+  {
+    id:'olive', name:'Olive Oil Infusion Kit', price:'$49.99', badge:'',
+    desc:'4 infused olive oil flavors and 3 Mediterranean spice blends. A gourmet experience in an elegant gift box.',
+    link:'https://craftymixologist.com/products/cocktail-infusion-kit',
+    images:[
+      'https://craftymixologist.com/cdn/shop/files/81wuzXnWY3L._SL1500__1.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81x_AW91T3L._SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81cfBAA9K1L._SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81iBDmovlWL._SL1500.jpg?width=800'
+    ],
+    includes:['4 infused olive oil flavors','3 premium spices','Bread dipping bowl','Recipe guide','Elegant gift box']
+  },
+  {
+    id:'tea', name:'Tea Infusion Kit', price:'$49.99', badge:'',
+    desc:'8 premium loose-leaf tea varieties with a stainless steel infuser. Perfect for the tea connoisseur.',
+    link:'https://craftymixologist.com/products/cocktail-infusion-kit',
+    images:[
+      'https://craftymixologist.com/cdn/shop/files/81ozRy6_-OL._SL1500__1.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81iBDmovlWL._SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81ljqXIzM_L._SL1500.jpg?width=800'
+    ],
+    includes:['8 varieties premium loose-leaf tea','Stainless steel tea infuser','Tea recipe & brewing guide','Elegant gift box']
+  },
+  {
+    id:'allinone', name:'All In One Kit', price:'$69.99', badge:'',
+    desc:'The ultimate kit — 15 botanicals, 2 glass decanters, and a full bar tool set. Everything in one luxury gift box.',
+    link:'https://craftymixologist.com/products/cocktail-infusion-kit',
+    images:[
+      'https://craftymixologist.com/cdn/shop/files/81_wl_6fVkL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81-pZP_JT-L._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81RQ3qIwPdL._AC_SL1500__1.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81Vkqg_GyNL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/815cJhUq3IL._AC_SL1500.jpg?width=800'
+    ],
+    includes:['2 glass decanters','15 premium botanicals','Stainless steel funnel & strainer','Mixing spoon & tongs','4 whiskey stones','10 waterproof labels','Instruction booklet','Luxury gift box']
+  }
+];
+
+const UPSELLS = [
+  {
+    name:'Lemon Slices', price:'$8.99', compare:'$9.99',
+    img:'https://craftymixologist.com/cdn/shop/files/81jfLdyHWML._SX679.jpg?width=400',
+    variants:'', soldOut:false
+  },
+  {
+    name:'Lime Slices', price:'$8.99', compare:'$9.99',
+    img:'https://craftymixologist.com/cdn/shop/files/81rcESh-1mL._SX679.jpg?width=400',
+    variants:'', soldOut:false
+  },
+  {
+    name:'Orange Slices', price:'$8.99', compare:'$9.99',
+    img:'https://craftymixologist.com/cdn/shop/files/71kYwxFWuKL._SX679.jpg?width=400',
+    variants:'', soldOut:false
+  },
+  {
+    name:'Blood Orange', price:'$8.99', compare:'$9.99',
+    img:'https://craftymixologist.com/cdn/shop/files/812vJSvqlRL._SX679.jpg?width=400',
+    variants:'', soldOut:false
+  }
+];
+
+const REVIEWS = [
+  { name:'John C.', initial:'J', text:'"Got this for my dad\'s birthday, and he absolutely loved it. Beautiful packaging and it comes with everything already inside."' },
+  { name:'Chris R.', initial:'C', text:'"This kit made me feel like a professional mixologist! The flavors were amazing and easy to use."' },
+  { name:'Wendy S.', initial:'W', text:'"Everything from the presentation to the taste was exceptional. It\'s obvious a lot of care went into making this kit."' },
+  { name:'Jessica T.', initial:'J', text:'"I bought this as a gift for my husband, and we had so much fun trying different infusions together."' },
+  { name:'Mike D.', initial:'M', text:'"Bought the smoker kit for my husband and he uses it every weekend. The wood chips give such a rich flavor. Best purchase I\'ve made this year."' },
+  { name:'Sarah L.', initial:'S', text:'"The tequila kit was a hit at our dinner party. Everyone wanted to know where I got it. Beautiful presentation and so fun to make."' },
+  { name:'David M.', initial:'D', text:'"I\'ve bought three different kits now — whiskey, espresso martini, and the smoker. All amazing quality. The packaging alone makes it gift-worthy."' },
+  { name:'Amanda K.', initial:'A', text:'"Perfect gift for my father-in-law who is impossible to shop for. He absolutely loved the whiskey infusion kit."' }
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   VARIANT SWITCHER
+═══════════════════════════════════════════════════════════════ */
+let activeVariant = 0;
+let activeThumb = 0;
+
+const $variantGrid = document.getElementById('variantGrid');
+const $mainImg = document.getElementById('mainImg');
+const $galleryThumbs = document.getElementById('galleryThumbs');
+const $galleryBadge = document.getElementById('galleryBadge');
+const $prodTitle = document.getElementById('prodTitle');
+const $prodPrice = document.getElementById('prodPrice');
+const $prodDesc = document.getElementById('prodDesc');
+const $includesList = document.getElementById('includesList');
+const $buyBtn = document.getElementById('buyBtn');
+
+// Build variant grid (3x3)
+PRODUCTS.forEach((p, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'variant-btn' + (i === 0 ? ' active' : '');
+  btn.textContent = p.name;
+  btn.addEventListener('click', () => selectVariant(i));
+  $variantGrid.appendChild(btn);
+});
+
+function selectVariant(idx) {
+  activeVariant = idx;
+  activeThumb = 0;
+  const p = PRODUCTS[idx];
+
+  // Update buttons
+  document.querySelectorAll('.variant-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+
+  // Main image
+  $mainImg.style.opacity = '0';
+  setTimeout(() => {
+    $mainImg.src = p.images[0];
+    $mainImg.alt = p.name;
+    $mainImg.style.opacity = '1';
+  }, 150);
+
+  // Badge
+  $galleryBadge.style.display = p.badge ? 'block' : 'none';
+  $galleryBadge.textContent = p.badge;
+
+  // Thumbnails
+  $galleryThumbs.innerHTML = '';
+  p.images.forEach((src, i) => {
+    const div = document.createElement('div');
+    div.className = 'thumb' + (i === 0 ? ' active' : '');
+    div.innerHTML = `<img src="${src}" alt="${p.name} image ${i+1}" loading="lazy"/>`;
+    div.addEventListener('click', () => selectThumb(i, src));
+    $galleryThumbs.appendChild(div);
+  });
+
+  // Info
+  $prodTitle.textContent = p.name;
+  $prodPrice.textContent = p.price;
+  $prodDesc.textContent = p.desc;
+  $buyBtn.href = p.link;
+
+  // Includes
+  $includesList.innerHTML = '';
+  p.includes.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    $includesList.appendChild(li);
+  });
+}
+
+function selectThumb(idx, src) {
+  activeThumb = idx;
+  $mainImg.style.opacity = '0';
+  setTimeout(() => {
+    $mainImg.src = src;
+    $mainImg.style.opacity = '1';
+  }, 150);
+  document.querySelectorAll('.thumb').forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+  });
+}
+
+// Init first variant
+selectVariant(0);
+
+/* ═══════════════════════════════════════════════════════════════
+   UPSELLS
+═══════════════════════════════════════════════════════════════ */
+const $upsellScroll = document.getElementById('upsellScroll');
+UPSELLS.forEach(u => {
+  const card = document.createElement('div');
+  card.className = 'upsell-card';
+  card.innerHTML = `
+    <div class="upsell-img"><img src="${u.img}" alt="${u.name}" loading="lazy"/></div>
+    <div class="upsell-body">
+      <div class="upsell-name">${u.name}</div>
+      <div class="upsell-prices">
+        <span class="upsell-price">${u.price}</span>
+        <span class="upsell-compare">${u.compare}</span>
+      </div>
+      ${u.variants ? `<div class="upsell-variants">${u.variants}</div>` : ''}
+      <button class="btn-upsell${u.soldOut ? ' sold-out' : ''}"${u.soldOut ? ' disabled' : ''}>${u.soldOut ? 'Sold Out' : 'Add to Order'}</button>
+    </div>
+  `;
+  $upsellScroll.appendChild(card);
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   REVIEWS
+═══════════════════════════════════════════════════════════════ */
+const $reviewsGrid = document.getElementById('reviewsGrid');
+REVIEWS.forEach(r => {
+  const card = document.createElement('div');
+  card.className = 'review-card reveal';
+  card.innerHTML = `
+    <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+    <p class="review-text">${r.text}</p>
+    <div class="review-author">
+      <div class="review-avatar">${r.initial}</div>
+      <div>
+        <div class="review-name">${r.name}</div>
+        <div class="review-tag">
+          <svg width="12" height="12" fill="var(--gold)" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+          Verified Buyer
+        </div>
+      </div>
+    </div>
+  `;
+  $reviewsGrid.appendChild(card);
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   POPUP (shows once, 3s delay)
+═══════════════════════════════════════════════════════════════ */
+const POPUP_KEY = 'crafty_popup_shown';
+const $overlay = document.getElementById('popupOverlay');
+
+if (!localStorage.getItem(POPUP_KEY)) {
+  setTimeout(() => { $overlay.classList.add('show'); }, 3000);
+}
+
+document.getElementById('popupClose').addEventListener('click', () => {
+  $overlay.classList.remove('show');
+  localStorage.setItem(POPUP_KEY, '1');
+});
+$overlay.addEventListener('click', (e) => {
+  if (e.target === $overlay) {
+    $overlay.classList.remove('show');
+    localStorage.setItem(POPUP_KEY, '1');
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   EMAIL / SUBSCRIBER LOGIC
+═══════════════════════════════════════════════════════════════ */
+const STORAGE_KEY = 'crafty_mixologist_subscribers_v1';
+const WEBHOOK_URL = '';
+
+function loadSubscribers() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+}
+function saveSubscriber(obj) {
+  const list = loadSubscribers();
+  list.push(obj);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+function handleSignup(emailEl, consentEl, formEl, thanksEl) {
+  const email = emailEl.value.trim();
+  if (!validateEmail(email)) { alert('Please enter a valid email address.'); return; }
+  if (!consentEl.checked) { alert('Please agree to receive emails.'); return; }
+  const sub = { email, date: new Date().toISOString() };
+  saveSubscriber(sub);
+  if (WEBHOOK_URL) {
+    fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(sub) }).catch(()=>{});
+  }
+  formEl.style.display = 'none';
+  thanksEl.style.display = 'block';
+  localStorage.setItem(POPUP_KEY, '1');
+}
+
+document.getElementById('popupForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  handleSignup(
+    document.getElementById('popupEmail'),
+    document.getElementById('popupConsent'),
+    document.getElementById('popupForm'),
+    document.getElementById('popupThanks')
+  );
+});
+
+/* Export / Clear */
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const rows = loadSubscribers();
+  if (!rows.length) { alert('No subscribers saved yet.'); return; }
+  const csv = ['email,date'].concat(rows.map(r => r.email+','+r.date)).join('\n');
+  const blob = new Blob([csv], { type:'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'subscribers.csv'; document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+});
+document.getElementById('clearBtn').addEventListener('click', () => {
+  if (confirm('Clear all locally saved subscribers?')) {
+    localStorage.removeItem(STORAGE_KEY);
+    alert('Cleared.');
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE NAV
+═══════════════════════════════════════════════════════════════ */
+document.getElementById('burger').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════════════════════════ */
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+}, { threshold:0.1, rootMargin:'0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
