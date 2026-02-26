@@ -238,6 +238,20 @@ button{font-family:var(--font);cursor:pointer}
 .side-cart-remove{background:none;border:none;color:var(--gray-400);font-size:18px;
   cursor:pointer;padding:0 4px;transition:color var(--transition);flex-shrink:0}
 .side-cart-remove:hover{color:var(--black)}
+.cart-upsell{padding:14px 0;border-top:1px solid var(--gray-200);margin-top:4px}
+.cart-upsell-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--gold);margin-bottom:10px}
+.cart-upsell-item{display:flex;align-items:center;gap:10px;padding:6px 0}
+.cart-upsell-thumb{width:40px;height:40px;border-radius:6px;overflow:hidden;flex-shrink:0;
+  border:1px solid var(--gray-200);background:var(--gray-50)}
+.cart-upsell-thumb img{width:100%;height:100%;object-fit:contain}
+.cart-upsell-info{flex:1;display:flex;flex-direction:column}
+.cart-upsell-name{font-size:12px;font-weight:600;line-height:1.3}
+.cart-upsell-price{font-size:11px;color:var(--gray-500)}
+.cart-upsell-add{flex-shrink:0;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;
+  border:1px solid var(--gold);background:transparent;color:var(--gold);cursor:pointer;
+  transition:all var(--transition)}
+.cart-upsell-add:hover{background:var(--gold);color:var(--white)}
 .side-cart-footer{padding:20px 24px;border-top:1px solid var(--gray-200);background:var(--gray-50)}
 .side-cart-totals{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
 .side-cart-row{display:flex;justify-content:space-between;font-size:13px;color:var(--gray-500)}
@@ -746,6 +760,30 @@ const UPSELL_GROUPS = [
   }
 ];
 
+/* Variant-specific add-on mapping: product id → array of add-on variantIds */
+const VARIANT_ADDONS = {
+  espresso: ['51024048030015','51024091971903','51597622149439','51598840168767','51598840267071'],
+  whiskey:  ['51024048030015','51024091971903','51597622182207','51598840168767','51598840267071'],
+  tequila:  ['51024047997247','51024047964479','51597622214975','51598840201535','51598840267071'],
+  smoker:   ['51024048030015','51024091971903','51597622182207','51598840168767','51598840267071'],
+  margarita:['51024047997247','51024047964479','51597622214975','51598840234303','51598840267071'],
+  mule:     ['51024047997247','51024047964479','51597622214975','51598840201535','51598840267071'],
+  olive:    ['51024047964479','51024048030015','51597622182207','51598840267071'],
+  tea:      ['51024048030015','51024091971903','51597622149439','51598840267071'],
+  allinone: [
+    '51024047964479','51024047997247','51024048030015','51024091971903',
+    '51598840168767','51598840201535','51598840234303','51598840267071',
+    '51597622149439','51597622182207','51597622214975'
+  ]
+};
+
+/* Flat lookup: variantId → add-on item object */
+const ADDON_BY_VID = {};
+UPSELL_GROUPS.forEach(g => g.items.forEach(u => { ADDON_BY_VID[u.variantId] = u; }));
+
+/* Track most recently added kit (product id) for cart upsell */
+let lastAddedKitId = PRODUCTS[0].id;
+
 const REVIEWS = [
   { name:'John C.', initial:'J', text:'"Got this for my dad\'s birthday, and he absolutely loved it. Beautiful packaging and it comes with everything already inside."' },
   { name:'Chris R.', initial:'C', text:'"This kit made me feel like a professional mixologist! The flavors were amazing and easy to use."' },
@@ -821,6 +859,8 @@ function getVolumeTierPct(qty) {
 function addToCart(variantId) {
   const current = cartKits.get(variantId) || 0;
   cartKits.set(variantId, current + 1);
+  const prod = getProductByVariantId(variantId);
+  if (prod) lastAddedKitId = prod.id;
   updateCartUI();
   openSideCart();
 }
@@ -905,6 +945,36 @@ function updateCartUI() {
     }));
   });
 
+  // Recommended add-ons upsell in cart
+  if (kitCount > 0) {
+    // Find the relevant kit for upsell suggestions
+    let upsellKitId = lastAddedKitId;
+    // Fall back to first kit in cart if lastAddedKitId isn't in cart
+    if (!cartKits.has(PRODUCTS.find(p => p.id === upsellKitId)?.variantId)) {
+      const firstVid = cartKits.keys().next().value;
+      const firstProd = getProductByVariantId(firstVid);
+      if (firstProd) upsellKitId = firstProd.id;
+    }
+    const relevantVids = VARIANT_ADDONS[upsellKitId] || [];
+    const suggestions = relevantVids.filter(vid => !addedAddons.has(vid)).slice(0, 3);
+    if (suggestions.length > 0) {
+      itemsHTML += '<div class="cart-upsell"><div class="cart-upsell-title">Complete Your Kit</div>';
+      suggestions.forEach(vid => {
+        const u = ADDON_BY_VID[vid];
+        if (!u) return;
+        itemsHTML += '<div class="cart-upsell-item">' +
+          '<div class="cart-upsell-thumb"><img src="' + u.img + '" alt="' + u.name + '"/></div>' +
+          '<div class="cart-upsell-info">' +
+            '<div class="cart-upsell-name">' + u.name + '</div>' +
+            '<div class="cart-upsell-price">' + u.price + '</div>' +
+          '</div>' +
+          '<button class="cart-upsell-add" data-vid="' + u.variantId + '">+ Add</button>' +
+        '</div>';
+      });
+      itemsHTML += '</div>';
+    }
+  }
+
   $sideCartItems.innerHTML = itemsHTML;
 
   // Attach qty +/- handlers
@@ -933,6 +1003,21 @@ function updateCartUI() {
       if (toggleBtn) {
         toggleBtn.classList.remove('added');
         toggleBtn.innerHTML = '+ Add';
+      }
+      updateCartUI();
+    });
+  });
+
+  // Attach upsell "+ Add" handlers
+  $sideCartItems.querySelectorAll('.cart-upsell-add').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const vid = this.dataset.vid;
+      addedAddons.add(vid);
+      // Sync the toggle button on the main add-ons section
+      const toggleBtn = document.querySelector('.btn-toggle[data-vid="' + vid + '"]');
+      if (toggleBtn) {
+        toggleBtn.classList.add('added');
+        toggleBtn.innerHTML = '&#10003; Added';
       }
       updateCartUI();
     });
@@ -969,6 +1054,9 @@ function updateCartUI() {
   if (kitCount > 0) {
     renderVolumeSelector();
   }
+
+  // Re-render add-ons section to keep toggle buttons in sync
+  renderAddons();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -992,6 +1080,7 @@ const $sideCartTotals = document.getElementById('sideCartTotals');
 const $sideCartCheckout = document.getElementById('sideCartCheckout');
 const $cartFab = document.getElementById('cartFab');
 const $cartFabBadge = document.getElementById('cartFabBadge');
+const $upsellContainer = document.getElementById('upsellContainer');
 
 /* ═══════════════════════════════════════════════════════════════
    VARIANT GRID
@@ -1057,6 +1146,14 @@ function selectVariant(idx) {
     });
   }
 
+  // Sync add-ons: remove any that aren't relevant to the new variant
+  const allowedAddons = new Set(VARIANT_ADDONS[p.id] || []);
+  const toRemove = [];
+  addedAddons.forEach(vid => { if (!allowedAddons.has(vid)) toRemove.push(vid); });
+  toRemove.forEach(vid => addedAddons.delete(vid));
+  if (toRemove.length > 0) updateCartUI();
+
+  renderAddons();
   renderVolumeSelector();
 }
 
@@ -1117,14 +1214,19 @@ function selectThumb(idx, src) {
 selectVariant(0);
 
 /* ═══════════════════════════════════════════════════════════════
-   UPSELLS (single horizontal row with toggle buttons)
+   UPSELLS — variant-specific add-ons
 ═══════════════════════════════════════════════════════════════ */
-const $upsellContainer = document.getElementById('upsellContainer');
-const upsellRow = document.createElement('div');
-upsellRow.className = 'upsell-row';
 
-UPSELL_GROUPS.forEach((group) => {
-  group.items.forEach(u => {
+function renderAddons() {
+  const p = PRODUCTS[activeVariant];
+  const addonVids = VARIANT_ADDONS[p.id] || [];
+  $upsellContainer.innerHTML = '';
+  const row = document.createElement('div');
+  row.className = 'upsell-row';
+
+  addonVids.forEach(vid => {
+    const u = ADDON_BY_VID[vid];
+    if (!u) return;
     const card = document.createElement('div');
     card.className = 'upsell-card';
     const isAdded = addedAddons.has(u.variantId);
@@ -1150,11 +1252,13 @@ UPSELL_GROUPS.forEach((group) => {
       }
       updateCartUI();
     });
-    upsellRow.appendChild(card);
+    row.appendChild(card);
   });
-});
 
-$upsellContainer.appendChild(upsellRow);
+  $upsellContainer.appendChild(row);
+}
+
+renderAddons();
 
 /* ═══════════════════════════════════════════════════════════════
    REVIEWS
@@ -1293,6 +1397,7 @@ $addToCartBtn.addEventListener('click', () => {
   const p = PRODUCTS[activeVariant];
   const current = cartKits.get(p.variantId) || 0;
   cartKits.set(p.variantId, current + selectedQty);
+  lastAddedKitId = p.id;
   updateCartUI();
   openSideCart();
 });
