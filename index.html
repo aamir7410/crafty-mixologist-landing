@@ -125,6 +125,24 @@ button{font-family:var(--font);cursor:pointer}
 .includes-list li{font-size:13px;color:var(--gray-600);display:flex;align-items:center;gap:8px;line-height:1.4}
 .includes-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
 
+.volume-selector{margin-bottom:28px}
+.volume-selector h4{font-size:14px;font-weight:700;margin-bottom:10px}
+.volume-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.volume-opt{position:relative;padding:16px 10px 12px;border-radius:var(--radius);border:1px solid var(--gray-200);
+  background:var(--white);cursor:pointer;text-align:center;transition:all var(--transition)}
+.volume-opt:hover{border-color:var(--gold)}
+.volume-opt.active{border-color:var(--gold);background:var(--gold-bg);box-shadow:0 0 0 1px var(--gold)}
+.volume-opt-badge{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;
+  padding:2px 8px;border-radius:4px;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase}
+.volume-opt-badge.popular{background:var(--gold);color:var(--white)}
+.volume-opt-badge.best{background:#16a34a;color:var(--white)}
+.volume-opt-qty{font-size:15px;font-weight:800;margin-bottom:2px}
+.volume-opt-pct{font-size:12px;font-weight:600;color:var(--gold)}
+.volume-pricing{margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.volume-pricing .orig{font-size:15px;color:var(--gray-400);text-decoration:line-through}
+.volume-pricing .disc{font-size:22px;font-weight:800;color:var(--gold)}
+.volume-pricing .save{font-size:13px;font-weight:600;color:#16a34a}
+
 .buy-actions{display:flex;gap:12px;margin-bottom:16px}
 .buy-actions .btn-gold{flex:1;padding:16px 24px;font-size:16px}
 .trust-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -420,6 +438,9 @@ button{font-family:var(--font);cursor:pointer}
 
         <!-- Variant Grid (3x3) -->
         <div class="variant-grid" id="variantGrid"></div>
+
+        <!-- Volume Discount Selector -->
+        <div class="volume-selector" id="volumeSelector"></div>
 
         <div class="includes-box">
           <h4>&#9989;&ensp;What's Included</h4>
@@ -762,9 +783,18 @@ function getTotalKitCount() {
 
 function getDiscountTier() {
   const n = getTotalKitCount();
-  if (n >= 3) return { pct:0.20, label:'20% off' };
-  if (n === 2) return { pct:0.15, label:'15% off' };
-  if (n === 1) return { pct:0.10, label:'10% off' };
+  // Mix-and-match tier based on total kits in cart
+  let mixPct = 0;
+  if (n >= 3) mixPct = 0.20;
+  else if (n === 2) mixPct = 0.15;
+  else if (n === 1) mixPct = 0.10;
+  // Volume selector tier
+  const volPct = getVolumeTierPct(selectedQty);
+  // Use whichever is higher
+  const pct = n > 0 ? Math.max(mixPct, volPct) : 0;
+  if (pct >= 0.20) return { pct:0.20, label:'20% off' };
+  if (pct >= 0.15) return { pct:0.15, label:'15% off' };
+  if (pct >= 0.10) return { pct:0.10, label:'10% off' };
   return { pct:0, label:'' };
 }
 
@@ -778,6 +808,14 @@ function buildCartUrl() {
 
 function getCartItemCount() {
   return getTotalKitCount() + addedAddons.size;
+}
+
+let selectedQty = 1;
+
+function getVolumeTierPct(qty) {
+  if (qty >= 3) return 0.20;
+  if (qty === 2) return 0.15;
+  return 0.10;
 }
 
 function addToCart(variantId) {
@@ -1009,6 +1047,50 @@ function selectVariant(idx) {
       $bannersContainer.appendChild(img);
     });
   }
+
+  renderVolumeSelector();
+}
+
+function renderVolumeSelector() {
+  const p = PRODUCTS[activeVariant];
+  const price = parsePrice(p.price);
+  const tiers = [
+    { qty:1, label:'Buy 1', pct:0.10, badge:'', badgeClass:'' },
+    { qty:2, label:'Buy 2', pct:0.15, badge:'Most Popular', badgeClass:'popular' },
+    { qty:3, label:'Buy 3+', pct:0.20, badge:'Best Savings', badgeClass:'best' }
+  ];
+
+  let html = '<h4>Volume Discount</h4><div class="volume-options">';
+  tiers.forEach(function(t) {
+    html += '<div class="volume-opt' + (selectedQty === t.qty ? ' active' : '') + '" data-qty="' + t.qty + '">' +
+      (t.badge ? '<span class="volume-opt-badge ' + t.badgeClass + '">' + t.badge + '</span>' : '') +
+      '<div class="volume-opt-qty">' + t.label + '</div>' +
+      '<div class="volume-opt-pct">' + Math.round(t.pct * 100) + '% off</div>' +
+    '</div>';
+  });
+  html += '</div>';
+
+  var pct = getVolumeTierPct(selectedQty);
+  var orig = price * selectedQty;
+  var disc = orig * (1 - pct);
+  var saved = orig - disc;
+  html += '<div class="volume-pricing">' +
+    '<span class="orig">' + fmt(orig) + '</span>' +
+    '<span class="disc">' + fmt(disc) + '</span>' +
+    '<span class="save">You save ' + fmt(saved) + '</span>' +
+  '</div>';
+
+  document.getElementById('volumeSelector').innerHTML = html;
+
+  document.querySelectorAll('.volume-opt').forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      selectedQty = parseInt(this.dataset.qty);
+      renderVolumeSelector();
+      updateCartUI();
+    });
+  });
+
+  $addToCartBtn.textContent = selectedQty > 1 ? 'Add ' + selectedQty + ' to Cart  +' : 'Add to Cart  +';
 }
 
 function selectThumb(idx, src) {
@@ -1200,7 +1282,10 @@ $sideCartOverlay.addEventListener('click', closeSideCart);
 
 $addToCartBtn.addEventListener('click', () => {
   const p = PRODUCTS[activeVariant];
-  addToCart(p.variantId);
+  const current = cartKits.get(p.variantId) || 0;
+  cartKits.set(p.variantId, current + selectedQty);
+  updateCartUI();
+  openSideCart();
 });
 
 // Initialize cart UI (empty state)
