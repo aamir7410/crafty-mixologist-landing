@@ -272,24 +272,55 @@ button{font-family:var(--font);cursor:pointer}
   font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
 
 /*═══════════════════════════════════════════════════════════════
-  REVIEWS
+  REVIEWS CAROUSEL
 ═══════════════════════════════════════════════════════════════*/
-.reviews-section{padding:80px 0;background:var(--bg)}
+.reviews-section{padding:80px 0;background:var(--bg);overflow:hidden}
 .reviews-header{margin-bottom:48px}
 .reviews-badge{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;
   color:var(--gold);margin-top:8px}
-.reviews-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.review-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);
-  padding:28px;transition:all var(--transition)}
-.review-card:hover{border-color:var(--gold-light);box-shadow:var(--shadow-sm)}
-.review-stars{color:var(--gold);font-size:15px;letter-spacing:2px;margin-bottom:14px}
-.review-text{font-size:14px;color:var(--gray-600);line-height:1.75;margin-bottom:18px;font-style:italic}
-.review-author{display:flex;align-items:center;gap:12px}
-.review-avatar{width:38px;height:38px;border-radius:50%;background:var(--gold);display:flex;
-  align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--white)}
-.review-name{font-weight:600;font-size:14px}
-.review-tag{font-size:11px;color:var(--gray-400);display:flex;align-items:center;gap:4px}
-.review-tag svg{color:var(--gold)}
+.carousel-wrap{position:relative}
+.carousel-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:4px 0 16px;
+  scrollbar-width:none;cursor:grab}
+.carousel-track:active{cursor:grabbing}
+.carousel-track::-webkit-scrollbar{display:none}
+.carousel-card{flex:0 0 calc(33.333% - 14px);scroll-snap-align:start;background:var(--white);
+  border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:24px;
+  transition:all var(--transition);display:flex;flex-direction:column}
+.carousel-card:hover{border-color:var(--gold-light);box-shadow:var(--shadow)}
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:40px;height:40px;
+  border-radius:50%;border:1px solid var(--gray-200);background:var(--white);box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  color:var(--gray-600);transition:all var(--transition);font-size:18px}
+.carousel-arrow:hover{border-color:var(--gold);color:var(--gold);box-shadow:var(--shadow)}
+.carousel-arrow.left{left:-16px}
+.carousel-arrow.right{right:-16px}
+.review-stars{color:var(--gold);font-size:14px;letter-spacing:1px;margin-bottom:8px}
+.review-stars .empty{color:var(--gray-200)}
+.review-title{font-size:14px;font-weight:700;margin-bottom:6px;line-height:1.4;color:var(--black)}
+.review-body{font-size:13px;color:var(--gray-600);line-height:1.65;margin-bottom:12px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.review-body.expanded{-webkit-line-clamp:unset;display:block}
+.review-readmore{font-size:12px;color:var(--gold);font-weight:600;cursor:pointer;border:none;
+  background:none;padding:0;margin-bottom:12px}
+.review-readmore:hover{text-decoration:underline}
+.review-photos{display:flex;gap:8px;margin-bottom:12px}
+.review-photos img{width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid var(--gray-200);cursor:pointer;transition:all var(--transition)}
+.review-photos img:hover{border-color:var(--gold);box-shadow:var(--shadow-sm)}
+.review-meta{margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:12px;
+  border-top:1px solid var(--gray-100)}
+.review-avatar{width:34px;height:34px;border-radius:50%;background:var(--gold);display:flex;
+  align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--white);flex-shrink:0}
+.review-info{flex:1;min-width:0}
+.review-name{font-weight:600;font-size:13px;line-height:1.3}
+.review-product{font-size:11px;color:var(--gray-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.review-verified{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;
+  color:#16a34a;background:rgba(22,163,74,.08);padding:3px 8px;border-radius:20px;flex-shrink:0}
+.review-verified svg{width:10px;height:10px}
+@media(max-width:880px){
+  .carousel-card{flex:0 0 calc(83.333% - 10px)}
+  .carousel-arrow{display:none}
+}
 
 /*═══════════════════════════════════════════════════════════════
   WHY US
@@ -444,7 +475,7 @@ button{font-family:var(--font);cursor:pointer}
       <div class="product-info" id="productInfo">
         <div class="product-rating">
           <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-          <span class="count">4.6 (427 reviews)</span>
+          <span class="count">4.7 (152 reviews)</span>
         </div>
         <h2 class="product-title" id="prodTitle"></h2>
         <div class="product-price" id="prodPrice"></div>
@@ -508,9 +539,13 @@ button{font-family:var(--font);cursor:pointer}
     <div class="text-center reviews-header reveal">
       <span class="section-label">Social Proof</span>
       <h2 class="section-title">What Our Customers Say</h2>
-      <div class="reviews-badge">&#9733;&#9733;&#9733;&#9733;&#9733;&ensp;4.6 from 427+ reviews</div>
+      <div class="reviews-badge">&#9733;&#9733;&#9733;&#9733;&#9733;&ensp;4.7 from 152 reviews</div>
     </div>
-    <div class="reviews-grid" id="reviewsGrid"></div>
+    <div class="carousel-wrap reveal">
+      <button class="carousel-arrow left" id="carouselLeft">&#8249;</button>
+      <div class="carousel-track" id="carouselTrack"></div>
+      <button class="carousel-arrow right" id="carouselRight">&#8250;</button>
+    </div>
   </div>
 </section>
 
@@ -526,7 +561,7 @@ button{font-family:var(--font);cursor:pointer}
       <div class="why-card reveal"><div class="why-icon">&#127807;</div><h4>Premium Ingredients</h4><p>All-natural botanicals and spices sourced for exceptional quality and flavor.</p></div>
       <div class="why-card reveal"><div class="why-icon">&#127873;</div><h4>Everything Included</h4><p>Complete kits with everything you need — just add your spirit and start mixing.</p></div>
       <div class="why-card reveal"><div class="why-icon">&#10024;</div><h4>Gift-Ready Packaging</h4><p>Elegant boxes crafted for any occasion. Impress before the first sip.</p></div>
-      <div class="why-card reveal"><div class="why-icon">&#9829;</div><h4>427+ Happy Customers</h4><p>Loved by mixology enthusiasts everywhere. See what they're saying.</p></div>
+      <div class="why-card reveal"><div class="why-icon">&#9829;</div><h4>152+ Happy Customers</h4><p>Loved by mixology enthusiasts everywhere. See what they're saying.</p></div>
     </div>
   </div>
 </section>
@@ -784,16 +819,7 @@ UPSELL_GROUPS.forEach(g => g.items.forEach(u => { ADDON_BY_VID[u.variantId] = u;
 /* Track most recently added kit (product id) for cart upsell */
 let lastAddedKitId = PRODUCTS[0].id;
 
-const REVIEWS = [
-  { name:'John C.', initial:'J', text:'"Got this for my dad\'s birthday, and he absolutely loved it. Beautiful packaging and it comes with everything already inside."' },
-  { name:'Chris R.', initial:'C', text:'"This kit made me feel like a professional mixologist! The flavors were amazing and easy to use."' },
-  { name:'Wendy S.', initial:'W', text:'"Everything from the presentation to the taste was exceptional. It\'s obvious a lot of care went into making this kit."' },
-  { name:'Jessica T.', initial:'J', text:'"I bought this as a gift for my husband, and we had so much fun trying different infusions together."' },
-  { name:'Mike D.', initial:'M', text:'"Bought the smoker kit for my husband and he uses it every weekend. The wood chips give such a rich flavor. Best purchase I\'ve made this year."' },
-  { name:'Sarah L.', initial:'S', text:'"The tequila kit was a hit at our dinner party. Everyone wanted to know where I got it. Beautiful presentation and so fun to make."' },
-  { name:'David M.', initial:'D', text:'"I\'ve bought three different kits now \u2014 whiskey, espresso martini, and the smoker. All amazing quality. The packaging alone makes it gift-worthy."' },
-  { name:'Amanda K.', initial:'A', text:'"Perfect gift for my father-in-law who is impossible to shop for. He absolutely loved the whiskey infusion kit."' }
-];
+const REVIEWS = [{"name": "Hallmen House", "title": "Awesome easy to use kit!", "body": "This kit has everything you need to get started on smoking your own cocktails at home. My husband loved it and made a bunch of fancy drinks at home easily. It’s the perfect way to elevate a dinner party or the perfect thing to gift someone who enjoys whiskey . The wood chips seemed to burn nicely and last for a few drinks per little tin. We would absolutely gift this to someone else too!", "rating": 5, "date": "2024-12-27", "product": "Cocktail Smoker Kit", "photos": ["https://f.media-amazon.com/images/I/716WKsVGnzL.jpg"]}, {"name": "gpendleton", "title": "Classy Martini set", "body": "I was very impressed with this martini expresso set. This is a great gift for anyone wanting to up their at home bar game. The ingredients are delicious and good quality. I like the virals that come with it, perfect for the alchemist. The instructions were clear and easy to follow. The glasses are coupe glass, very nice and perfect for the recipes.", "rating": 5, "date": "2024-11-26", "product": "Whiskey Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/71Z+sCORFsL.jpg"]}, {"name": "Wine Country Soccer Mom", "title": "Classy and great for home parties", "body": "This is my review for the Cocktail Smoker Kit by Your Dream Party Shop.I'm a fan of smoking whiskey and cocktails and this set did not disappoint! It is really lovely and has that dapper vibe to it.It comes with everything you need to make a nice smoked beverage: 2 glasses, large ice cube molds,  6 types of woodchips in nice canisters (Oak, Cherry, Pecan, Walnut, Apple, and Pear), the torch (not filled though), the filter and wood smoker to put the chips in over the glass so you can smoke the beverage.I've used it with these glasses and with other glasses as well (i.e. a ball jar, cocktail glass), and even with cocktails and mocktails. What I like about the glasses is the design and they are not too big like most whiskey glasses out there. The wood smoker is wide enough to sit on the rim of most glasses (I haven't tried martini or margarita glasses and I think those just might be too wide but it works on most glasses). There are enough woodchip flavors to last a long time and the presentation and packaging of this kit makes it look like a luxury item. It would be a great item to have at a house party.What sets this kit apart from other kids here on this platform is that this one comes with a little 3-page booklet with instructions and recommendations. That is such a great thing to have, especially if you're just starting off with smoking beverages. Most of the other kits I've tried don't have this. I really love having this kit in our home bar (it's a great conversation piece too), and it would make for an excellent gift for any person that enjoys craft drinks and wants to make their own at home.Will post an updated review if anything changes.I received this item at no cost for being a Vine member and this is my unbiased review.", "rating": 5, "date": "2024-11-21", "product": "Cocktail Smoker Kit", "photos": ["https://f.media-amazon.com/images/I/81HQjrUJYsL.jpg", "https://f.media-amazon.com/images/I/71Wo7ycv-QL.jpg"]}, {"name": "Jackie", "title": "Super Dope Tequila Project", "body": "I love that you can play with the different flavors with tequila, It comes with a nice bottle that has checkboxes and room to label it. It even comes with two bottles and two shot glasses. It would have been nice if they were snifter glasses for better tasting/smelling but I have some so that will be used instead. Everything looks and feels of great quality. So excited to experiment and play around with the different aromas and flavors. Would make a great gift for any tequila enthusiast.", "rating": 5, "date": "2023-12-14", "product": "Tequila Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/71xVCPZJ5+L.jpg", "https://f.media-amazon.com/images/I/71MifUh3fPL.jpg"]}, {"name": "Skyye", "title": "Great gift for Tequila lovers!!!!", "body": "This is a super neat gift for Tequila  lovers. The set is complete with everything you need except the alcohol you need to purchase and then you can personalize it with one or more of the 12 Flavors!!!!!  I Luv this, so have fun, enjoy, and be creative💯 I would suggest using a plain reg Tequila aka Blanco.,", "rating": 5, "date": "2023-12-14", "product": "Tequila Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/815KIstRT0L.jpg", "https://f.media-amazon.com/images/I/710uz2kosxL.jpg"]}, {"name": "Self-Care Mama", "title": "Beautifully packaged, great quality", "body": "What a fun gift set for a cocktail lover. The packaging is beautiful and impressive, and everything is high quality. I love that everything is more than one use.", "rating": 5, "date": "2023-12-10", "product": "Tequila Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/71sg89-XBaL.jpg"]}, {"name": "Erin Sedalia", "title": "Can’t wait to make my own tequila!", "body": "This custom tequila kit is an AMAZING gift!! I can’t wait to make my own tequila with their simple step-by-step instructions! This is great for date nights or gatherings with friends as this can be a fun group activity as well! Great value for this custom gift for the unique person in your life!", "rating": 5, "date": "2023-12-06", "product": "Tequila Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/713TLFI6rVL.jpg"]}, {"name": "Tony Reverditto", "title": "Tequila Infuser Kit has Many Flavor Profiles", "body": "I love creating fusions and this tequila kit is very cool. It has a variety of herbs and flavorings and the first one I'm going to try is the jalapeno. I'm also interested in blending the hibiscus, orange peel, lemongrass and lime powder. Other flavors include coffee beans, dark chocolate, vanilla, and other unusual flavors.", "rating": 5, "date": "2023-12-04", "product": "Tequila Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/71GurUcz5LL.jpg"]}, {"name": "Kelly", "title": "Nice", "body": "This is a really nice vodka infusion set. There are many flavors to choose from and the glasses are beautiful.", "rating": 5, "date": "2023-11-30", "product": "Tequila Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/71tLKfKuK3L.jpg", "https://f.media-amazon.com/images/I/81EMeRaqHbL.jpg"]}, {"name": "matt", "title": "Wow!", "body": "This is going to make the best present for my bestie who loves tequila! Teally nice quality.", "rating": 5, "date": "2023-11-28", "product": "Tequila Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/71sJWlRyPzL.jpg", "https://f.media-amazon.com/images/I/71-EkHSY06L.jpg"]}, {"name": "rdjr74", "title": "Very nice smoker to take that extra step in your bourbon experience", "body": "Stepping up my bourbon game with this. Always wanted to try something like this but looked to difficult. This makes it easy. Looking forward to using this over December and beyond.", "rating": 4, "date": "2024-12-02", "product": "Cocktail Smoker Kit", "photos": ["https://f.media-amazon.com/images/I/8118ooH2INL.jpg"]}, {"name": "Aiden", "title": "Beautiful presentation", "body": "Overall very happy with this for the price - it’s an excellent value. The packaging is perfect for giving as a gift and it looks refined. My two qualms are that the glasses had some fingerprints on them and scratches on the lighter which makes it look used, and the holes drilled in the smoker piece are jagged and will need to be sanded. The glasses are pretty thick so they don’t feel high end, but the design is really unique and hides that factor. Overall an excellent deal for the price.", "rating": 4, "date": "2024-12-01", "product": "Cocktail Smoker Kit", "photos": ["https://f.media-amazon.com/images/I/7196oV0dxGL.jpg", "https://f.media-amazon.com/images/I/8172W+4wlGL.jpg"]}, {"name": "Optimus Prime", "title": "good way to experiment with infusions", "body": "I have been making my own bourbon infusions for a few years now, but they have been pretty simple, as I do not have a kit.  This kit opens up a whole new experience, as it has all the things you need for infusing.  It comes with 2 375ml bottles, which the instructions show infusing in 1 and pouring the strained result in the other.  Each bottle has a section on the label where you can write what you used.  That is a neat idea, but only allows you to try twice, and the writing part is done on the 2 bottles.  So, I peeled the labels off of 2 \"On the Rocks\" cocktail mixes, which worked well, as those labels are plastic and peeled easily, leaving no residue and a blank bottle.  I did the infusion in the provided bottle and wrote with masking tape on the blank bottle.  This way, I can experiment all I want.My first experiment was vanilla dream (wood), hibiscus (dried flowers), and Hawaiian salt.  The instructions state the amount to use of each ingredient, though I did not follow any recipe, just mixed and matched.  The result was quite good, for a first try.  This is a good way to experiment with infusions, and has everything you need for several different ones, plus reusable items so you can experiment for years.", "rating": 4, "date": "2023-12-28", "product": "Tequila Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/81dWEbkvFwL.jpg"]}, {"name": "*AmazonAddict*", "title": "Tequila Making Kit", "body": "This kit would make a great gift for the tequila lover in your life! It comes in a really nice sturdy box, labeled and organized. The shot glasses are of good quality, and so are the bottles. There are 12 different flavors to infuse your tequila with, and instructions are included to guide you on how much is needed for each infusion. Please note that the alcohol is not included in this kit. Overall, for $50, I do feel it is a bit overpriced, but is a really nice set nonetheless.", "rating": 4, "date": "2023-11-27", "product": "Tequila Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/61vLXYR24rL.jpg", "https://f.media-amazon.com/images/I/71XzJj4Wz6L.jpg"]}, {"name": "Leanne B", "title": "Comes exactly as pictured", "body": "I got this because my husband is slight whiskey connoisseur. The “flavors” smells absolutely amazing! We plan on making a vanilla coffee whiskey to go in old fashions and can’t wait to try it!The only con is that it requires a filter which a lot of people may not randomly just have in their junk drawer.", "rating": 4, "date": "2022-11-28", "product": "Whiskey Infusion Kit", "photos": ["https://f.media-amazon.com/images/I/71AaQ1J30UL.jpg"]}, {"name": "MaryJo Buscetta", "title": "Have this to my son for Christmas he loved it", "body": "Have this to my son for Christmas he loved it.", "rating": 5, "date": "2025-12-25", "product": "All In One Kit", "photos": []}, {"name": "Chris Kinnan", "title": "It's a gift so I haven't used it m It came in a", "body": "It's a gift so I haven't used it m It came in a timely manner", "rating": 5, "date": "2025-12-18", "product": "All In One Kit", "photos": []}, {"name": "Debra Wagner", "title": "Arrived in a timely manner - saving for a Christmas present for my daughter", "body": "Arrived in a timely manner - saving for a Christmas present for my daughter.", "rating": 5, "date": "2025-11-13", "product": "All In One Kit", "photos": []}, {"name": "John", "title": "Wish it had the little spoon to measures with", "body": "Wish it had the little spoon to measures with but love it", "rating": 5, "date": "2025-08-23", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Roberto", "title": "Awsome used then and it's amazing thank", "body": "Awsome used then and it's amazing thank u!", "rating": 5, "date": "2025-07-29", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Millie", "title": "It was great", "body": "It was great. My husband loved it .", "rating": 5, "date": "2025-07-26", "product": "Moscow Mule Kit", "photos": []}, {"name": "Christine", "title": "It was a great gift  and fast", "body": "It was a great gift  and fast delivery", "rating": 5, "date": "2025-07-10", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Tony Jack", "title": "Durable, easy-to-clean", "body": "This 18\" x 12\" bar mat is a home bar essential. Its durable, easy-to-clean rubber protects countertops from spills and organizes tools, making bartending smoother and more enjoyable. Perfect for any home mixologist or coffee station.", "rating": 5, "date": "2025-07-03", "product": "Bar Mat", "photos": []}, {"name": "James Smith", "title": "Stunning and flavorful", "body": "These dried blood orange slices are a stunning and flavorful cocktail garnish. Their vibrant color and citrus aroma instantly elevate any drink. Perfectly dehydrated, they retain shape and a subtle, concentrated flavor. Excellent for cocktails, desserts, or infused water, adding a professional touch.", "rating": 5, "date": "2025-07-03", "product": "Dried Blood Orange", "photos": []}, {"name": "Jing shi", "title": "High-quality shaker", "body": "This Moscow Mule Kit is a showstopper! Two gleaming copper mugs keep drinks perfectly chilled. The 11 botanicals allow for unique creations, while the high-quality shaker, jigger, and muddler feel great. The recipe book guides all skill levels. A complete, luxurious experience, perfect for gifting or elevating your home bar.", "rating": 5, "date": "2025-07-03", "product": "Moscow Mule Kit", "photos": []}, {"name": "Stone Jack", "title": "Stainless steel shaker", "body": "The Crafty Mixologist Margarita Kit is the ultimate package for margarita lovers. It includes a high-quality stainless steel shaker, jigger, citrus squeezer, 5 botanicals, lime-infused salt, and dried lime slices for gourmet customization. With two glasses and a recipe book, it's easy and fun to craft perfect margaritas at home, making it an ideal gift.", "rating": 5, "date": "2025-07-03", "product": "Margarita Kit", "photos": []}, {"name": "Jean Marrero", "title": "", "body": "Given as a gift", "rating": 5, "date": "2025-06-04", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Kristine Placencio", "title": "Great gift", "body": "I bought this for my husband. He loved it and started crafting the same night. We have yet to try his creations, because it has 1 more week to sit, but it smells great so far!", "rating": 5, "date": "2025-05-19", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "ryann", "title": "Father’s day gift", "body": "My dad loved this for father’s day. He was able to make his own drinks and he liked it a lot.", "rating": 5, "date": "2025-04-17", "product": "Tequila Infusion Kit", "photos": []}, {"name": "Misty Webb", "title": "Good quality", "body": "Bought this for my husband and he LOVES it !", "rating": 5, "date": "2025-04-16", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Amazon Customer", "title": "Perfect gift for my husband", "body": "I bought this for my husband for Valentine's Day. The flavors are a wonderful addition to a whiskey drink and the process is fun.", "rating": 5, "date": "2025-04-13", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Federico", "title": "Love this !", "body": "This is an amazing gift idea ! It comes with everything you need to make fancy espresso martinis ! These are mixology type martinis. The great thing is, you know what you need to refil with the tubes that it comes with ! Love it !", "rating": 5, "date": "2025-04-09", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "Dave", "title": "Great gift for whiskey lovers", "body": "I received this as a gift. It was a ton of fun to buy a cheap bottle of whiskey and play with the ingredients to make something I liked. The aroma packs made it like a fun science experiment. I enjoyed it so much I bought it as a gift for someone else. Presents really well.", "rating": 5, "date": "2025-04-09", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "Matt Di Domenico", "title": "Fun gift", "body": "Bought as a gift for a friend, arrived quick and she loved it", "rating": 5, "date": "2025-04-05", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "Kobuna Vickers", "title": "My husband loves it", "body": "My husband loved it. It takes a few weeks of course for the infusion but we finally were able to try it last week and it was amazing. With all the herbs they gave in the package we can easily have a few more tries. We love it.", "rating": 5, "date": "2025-03-29", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "Shopping Mama", "title": "Great gift", "body": "Goof gift. This package is filled with cool spice bottles, and I absolutely love the concept. It's a fantastic gift idea—fun and easy to dive into. I would definitely purchase it again!", "rating": 5, "date": "2025-03-22", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "Dave B", "title": "great kit", "body": "Has everthing you need except the alcohol!", "rating": 5, "date": "2025-03-17", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "Brittani Russell", "title": "Early Valentine", "body": "Hubby has always enjoyed smoked old fashioned drinks since he discovered they were even a thing. Even with his scotch, he tends to prefer the smokier flavors of the liquor. So of course, I was  interested in seeing if he could smoke  his drinks at home. Purchased the kit and as soon as it showed up, I gave him the set eager to see what he would do with the different flavors. He immediately tried a drink for dinner that night and now his night caps are always smoked filled. He loves it. The ease with setting up the apparatus on the drink and butane torch to ignite the flames, it made the smoked cocktails effortless.", "rating": 5, "date": "2025-02-09", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Drew", "title": "Great for a gift", "body": "Great little kit to give as a gift for the whiskey drinker in your life! Comes with all the necessary things to give that extra pizzazz to your favorite drink.", "rating": 5, "date": "2025-02-01", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Jeremiah Hildenbrand", "title": "Burning wood", "body": "My husband loves it, if you love the smell of wood burning but don't love candles.", "rating": 5, "date": "2025-01-22", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Squeak", "title": "Nice whiskey smoking kit", "body": "This is a neat little whiskey smoker kit. It comes with rocks glasses but they are a little smaller than I usually use. They look nice just a little smaller than. It comes with the different types of wood chips and the smoking gun. You have to get butane for it but we were able to pick some up at a smoke shop. The whole kit works well and would make a nice gift for someone. Just remember there’s no butane included.", "rating": 5, "date": "2025-01-22", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Glenn Anderson", "title": "Perfect Gift for Whiskey Enthusiasts!", "body": "I purchased the Whiskey Gifts for Men - Whiskey Making Kit as a Christmas gift for my son-in-law, and it was an absolute hit! He couldn’t stop talking about how much fun he was going to have experimenting with it.The kit itself is packaged well and comes with everything needed to dive right in—bottles, wood chips, and clear instructions that make the process approachable, even for beginners. My son-in-law immediately started putting a list of different flavor combinations he could try, and his enthusiasm was contagious!Since Christmas, he’s already crafted a few batches and has been raving about the unique flavors he’s created. This kit really gives options for anyone who enjoys whiskey or wants to experiment with cocktails.It’s an ideal gift for someone who loves hands-on projects or just wants to add a personal touch to their drinks. Highly recommend it for whiskey lovers or anyone looking for a creative and memorable gift!", "rating": 5, "date": "2025-01-21", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "DRSmith", "title": "Great Gift", "body": "Brought this to the office holiday party white elephant gift exchange and it got stolen 3 times! The person who finally got it ended up making espresso martinis for the rest of the night. They were delicious! It comes with everything you need (minus the vodka). The cardamom-cocoa was my favorite flavor, but they were all good.", "rating": 5, "date": "2025-01-20", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "Tonasha", "title": "Good", "body": "Very good gift be aware of this does not come with the fuel. You will need to buy that if you’re looking to have your recipient fused right away.", "rating": 5, "date": "2025-01-14", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Tarrah", "title": "Includes so much!", "body": "I originally got this for my boyfriend because he is a whiskey drinker and he loved it. It comes with all sorts of herbs and tools to make the perfect glass with ease. Every part of this process is included and presented so that you could make a glass as soon as you open the kit.", "rating": 5, "date": "2025-01-09", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "F._F._", "title": "A nice mixer set", "body": "Espresso Martini Kit Gift Set– Complete Martini Maker Set with Espresso MixEspresso Martini set comes with almost everything you need except the coffee itself. Easy to use and comes with a nice varierty of ingredients to craft your favorite espresso martini. Glasses feel well made and box is reusable to store your kit.", "rating": 5, "date": "2025-01-06", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "christine king", "title": "Great", "body": "Got this for my finances birthday he hasn't used it yet but he loves it", "rating": 5, "date": "2025-01-05", "product": "Whiskey Infusion Kit", "photos": []}, {"name": "J", "title": "Works well; makes a nice, smoky drink", "body": "The addition of smoke to a Scotch or bourbon is an amazing thing! This smoker works well and makes a nice adult beverage taste even better.", "rating": 5, "date": "2024-12-31", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Madeline Britton", "title": "Good quality product", "body": "I got this as a gift for my husband and he really enjoyed it.", "rating": 5, "date": "2024-12-28", "product": "Cocktail Smoker Kit", "photos": []}, {"name": "Customer Review", "title": "Very nice (Your Dream Party Shop Espresso Martini Kit Gift Set)", "body": "Set includes two small coupe glasses (not martini glasses, weirdly), a smallish shaker, double-ended measuring scoop and tubes of other ingredients. Those tubes include powered coffee, coffee beans, vanilla powder, cardamom and others. Also included is a recipe book.Very nicely presented. Makes a great gift.", "rating": 5, "date": "2024-12-17", "product": "Whiskey Infusion Kit", "photos": []}];
 
 /* ═══════════════════════════════════════════════════════════════
    HELPERS
@@ -1261,27 +1287,86 @@ function renderAddons() {
 renderAddons();
 
 /* ═══════════════════════════════════════════════════════════════
-   REVIEWS
+   REVIEWS CAROUSEL
 ═══════════════════════════════════════════════════════════════ */
-const $reviewsGrid = document.getElementById('reviewsGrid');
-REVIEWS.forEach(r => {
+const $track = document.getElementById('carouselTrack');
+const $arrowL = document.getElementById('carouselLeft');
+const $arrowR = document.getElementById('carouselRight');
+
+function starsHTML(rating) {
+  let s = '';
+  for (let i = 1; i <= 5; i++) s += '<span' + (i > rating ? ' class="empty"' : '') + '>&#9733;</span>';
+  return s;
+}
+
+REVIEWS.forEach((r, idx) => {
   const card = document.createElement('div');
-  card.className = 'review-card reveal';
-  card.innerHTML =
-    '<div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>' +
-    '<p class="review-text">' + r.text + '</p>' +
-    '<div class="review-author">' +
-      '<div class="review-avatar">' + r.initial + '</div>' +
-      '<div>' +
-        '<div class="review-name">' + r.name + '</div>' +
-        '<div class="review-tag">' +
-          '<svg width="12" height="12" fill="var(--gold)" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>' +
-          ' Verified Buyer' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  $reviewsGrid.appendChild(card);
+  card.className = 'carousel-card';
+  let html = '<div class="review-stars">' + starsHTML(r.rating) + '</div>';
+  if (r.title) html += '<div class="review-title">' + r.title + '</div>';
+  html += '<div class="review-body" id="rb' + idx + '">' + r.body + '</div>';
+  html += '<button class="review-readmore" data-idx="' + idx + '" style="display:none">Read more</button>';
+  if (r.photos && r.photos.length) {
+    html += '<div class="review-photos">';
+    r.photos.forEach(src => { html += '<img src="' + src + '" alt="Customer photo" loading="lazy"/>'; });
+    html += '</div>';
+  }
+  html += '<div class="review-meta">' +
+    '<div class="review-avatar">' + (r.name ? r.name.charAt(0).toUpperCase() : '?') + '</div>' +
+    '<div class="review-info">' +
+      '<div class="review-name">' + r.name + '</div>' +
+      (r.product ? '<div class="review-product">' + r.product + '</div>' : '') +
+    '</div>' +
+    '<span class="review-verified"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Verified</span>' +
+  '</div>';
+  card.innerHTML = html;
+  $track.appendChild(card);
 });
+
+// Show "Read more" buttons for truncated cards
+requestAnimationFrame(() => {
+  document.querySelectorAll('.review-body').forEach(el => {
+    if (el.scrollHeight > el.clientHeight + 2) {
+      const btn = el.nextElementSibling;
+      if (btn && btn.classList.contains('review-readmore')) btn.style.display = 'block';
+    }
+  });
+});
+
+$track.addEventListener('click', e => {
+  const btn = e.target.closest('.review-readmore');
+  if (!btn) return;
+  const body = document.getElementById('rb' + btn.dataset.idx);
+  if (!body) return;
+  const expanded = body.classList.toggle('expanded');
+  btn.textContent = expanded ? 'Show less' : 'Read more';
+});
+
+// Arrow navigation
+function scrollCards(dir) {
+  const card = $track.querySelector('.carousel-card');
+  if (!card) return;
+  const w = card.offsetWidth + 20;
+  $track.scrollBy({ left: dir * w, behavior: 'smooth' });
+}
+$arrowL.addEventListener('click', () => scrollCards(-1));
+$arrowR.addEventListener('click', () => scrollCards(1));
+
+// Auto-scroll
+let autoInterval = setInterval(() => { $track.scrollBy({ left: 1, behavior: 'auto' }); }, 30);
+$track.addEventListener('mouseenter', () => clearInterval(autoInterval));
+$track.addEventListener('mouseleave', () => {
+  autoInterval = setInterval(() => { $track.scrollBy({ left: 1, behavior: 'auto' }); }, 30);
+});
+
+// Touch/drag support
+let isDragging = false, startX = 0, scrollStart = 0;
+$track.addEventListener('mousedown', e => { isDragging = true; startX = e.pageX; scrollStart = $track.scrollLeft; $track.style.scrollBehavior = 'auto'; });
+$track.addEventListener('mousemove', e => { if (!isDragging) return; e.preventDefault(); $track.scrollLeft = scrollStart - (e.pageX - startX); });
+$track.addEventListener('mouseup', () => { isDragging = false; $track.style.scrollBehavior = ''; });
+$track.addEventListener('mouseleave', () => { isDragging = false; $track.style.scrollBehavior = ''; });
+$track.addEventListener('touchstart', e => { startX = e.touches[0].pageX; scrollStart = $track.scrollLeft; }, { passive: true });
+$track.addEventListener('touchmove', e => { $track.scrollLeft = scrollStart - (e.touches[0].pageX - startX); }, { passive: true });
 
 /* ═══════════════════════════════════════════════════════════════
    POPUP (shows once, 3s delay)
