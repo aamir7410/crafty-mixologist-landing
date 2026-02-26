@@ -196,9 +196,7 @@ button{font-family:var(--font);cursor:pointer}
 ═══════════════════════════════════════════════════════════════*/
 .mini-cart{position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--black);
   border-top:2px solid var(--gold);box-shadow:0 -8px 30px rgba(0,0,0,.25);
-  padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:20px;
-  transform:translateY(100%);transition:transform .3s ease}
-.mini-cart.show{transform:translateY(0)}
+  padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:20px}
 .mini-cart-inner{max-width:1200px;width:100%;display:flex;align-items:center;justify-content:space-between}
 .mini-cart-info{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .mini-cart-name{font-size:14px;font-weight:700;color:var(--white)}
@@ -584,7 +582,6 @@ const PRODUCTS = [
     cartLink:'https://craftymixologist.com/cart/51316421132607:1',
     images:[
       'https://craftymixologist.com/cdn/shop/files/mainImage.png?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81Bl5xYrwVL._AC_SL1500__1.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/BJ6A9066.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=800'
     ],
@@ -1055,20 +1052,9 @@ const obs = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
 /* ═══════════════════════════════════════════════════════════════
-   STICKY MINI CART — show once user scrolls past product section
+   STICKY MINI CART — always visible
 ═══════════════════════════════════════════════════════════════ */
-const cartObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) {
-      $miniCart.classList.add('show');
-      document.body.classList.add('cart-open');
-    } else {
-      $miniCart.classList.remove('show');
-      document.body.classList.remove('cart-open');
-    }
-  });
-}, { threshold:0, rootMargin:'0px 0px -200px 0px' });
-cartObs.observe(document.getElementById('products'));
+document.body.classList.add('cart-open');
 </script>
 </body>
 </html>
