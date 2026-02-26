@@ -417,19 +417,62 @@ button{font-family:var(--font);cursor:pointer}
   .nav-links.open{display:flex}
   .burger{display:flex}
   .nav-logo img{height:120px}
-  .reviews-grid{grid-template-columns:1fr}
   .why-grid{grid-template-columns:1fr 1fr}
-  .includes-list{grid-template-columns:1fr}
-  .buy-actions{flex-direction:column}
-  .variant-grid{grid-template-columns:repeat(3,1fr);gap:6px}
-  .variant-btn{padding:10px 6px;font-size:11px}
   .footer-top{flex-direction:column}
-  .product-title{font-size:36px}
+
+  /* ── Reduced vertical spacing (30-40% less) ── */
+  .product-section{padding:16px 0 40px}
+  .container{padding:0 16px}
+  .product-layout{gap:20px}
+  .upsell-section{padding:24px 0 28px}
+  .reviews-section{padding:40px 0}
+  .why-section{padding:40px 0}
+  .why-grid{margin-top:28px}
+  .banners-section{padding:24px 0}
+  .section-title{margin-bottom:8px}
+  .reviews-header{margin-bottom:28px}
+
+  /* ── Product info: flex column with order for mobile reorder ── */
+  .product-info{display:flex;flex-direction:column;padding:0}
+  .product-rating{order:1;margin-bottom:8px}
+  .product-title{order:2;font-size:28px;margin-bottom:4px}
+  .product-price{order:3;font-size:22px;margin-bottom:10px}
+  .product-desc{order:4;margin-bottom:16px;font-size:14px;line-height:1.6}
+  .product-desc.mob-truncated{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .product-desc-more{order:4;font-size:13px;color:var(--gold);font-weight:600;background:none;border:none;
+    padding:0;margin:-10px 0 12px;cursor:pointer;display:none}
+  .variant-grid{order:5;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px}
+  .variant-btn{padding:9px 4px;font-size:12px;line-height:1.2}
+  .volume-selector{order:6;margin-bottom:16px}
+  .buy-actions{order:7;flex-direction:column;margin-bottom:12px}
+  .trust-row{order:8;flex-direction:row;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+  .includes-box{order:9;margin-bottom:16px;padding:18px}
+  .includes-list{grid-template-columns:1fr}
+
+  /* ── Volume discount compact ── */
+  .volume-selector h4{font-size:13px;margin-bottom:8px}
+  .volume-options{gap:6px}
+  .volume-opt{padding:12px 6px 10px}
+  .volume-opt-qty{font-size:13px}
+  .volume-opt-pct{font-size:11px}
+  .volume-opt-badge{font-size:8px;padding:2px 6px}
+  .volume-pricing{margin-top:8px;gap:8px}
+  .volume-pricing .disc{font-size:18px}
+  .volume-pricing .orig{font-size:13px}
+  .volume-pricing .save{font-size:11px}
+
+  /* ── Floating cart: above bottom browser bar ── */
+  .cart-fab{bottom:32px;right:16px;width:50px;height:50px}
+  .cart-fab svg{width:20px;height:20px}
+
+  /* ── Side cart: full width on mobile ── */
+  .side-cart{width:100%;max-width:100%}
 }
 @media(max-width:480px){
   .why-grid{grid-template-columns:1fr}
   .gallery-thumbs .thumb{width:60px;height:60px}
-  .trust-row{flex-direction:column;align-items:flex-start;gap:8px}
+  .trust-row{gap:8px}
+  .trust-item{font-size:11px}
 }
   </style>
 </head>
@@ -480,6 +523,7 @@ button{font-family:var(--font);cursor:pointer}
         <h2 class="product-title" id="prodTitle"></h2>
         <div class="product-price" id="prodPrice"></div>
         <p class="product-desc" id="prodDesc"></p>
+        <button class="product-desc-more" id="prodDescMore">Read more</button>
 
         <!-- Variant Grid (3x3) -->
         <div class="variant-grid" id="variantGrid"></div>
@@ -1460,6 +1504,45 @@ document.querySelectorAll('.nav-links a').forEach(a => {
     }
   });
 });
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE — description truncation
+═══════════════════════════════════════════════════════════════ */
+const $descMore = document.getElementById('prodDescMore');
+function checkDescTruncation() {
+  const isMobile = window.matchMedia('(max-width:768px)').matches;
+  if (isMobile) {
+    $prodDesc.classList.add('mob-truncated');
+    // Show button only if text is actually truncated
+    requestAnimationFrame(() => {
+      if ($prodDesc.scrollHeight > $prodDesc.clientHeight + 2) {
+        $descMore.style.display = 'block';
+      } else {
+        $descMore.style.display = 'none';
+      }
+    });
+  } else {
+    $prodDesc.classList.remove('mob-truncated');
+    $descMore.style.display = 'none';
+  }
+}
+$descMore.addEventListener('click', () => {
+  const expanded = $prodDesc.classList.toggle('mob-truncated');
+  $descMore.textContent = expanded ? 'Read more' : 'Show less';
+});
+
+// Re-check on variant change (hook into selectVariant)
+const _origSelectVariant = selectVariant;
+selectVariant = function(idx) {
+  _origSelectVariant(idx);
+  // Reset to truncated state
+  $prodDesc.classList.add('mob-truncated');
+  $descMore.textContent = 'Read more';
+  checkDescTruncation();
+};
+
+checkDescTruncation();
+window.addEventListener('resize', checkDescTruncation);
 
 /* ═══════════════════════════════════════════════════════════════
    SCROLL REVEAL
