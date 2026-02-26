@@ -837,8 +837,12 @@ function closeSideCart() {
 function updateCartUI() {
   const url = buildCartUrl();
   $sideCartCheckout.href = url;
-  const tier = getDiscountTier();
   const kitCount = getTotalKitCount();
+  // Sync volume selector before calculating discount so tier reflects actual cart
+  if (kitCount > 0) {
+    selectedQty = Math.min(kitCount, 3);
+  }
+  const tier = getDiscountTier();
 
   let itemsHTML = '';
 
@@ -961,13 +965,9 @@ function updateCartUI() {
   $cartFabBadge.textContent = count;
   $cartFabBadge.style.display = count > 0 ? 'flex' : 'none';
 
-  // Sync volume selector with cart quantity so discount tier updates on decrease
+  // Re-render volume selector to reflect synced state
   if (kitCount > 0) {
-    const syncQty = Math.min(kitCount, 3);
-    if (syncQty !== selectedQty) {
-      selectedQty = syncQty;
-      renderVolumeSelector();
-    }
+    renderVolumeSelector();
   }
 }
 
