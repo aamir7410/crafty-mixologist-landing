@@ -164,6 +164,48 @@ button{font-family:var(--font);cursor:pointer}
   border:1px solid var(--gold);background:transparent;color:var(--gold);transition:all var(--transition);
   text-align:center;text-decoration:none}
 .btn-upsell:hover{background:var(--gold);color:var(--white)}
+.btn-toggle{display:block;width:100%;padding:7px;border-radius:var(--radius);font-size:11px;font-weight:600;
+  border:1px solid var(--gold);background:transparent;color:var(--gold);transition:all var(--transition);
+  text-align:center;cursor:pointer}
+.btn-toggle:hover{background:var(--gold-bg)}
+.btn-toggle.added{background:var(--gold);color:var(--white);border-color:var(--gold)}
+
+/*═══════════════════════════════════════════════════════════════
+  VOLUME DISCOUNT
+═══════════════════════════════════════════════════════════════*/
+.volume-box{margin-bottom:28px}
+.volume-header{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.volume-options{display:flex;flex-direction:column;gap:8px}
+.volume-option{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--radius);
+  border:1px solid var(--gray-200);background:var(--white);cursor:pointer;transition:all var(--transition)}
+.volume-option:hover{border-color:var(--gold-light)}
+.volume-option.active{border-color:var(--gold);background:var(--gold-bg);box-shadow:0 0 0 1px var(--gold)}
+.volume-option input[type="radio"]{accent-color:var(--gold);width:18px;height:18px;cursor:pointer;flex-shrink:0}
+.volume-label{font-size:14px;font-weight:600;flex:1}
+.volume-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.5px;
+  display:inline-block;margin-left:6px}
+.volume-badge.popular{background:#2563eb;color:var(--white)}
+.volume-badge.best{background:#16a34a;color:var(--white)}
+.volume-prices{text-align:right;flex-shrink:0}
+.volume-original{font-size:12px;color:var(--gray-400);text-decoration:line-through}
+.volume-final{font-size:16px;font-weight:800;color:var(--black)}
+.volume-save{font-size:11px;font-weight:600;color:#16a34a;margin-top:2px}
+
+/*═══════════════════════════════════════════════════════════════
+  MINI CART
+═══════════════════════════════════════════════════════════════*/
+.mini-cart{position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--white);
+  border-top:2px solid var(--gold);box-shadow:0 -4px 20px rgba(0,0,0,.1);
+  padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:20px;
+  transform:translateY(100%);transition:transform .3s ease}
+.mini-cart.show{transform:translateY(0)}
+.mini-cart-inner{max-width:1200px;width:100%;display:flex;align-items:center;justify-content:space-between}
+.mini-cart-info{display:flex;align-items:center;gap:16px}
+.mini-cart-count{font-size:13px;color:var(--gray-500)}
+.mini-cart-count b{color:var(--black)}
+.mini-cart-total{font-size:20px;font-weight:800;color:var(--black)}
+.mini-cart .btn-gold{padding:12px 28px;font-size:14px}
+body.cart-open{padding-bottom:64px}
 
 /*═══════════════════════════════════════════════════════════════
   REVIEWS
@@ -352,6 +394,11 @@ button{font-family:var(--font);cursor:pointer}
           <ul class="includes-list" id="includesList"></ul>
         </div>
 
+        <div class="volume-box" id="volumeBox">
+          <div class="volume-header">Get more, save more &#127881;</div>
+          <div class="volume-options" id="volumeOptions"></div>
+        </div>
+
         <div class="buy-actions">
           <a id="buyBtn" href="#" target="_blank" rel="noopener" class="btn-gold">Buy Now&ensp;&rarr;</a>
         </div>
@@ -451,6 +498,17 @@ button{font-family:var(--font);cursor:pointer}
   </div>
 </footer>
 
+<!-- ═══ Mini Cart ═══ -->
+<div class="mini-cart" id="miniCart">
+  <div class="mini-cart-inner">
+    <div class="mini-cart-info">
+      <span class="mini-cart-count" id="miniCartCount"></span>
+      <span class="mini-cart-total" id="miniCartTotal"></span>
+    </div>
+    <a id="miniCartCheckout" href="#" target="_blank" rel="noopener" class="btn-gold">Checkout&ensp;&rarr;</a>
+  </div>
+</div>
+
 <!-- ═══ Admin ═══ -->
 <div class="admin-bar">
   <button class="admin-btn" id="exportBtn">Export CSV</button>
@@ -482,7 +540,7 @@ button{font-family:var(--font);cursor:pointer}
 ═══════════════════════════════════════════════════════════════ */
 const PRODUCTS = [
   {
-    id:'whiskey', name:'Whiskey Infusion Kit', price:'$59.99', badge:'',
+    id:'whiskey', name:'Whiskey Infusion Kit', price:'$59.99', badge:'', variantId:'51316421067071',
     desc:'Unleash your inner distiller with this complete whiskey making kit. Infuse spirits with American oak, cinnamon, cacao beans & more. Blend bold flavors like dark chocolate, orange peel, coffee beans & Bird\u2019s Eye chilis to create your own signature whiskey.',
     cartLink:'https://craftymixologist.com/cart/51316421067071:1',
     images:[
@@ -493,7 +551,7 @@ const PRODUCTS = [
     banners:['images/All_in_1_Whiskey.jpeg','images/All_in_1.jpeg']
   },
   {
-    id:'tequila', name:'Tequila Infusion Kit', price:'$69.99', badge:'',
+    id:'tequila', name:'Tequila Infusion Kit', price:'$69.99', badge:'', variantId:'51316421034303',
     desc:'Craft your tequila just the way you like it. Whether you want a smokey blend, botanical flavors, or a unique creation, our kit lets you achieve refined tastes. With wood chip blends and botanicals, every sip is a personalized experience.',
     cartLink:'https://craftymixologist.com/cart/51316421034303:1',
     images:[
@@ -508,7 +566,7 @@ const PRODUCTS = [
     banners:['images/All_in_1_Tequila.jpeg','images/Tequila_in_box.jpeg','images/Teuqila_Instructions.jpeg']
   },
   {
-    id:'smoker', name:'Cocktail Smoker Kit', price:'$49.99', badge:'',
+    id:'smoker', name:'Cocktail Smoker Kit', price:'$49.99', badge:'', variantId:'51316421099839',
     desc:'Elevate your mixology skills and impress guests with smoky cocktails. Enhance whiskey, bourbon, or craft drinks with six aromatic wood chip flavors. Easy to use for beginners and seasoned mixologists alike.',
     cartLink:'https://craftymixologist.com/cart/51316421099839:1',
     images:[
@@ -526,7 +584,7 @@ const PRODUCTS = [
     banners:['images/smoker_instructions.jpeg','images/SMoker.jpeg','images/butane_insturctions.jpeg']
   },
   {
-    id:'espresso', name:'Espresso Martini Kit', price:'$69.99', badge:'BEST SELLER',
+    id:'espresso', name:'Espresso Martini Kit', price:'$69.99', badge:'BEST SELLER', variantId:'51316421132607',
     desc:'This complete espresso martini kit includes 6 exotic botanicals for crafting exquisite espresso martinis with ease. Whether you\u2019re a seasoned mixologist or a home bartender, everything you need is in the box. Impress your guests with perfectly balanced cocktails.',
     cartLink:'https://craftymixologist.com/cart/51316421132607:1',
     images:[
@@ -542,7 +600,7 @@ const PRODUCTS = [
     banners:['images/Martini_1.jpeg','images/Martini_2.jpeg','images/Martini_3.jpeg','images/espresso_instructions.jpeg']
   },
   {
-    id:'margarita', name:'Margarita Kit', price:'$69.99', badge:'',
+    id:'margarita', name:'Margarita Kit', price:'$69.99', badge:'', variantId:'51316421165375',
     desc:'The ultimate package for margarita lovers. Craft the perfect margarita with a pro-level stainless steel shaker, fresh botanicals, and lime-infused salt for the perfect rim. Includes a step-by-step recipe book for classic, spicy, and fruity margaritas.',
     cartLink:'https://craftymixologist.com/cart/51316421165375:1',
     images:[
@@ -554,7 +612,7 @@ const PRODUCTS = [
     banners:['images/Margarita_1.jpg','images/Margarita_2.jpg','images/Margarita_3.jpg','images/Margarita_instructions.jpg']
   },
   {
-    id:'mule', name:'Moscow Mule Kit', price:'$69.99', badge:'',
+    id:'mule', name:'Moscow Mule Kit', price:'$69.99', badge:'', variantId:'51316421198143',
     desc:'Craft the perfect Moscow Mule with this premium kit featuring gorgeous copper mugs that keep drinks colder, longer. Includes 11 exotic botanicals for next-level flavor infusions and a cocktail recipe book to inspire endless creations.',
     cartLink:'https://craftymixologist.com/cart/51316421198143:1',
     images:[
@@ -569,7 +627,7 @@ const PRODUCTS = [
     banners:['images/Moscow1.jpg','images/Moscow_2.jpg','images/Moscow_3.jpg','images/Moscow_instructions.jpg']
   },
   {
-    id:'olive', name:'Olive Oil Infusion Kit', price:'$49.99', badge:'',
+    id:'olive', name:'Olive Oil Infusion Kit', price:'$49.99', badge:'', variantId:'51537599299903',
     desc:'Crafted for purists \u2014 no synthetic additives, only flavor-rich botanicals for serious home cooks and entertainers. This isn\u2019t just a gift set \u2014 it\u2019s an experience. Ideal for olive oil dipping, flavored cooking oils, or a beautiful Italian gift basket.',
     cartLink:'https://craftymixologist.com/cart/51537599299903:1',
     images:[
@@ -583,7 +641,7 @@ const PRODUCTS = [
     banners:['images/oil_instructions.jpeg','images/oil_use_1.jpeg','images/oil_use_2.jpeg','images/oil_use_3.jpeg']
   },
   {
-    id:'tea', name:'Tea Infusion Kit', price:'$49.99', badge:'',
+    id:'tea', name:'Tea Infusion Kit', price:'$49.99', badge:'', variantId:'51537665950015',
     desc:'Discover 8 distinct flavor journeys with premium loose-leaf teas. Perfect for relaxing rituals, self-care moments, or cozy evenings. Mix and match to craft your own signature cup.',
     cartLink:'https://craftymixologist.com/cart/51537665950015:1',
     images:[
@@ -597,7 +655,7 @@ const PRODUCTS = [
     banners:['images/tea_drinking.jpeg','images/tea_drinking2.jpeg','images/Tea_instructions.jpeg']
   },
   {
-    id:'allinone', name:'All In One Kit', price:'$69.99', badge:'',
+    id:'allinone', name:'All In One Kit', price:'$69.99', badge:'', variantId:'51585567949119',
     desc:'Craft top-tier whiskey, vodka, gin, rum & tequila right at home with 15 botanicals for endless flavor possibilities. Includes 10+ delicious recipes and flavor guides for each spirit. The ultimate bartender-level gift.',
     cartLink:'https://craftymixologist.com/cart/51585567949119:1',
     images:[
@@ -617,29 +675,29 @@ const UPSELL_GROUPS = [
     title:'Dried Fruit Garnishes',
     link:'https://craftymixologist.com/products/dried-fruit-slices',
     items:[
-      { name:'Lemon Slices', price:'$8.99', img:'https://craftymixologist.com/cdn/shop/files/81jfLdyHWML._SX679.jpg?width=400' },
-      { name:'Lime Slices', price:'$8.99', img:'https://craftymixologist.com/cdn/shop/files/81rcESh-1mL._SX679.jpg?width=400' },
-      { name:'Orange Slices', price:'$8.99', img:'https://craftymixologist.com/cdn/shop/files/71kYwxFWuKL._SX679.jpg?width=400' },
-      { name:'Blood Orange', price:'$8.99', img:'https://craftymixologist.com/cdn/shop/files/812vJSvqlRL._SX679.jpg?width=400' }
+      { name:'Lemon Slices', price:'$8.99', variantId:'51024047964479', img:'https://craftymixologist.com/cdn/shop/files/81jfLdyHWML._SX679.jpg?width=400' },
+      { name:'Lime Slices', price:'$8.99', variantId:'51024047997247', img:'https://craftymixologist.com/cdn/shop/files/81rcESh-1mL._SX679.jpg?width=400' },
+      { name:'Orange Slices', price:'$8.99', variantId:'51024048030015', img:'https://craftymixologist.com/cdn/shop/files/71kYwxFWuKL._SX679.jpg?width=400' },
+      { name:'Blood Orange', price:'$8.99', variantId:'51024091971903', img:'https://craftymixologist.com/cdn/shop/files/812vJSvqlRL._SX679.jpg?width=400' }
     ]
   },
   {
     title:'Infusion In A Jar',
     link:'https://craftymixologist.com/products/infusion-in-a-jar',
     items:[
-      { name:'Trio Pack', price:'$49.99', img:'https://craftymixologist.com/cdn/shop/files/TRIOPACK_LISTING_Mobile_Main_Image_e31fa38a-e1e6-48a9-883a-9831b6a24167.png?width=400' },
-      { name:'Old Fashioned', price:'$19.99', img:'https://craftymixologist.com/cdn/shop/files/OldFashioned_Listing_Main_Image_4475f0ae-ff49-4000-b2e1-07d1c93d264d.png?width=400' },
-      { name:'Pineapple Jalape\u00f1o', price:'$19.99', img:'https://craftymixologist.com/cdn/shop/files/Jalapeno_ListingV2_Main_Image.png?width=400' },
-      { name:'Sangria', price:'$19.99', img:'https://craftymixologist.com/cdn/shop/files/SangriaBLendListingV2_Main_Image_1.png?width=400' }
+      { name:'Trio Pack', price:'$49.99', variantId:'51598840267071', img:'https://craftymixologist.com/cdn/shop/files/TRIOPACK_LISTING_Mobile_Main_Image_e31fa38a-e1e6-48a9-883a-9831b6a24167.png?width=400' },
+      { name:'Old Fashioned', price:'$19.99', variantId:'51598840168767', img:'https://craftymixologist.com/cdn/shop/files/OldFashioned_Listing_Main_Image_4475f0ae-ff49-4000-b2e1-07d1c93d264d.png?width=400' },
+      { name:'Pineapple Jalape\u00f1o', price:'$19.99', variantId:'51598840201535', img:'https://craftymixologist.com/cdn/shop/files/Jalapeno_ListingV2_Main_Image.png?width=400' },
+      { name:'Sangria', price:'$19.99', variantId:'51598840234303', img:'https://craftymixologist.com/cdn/shop/files/SangriaBLendListingV2_Main_Image_1.png?width=400' }
     ]
   },
   {
     title:'Cocktail Hats',
     link:'https://craftymixologist.com/products/cocktail-trucker-hats',
     items:[
-      { name:'Espresso Yourself', price:'$19.99', img:'https://craftymixologist.com/cdn/shop/files/Espresso_Yourself.jpg?width=400' },
-      { name:'Grain of Salt', price:'$19.99', img:'https://craftymixologist.com/cdn/shop/files/Grain_of_Salt.jpg?width=400' },
-      { name:'Sip Happens', price:'$19.99', img:'https://craftymixologist.com/cdn/shop/files/Sip_Happens.jpg?width=400' }
+      { name:'Espresso Yourself', price:'$19.99', variantId:'51597622149439', img:'https://craftymixologist.com/cdn/shop/files/Espresso_Yourself.jpg?width=400' },
+      { name:'Grain of Salt', price:'$19.99', variantId:'51597622182207', img:'https://craftymixologist.com/cdn/shop/files/Grain_of_Salt.jpg?width=400' },
+      { name:'Sip Happens', price:'$19.99', variantId:'51597622214975', img:'https://craftymixologist.com/cdn/shop/files/Sip_Happens.jpg?width=400' }
     ]
   }
 ];
@@ -656,11 +714,64 @@ const REVIEWS = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════
-   VARIANT SWITCHER
+   HELPERS
+═══════════════════════════════════════════════════════════════ */
+function parsePrice(str) { return parseFloat(str.replace('$','')); }
+function fmt(n) { return '$' + n.toFixed(2); }
+
+/* ═══════════════════════════════════════════════════════════════
+   CART STATE
 ═══════════════════════════════════════════════════════════════ */
 let activeVariant = 0;
 let activeThumb = 0;
+let selectedQty = 2; // default: Buy 2
+const addedAddons = new Set(); // stores variantId strings
 
+function buildCartUrl() {
+  const p = PRODUCTS[activeVariant];
+  const parts = [p.variantId + ':' + selectedQty];
+  addedAddons.forEach(vid => parts.push(vid + ':1'));
+  return 'https://craftymixologist.com/cart/' + parts.join(',');
+}
+
+function getCartTotal() {
+  const p = PRODUCTS[activeVariant];
+  const unitPrice = parsePrice(p.price);
+  const discounts = [0.10, 0.15, 0.20];
+  const disc = discounts[selectedQty - 1] || 0.20;
+  let total = unitPrice * selectedQty * (1 - disc);
+  addedAddons.forEach(vid => {
+    UPSELL_GROUPS.forEach(g => g.items.forEach(u => {
+      if (u.variantId === vid) total += parsePrice(u.price);
+    }));
+  });
+  return total;
+}
+
+function getCartItemCount() {
+  return selectedQty + addedAddons.size;
+}
+
+function updateCartUI() {
+  const url = buildCartUrl();
+  $buyBtn.href = url;
+  $miniCartCheckout.href = url;
+  const total = getCartTotal();
+  const count = getCartItemCount();
+  $miniCartTotal.textContent = fmt(total);
+  $miniCartCount.innerHTML = '<b>' + count + ' item' + (count > 1 ? 's' : '') + '</b> in cart';
+  if (addedAddons.size > 0) {
+    $miniCart.classList.add('show');
+    document.body.classList.add('cart-open');
+  } else {
+    $miniCart.classList.remove('show');
+    document.body.classList.remove('cart-open');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DOM REFS
+═══════════════════════════════════════════════════════════════ */
 const $variantGrid = document.getElementById('variantGrid');
 const $mainImg = document.getElementById('mainImg');
 const $galleryThumbs = document.getElementById('galleryThumbs');
@@ -671,8 +782,15 @@ const $prodDesc = document.getElementById('prodDesc');
 const $includesList = document.getElementById('includesList');
 const $buyBtn = document.getElementById('buyBtn');
 const $bannersContainer = document.getElementById('bannersContainer');
+const $volumeOptions = document.getElementById('volumeOptions');
+const $miniCart = document.getElementById('miniCart');
+const $miniCartTotal = document.getElementById('miniCartTotal');
+const $miniCartCount = document.getElementById('miniCartCount');
+const $miniCartCheckout = document.getElementById('miniCartCheckout');
 
-// Build variant grid (3x3)
+/* ═══════════════════════════════════════════════════════════════
+   VARIANT GRID
+═══════════════════════════════════════════════════════════════ */
 PRODUCTS.forEach((p, i) => {
   const btn = document.createElement('button');
   btn.className = 'variant-btn' + (i === 0 ? ' active' : '');
@@ -681,17 +799,55 @@ PRODUCTS.forEach((p, i) => {
   $variantGrid.appendChild(btn);
 });
 
+/* ═══════════════════════════════════════════════════════════════
+   VOLUME DISCOUNT
+═══════════════════════════════════════════════════════════════ */
+const VOLUME_TIERS = [
+  { qty:1, discount:0.10, label:'Buy 1', badge:'' },
+  { qty:2, discount:0.15, label:'Buy 2', badge:'<span class="volume-badge popular">Most Popular &#9889;</span>' },
+  { qty:3, discount:0.20, label:'Buy 3+', badge:'<span class="volume-badge best">Best Savings &#128176;</span>' }
+];
+
+function buildVolumeOptions(unitPrice) {
+  $volumeOptions.innerHTML = '';
+  VOLUME_TIERS.forEach((tier, i) => {
+    const orig = unitPrice * tier.qty;
+    const final = orig * (1 - tier.discount);
+    const save = orig - final;
+    const opt = document.createElement('label');
+    opt.className = 'volume-option' + (tier.qty === selectedQty ? ' active' : '');
+    opt.innerHTML =
+      '<input type="radio" name="volume" value="' + tier.qty + '"' + (tier.qty === selectedQty ? ' checked' : '') + '/>' +
+      '<div class="volume-label">' + tier.label + ' &mdash; ' + Math.round(tier.discount*100) + '% off' + tier.badge + '</div>' +
+      '<div class="volume-prices">' +
+        '<div class="volume-original">' + fmt(orig) + '</div>' +
+        '<div class="volume-final">' + fmt(final) + '</div>' +
+        '<div class="volume-save">You save ' + fmt(save) + '</div>' +
+      '</div>';
+    opt.addEventListener('click', () => {
+      selectedQty = tier.qty;
+      document.querySelectorAll('.volume-option').forEach((o, j) => {
+        o.classList.toggle('active', j === i);
+      });
+      opt.querySelector('input').checked = true;
+      updateCartUI();
+    });
+    $volumeOptions.appendChild(opt);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SELECT VARIANT
+═══════════════════════════════════════════════════════════════ */
 function selectVariant(idx) {
   activeVariant = idx;
   activeThumb = 0;
   const p = PRODUCTS[idx];
 
-  // Update buttons
   document.querySelectorAll('.variant-btn').forEach((b, i) => {
     b.classList.toggle('active', i === idx);
   });
 
-  // Main image
   $mainImg.style.opacity = '0';
   setTimeout(() => {
     $mainImg.src = p.images[0];
@@ -699,11 +855,9 @@ function selectVariant(idx) {
     $mainImg.style.opacity = '1';
   }, 150);
 
-  // Badge
   $galleryBadge.style.display = p.badge ? 'block' : 'none';
   $galleryBadge.textContent = p.badge;
 
-  // Thumbnails
   $galleryThumbs.innerHTML = '';
   p.images.forEach((src, i) => {
     const div = document.createElement('div');
@@ -713,13 +867,10 @@ function selectVariant(idx) {
     $galleryThumbs.appendChild(div);
   });
 
-  // Info
   $prodTitle.textContent = p.name;
   $prodPrice.textContent = p.price;
   $prodDesc.textContent = p.desc;
-  $buyBtn.href = p.cartLink;
 
-  // Includes
   $includesList.innerHTML = '';
   p.includes.forEach(item => {
     const li = document.createElement('li');
@@ -727,7 +878,8 @@ function selectVariant(idx) {
     $includesList.appendChild(li);
   });
 
-  // Banners
+  buildVolumeOptions(parsePrice(p.price));
+
   $bannersContainer.innerHTML = '';
   if (p.banners && p.banners.length) {
     p.banners.forEach(src => {
@@ -738,6 +890,8 @@ function selectVariant(idx) {
       $bannersContainer.appendChild(img);
     });
   }
+
+  updateCartUI();
 }
 
 function selectThumb(idx, src) {
@@ -752,39 +906,46 @@ function selectThumb(idx, src) {
   });
 }
 
-// Init first variant
 selectVariant(0);
 
 /* ═══════════════════════════════════════════════════════════════
-   UPSELLS (single horizontal row)
+   UPSELLS (single horizontal row with toggle buttons)
 ═══════════════════════════════════════════════════════════════ */
 const $upsellContainer = document.getElementById('upsellContainer');
 const upsellRow = document.createElement('div');
 upsellRow.className = 'upsell-row';
 
-UPSELL_GROUPS.forEach((group, gi) => {
-  if (gi > 0) {
-    const divider = document.createElement('div');
-    divider.className = 'upsell-divider';
-    divider.textContent = group.title;
-    upsellRow.appendChild(divider);
-  } else {
-    const divider = document.createElement('div');
-    divider.className = 'upsell-divider';
-    divider.textContent = group.title;
-    upsellRow.appendChild(divider);
-  }
+UPSELL_GROUPS.forEach((group) => {
+  const divider = document.createElement('div');
+  divider.className = 'upsell-divider';
+  divider.textContent = group.title;
+  upsellRow.appendChild(divider);
 
   group.items.forEach(u => {
     const card = document.createElement('div');
     card.className = 'upsell-card';
+    const isAdded = addedAddons.has(u.variantId);
     card.innerHTML =
       '<div class="upsell-img"><img src="' + u.img + '" alt="' + u.name + '" loading="lazy"/></div>' +
       '<div class="upsell-body">' +
         '<div class="upsell-name">' + u.name + '</div>' +
         '<div class="upsell-prices"><span class="upsell-price">' + u.price + '</span></div>' +
-        '<a href="' + group.link + '" target="_blank" rel="noopener" class="btn-upsell">View</a>' +
+        '<button class="btn-toggle' + (isAdded ? ' added' : '') + '" data-vid="' + u.variantId + '">' +
+          (isAdded ? '&#10003; Added' : '+ Add') +
+        '</button>' +
       '</div>';
+    card.querySelector('.btn-toggle').addEventListener('click', function() {
+      if (addedAddons.has(u.variantId)) {
+        addedAddons.delete(u.variantId);
+        this.classList.remove('added');
+        this.innerHTML = '+ Add';
+      } else {
+        addedAddons.add(u.variantId);
+        this.classList.add('added');
+        this.innerHTML = '&#10003; Added';
+      }
+      updateCartUI();
+    });
     upsellRow.appendChild(card);
   });
 });
