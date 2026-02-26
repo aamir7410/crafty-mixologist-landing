@@ -22,7 +22,7 @@
   --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow:0 4px 20px rgba(0,0,0,.06);
   --shadow-lg:0 12px 40px rgba(0,0,0,.08);--shadow-gold:0 4px 24px rgba(212,168,71,.18);
   --transition:.25s cubic-bezier(.4,0,.2,1);
-  --nav-h:120px;--banner-h:40px;
+  --nav-h:180px;--banner-h:40px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + var(--banner-h) + 20px)}
@@ -69,7 +69,7 @@ button{font-family:var(--font);cursor:pointer}
   border-bottom:1px solid var(--gray-200);height:var(--nav-h)}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;
   align-items:center;justify-content:space-between;height:100%}
-.nav-logo img{height:108px;width:auto}
+.nav-logo img{height:162px;width:auto}
 .nav-links{display:flex;align-items:center;gap:28px}
 .nav-links a{font-size:14px;font-weight:500;color:var(--gray-600);transition:color var(--transition)}
 .nav-links a:hover{color:var(--gold)}
@@ -84,9 +84,10 @@ button{font-family:var(--font);cursor:pointer}
 
 /* Gallery */
 .gallery{position:sticky;top:calc(var(--nav-h) + var(--banner-h) + 24px)}
-.gallery-main{width:100%;aspect-ratio:1/1;border-radius:var(--radius-lg);overflow:hidden;
-  border:1px solid var(--gray-200);background:var(--white);margin-bottom:12px;position:relative}
-.gallery-main img{width:100%;height:100%;object-fit:contain;transition:opacity .3s}
+.gallery-main{width:100%;max-height:500px;border-radius:var(--radius-lg);overflow:hidden;
+  border:1px solid var(--gray-200);background:var(--white);margin-bottom:12px;position:relative;
+  display:flex;align-items:center;justify-content:center}
+.gallery-main img{width:100%;height:100%;max-height:500px;object-fit:contain;transition:opacity .3s}
 .gallery-badge{position:absolute;top:14px;left:14px;background:var(--gold);color:var(--white);
   font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;letter-spacing:.5px;
   text-transform:uppercase;display:none}
@@ -110,7 +111,7 @@ button{font-family:var(--font);cursor:pointer}
 .variant-btn.active{border-color:var(--gold);background:var(--gold-bg);color:var(--gold);
   box-shadow:0 0 0 1px var(--gold)}
 
-.product-title{font-size:36px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+.product-title{font-size:47px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
 .product-price{font-size:26px;font-weight:800;color:var(--gold);margin-bottom:14px}
 .product-desc{font-size:15px;color:var(--gray-500);line-height:1.7;margin-bottom:24px}
 .product-rating{display:flex;align-items:center;gap:10px;margin-bottom:24px}
@@ -145,13 +146,11 @@ button{font-family:var(--font);cursor:pointer}
   font-size:13px;font-weight:700;margin-bottom:12px}
 .aplus-step h4{font-size:16px;font-weight:700;margin-bottom:8px}
 .aplus-step p{font-size:14px;color:var(--gray-500);line-height:1.6}
-.aplus-block{padding:40px;background:var(--white);border:1px solid var(--gray-100);
-  border-radius:var(--radius-lg);margin-bottom:24px;transition:all var(--transition)}
-.aplus-block:hover{box-shadow:var(--shadow-sm);border-color:var(--gold-light)}
-.aplus-block:last-child{margin-bottom:0}
-.aplus-block h3{font-size:22px;font-weight:800;margin-bottom:12px}
-.aplus-block p{font-size:15px;color:var(--gray-500);line-height:1.8;max-width:720px}
-.aplus-block-icon{font-size:28px;margin-bottom:12px;display:block}
+.banners-section{padding:48px 0;background:var(--bg);border-top:1px solid var(--gray-100)}
+.banners-stack{display:flex;flex-direction:column;gap:16px}
+.banners-stack img{width:100%;border-radius:var(--radius-lg);display:block;
+  box-shadow:var(--shadow-sm);transition:all var(--transition)}
+.banners-stack img:hover{box-shadow:var(--shadow)}
 
 /*═══════════════════════════════════════════════════════════════
   UPSELL SECTION
@@ -285,13 +284,13 @@ button{font-family:var(--font);cursor:pointer}
   .why-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:768px){
-  :root{--nav-h:96px}
+  :root{--nav-h:140px}
   .nav-links{display:none;position:absolute;top:var(--nav-h);left:0;right:0;
     background:var(--bg);border-bottom:1px solid var(--gray-200);flex-direction:column;
     padding:20px 24px;gap:16px;box-shadow:var(--shadow)}
   .nav-links.open{display:flex}
   .burger{display:flex}
-  .nav-logo img{height:80px}
+  .nav-logo img{height:120px}
   .reviews-grid{grid-template-columns:1fr}
   .why-grid{grid-template-columns:1fr 1fr}
   .includes-list{grid-template-columns:1fr}
@@ -301,7 +300,7 @@ button{font-family:var(--font);cursor:pointer}
   .footer-top{flex-direction:column}
   .aplus-steps{grid-template-columns:1fr}
   .aplus-block{padding:28px 20px}
-  .product-title{font-size:28px}
+  .product-title{font-size:36px}
 }
 @media(max-width:480px){
   .why-grid{grid-template-columns:1fr}
@@ -416,16 +415,13 @@ button{font-family:var(--font);cursor:pointer}
         <p>Let it infuse, strain, and enjoy your custom creation. Perfect for date nights, parties, or a quiet evening at home.</p>
       </div>
     </div>
-    <div class="aplus-block reveal">
-      <span class="aplus-block-icon">&#127864;</span>
-      <h3>Craft Your Signature Drink</h3>
-      <p>From smoky whiskey infusions to perfectly balanced espresso martinis, every kit is designed for people with zero mixology experience to create drinks that taste like they came from a cocktail bar. Beautiful packaging, premium ingredients, and easy-to-follow instructions make this the #1 gift for anyone who loves a good drink.</p>
-    </div>
-    <div class="aplus-block reveal">
-      <span class="aplus-block-icon">&#127873;</span>
-      <h3>The Gift They'll Actually Use</h3>
-      <p>Rated 4.6 stars from 427+ reviews. Our kits are the most wished-for gift on every list &mdash; birthdays, holidays, anniversaries, housewarmings. Beautifully packaged and ready to gift. No wrapping needed.</p>
-    </div>
+  </div>
+</section>
+
+<!-- ═══ A+ Banner Images ═══ -->
+<section class="banners-section" id="bannersSection">
+  <div class="container">
+    <div class="banners-stack reveal" id="bannersContainer"></div>
   </div>
 </section>
 
@@ -536,7 +532,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/Whiskey_Kit_-_Main_Image_-_Amazon.png?width=800',
       'https://craftymixologist.com/cdn/shop/files/81JQCollfJL._AC_SL1500.jpg?width=800'
     ],
-    includes:['2 elegant glass bottles with wooden corks','3 wood chip blends','6 botanical flavors (orange peel, chai mix, cinnamon, cocoa beans, coffee beans, bird\u2019s-eye chili)','Stainless steel funnel & strainer','6 metal whiskey stones','Custom labels','Instruction booklet with recipes']
+    includes:['2 elegant glass bottles with wooden corks','3 wood chip blends','6 botanical flavors (orange peel, chai mix, cinnamon, cocoa beans, coffee beans, bird\u2019s-eye chili)','Stainless steel funnel & strainer','6 metal whiskey stones','Custom labels','Instruction booklet with recipes'],
+    banners:['images/All_in_1_Whiskey.jpeg','images/All_in_1.jpeg']
   },
   {
     id:'tequila', name:'Tequila Infusion Kit', price:'$69.99', badge:'',
@@ -550,7 +547,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/71slgy2oXAL._AC_SL1500.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/Whiskey_Infusion_Kit_and_water_drink_tequil.jpg?width=800'
     ],
-    includes:['2 elegant tequila bottles','3 wood chip blends','9 botanical flavors','Filter funnel & strainer','Ceramic shot glasses','Custom labels','Instruction booklet with recipes']
+    includes:['2 elegant tequila bottles','3 wood chip blends','9 botanical flavors','Filter funnel & strainer','Ceramic shot glasses','Custom labels','Instruction booklet with recipes'],
+    banners:['images/All_in_1_Tequila.jpeg','images/Tequila_in_box.jpeg','images/Teuqila_Instructions.jpeg']
   },
   {
     id:'smoker', name:'Cocktail Smoker Kit', price:'$49.99', badge:'',
@@ -567,7 +565,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81uk6VcgZnL._AC_SL1500.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/91DuQYdghHL._AC_SL1500.jpg?width=800'
     ],
-    includes:['Refillable torch (butane not included)','2 premium whiskey glasses','6 wood chip flavors (cherry, oak, pecan, apple, walnut & pear)','Wooden smoking plate','Elegant glass dome']
+    includes:['Refillable torch (butane not included)','2 premium whiskey glasses','6 wood chip flavors (cherry, oak, pecan, apple, walnut & pear)','Wooden smoking plate','Elegant glass dome'],
+    banners:['images/smoker_instructions.jpeg','images/SMoker.jpeg','images/butane_insturctions.jpeg']
   },
   {
     id:'espresso', name:'Espresso Martini Kit', price:'$69.99', badge:'BEST SELLER',
@@ -582,7 +581,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/BJ6A9066.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=800'
     ],
-    includes:['6 exotic botanicals (cane sugar, vanilla powder, cocoa beans, nutmeg, coffee beans, cardamom)','Measuring teaspoon & tablespoon','2 stylish martini glasses','Espresso martini decor','Recipe booklet']
+    includes:['6 exotic botanicals (cane sugar, vanilla powder, cocoa beans, nutmeg, coffee beans, cardamom)','Measuring teaspoon & tablespoon','2 stylish martini glasses','Espresso martini decor','Recipe booklet'],
+    banners:['images/Martini_1.jpeg','images/Martini_2.jpeg','images/Martini_3.jpeg','images/espresso_instructions.jpeg']
   },
   {
     id:'margarita', name:'Margarita Kit', price:'$69.99', badge:'',
@@ -593,7 +593,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81lgjjpShPL._AC_SX679.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/81Q4RZoY4bL._AC_SL1500.jpg?width=800'
     ],
-    includes:['550ml stainless steel shaker with built-in strainer','Stainless steel jigger','Citrus squeezer','5 botanicals (jalape\u00f1o, lime powder, agave, orange peel, hibiscus petals)','Dried lime slices','Lime-infused margarita salt','2 margarita glasses (11 oz)','Recipe book']
+    includes:['550ml stainless steel shaker with built-in strainer','Stainless steel jigger','Citrus squeezer','5 botanicals (jalape\u00f1o, lime powder, agave, orange peel, hibiscus petals)','Dried lime slices','Lime-infused margarita salt','2 margarita glasses (11 oz)','Recipe book'],
+    banners:['images/Margarita_1.jpg','images/Margarita_2.jpg','images/Margarita_3.jpg','images/Margarita_instructions.jpg']
   },
   {
     id:'mule', name:'Moscow Mule Kit', price:'$69.99', badge:'',
@@ -607,7 +608,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/61_0OvStRFL._AC_SX679.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/812dOC0VFvL._AC_SL1500.jpg?width=800'
     ],
-    includes:['2 handcrafted copper mugs (16 oz)','550ml stainless steel cocktail shaker','Stainless steel jigger','Muddler','11 botanicals (star anise, juniper berries, cardamom, cloves, cinnamon sticks, lemongrass, hibiscus, mint, orange peels, lemon peel, ginger root & lime)','Recipe book']
+    includes:['2 handcrafted copper mugs (16 oz)','550ml stainless steel cocktail shaker','Stainless steel jigger','Muddler','11 botanicals (star anise, juniper berries, cardamom, cloves, cinnamon sticks, lemongrass, hibiscus, mint, orange peels, lemon peel, ginger root & lime)','Recipe book'],
+    banners:['images/Moscow1.jpg','images/Moscow_2.jpg','images/Moscow_3.jpg','images/Moscow_instructions.jpg']
   },
   {
     id:'olive', name:'Olive Oil Infusion Kit', price:'$49.99', badge:'',
@@ -620,7 +622,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81wuzXnWY3L._SL1500__1.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/81x_AW91T3L._SL1500.jpg?width=800'
     ],
-    includes:['4 flavored extra virgin olive oils','3 spice infusion blends','Bread dipping bowl','Recipe booklet']
+    includes:['4 flavored extra virgin olive oils','3 spice infusion blends','Bread dipping bowl','Recipe booklet'],
+    banners:['images/oil_instructions.jpeg','images/oil_use_1.jpeg','images/oil_use_2.jpeg','images/oil_use_3.jpeg']
   },
   {
     id:'tea', name:'Tea Infusion Kit', price:'$49.99', badge:'',
@@ -633,7 +636,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81iBDmovlWL._SL1500.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/81ljqXIzM_L._SL1500.jpg?width=800'
     ],
-    includes:['8 premium loose-leaf teas (Earl Grey, English Breakfast, Lavender, Peppermint, Green Tea Blend, Vanilla Chai, Jasmine, Lemon Honey)','Stainless steel tea infuser','Elegant gift packaging']
+    includes:['8 premium loose-leaf teas (Earl Grey, English Breakfast, Lavender, Peppermint, Green Tea Blend, Vanilla Chai, Jasmine, Lemon Honey)','Stainless steel tea infuser','Elegant gift packaging'],
+    banners:['images/tea_drinking.jpeg','images/tea_drinking2.jpeg','images/Tea_instructions.jpeg']
   },
   {
     id:'allinone', name:'All In One Kit', price:'$69.99', badge:'',
@@ -646,7 +650,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81Vkqg_GyNL._AC_SL1500.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/815cJhUq3IL._AC_SL1500.jpg?width=800'
     ],
-    includes:['15 botanicals (orange peel, cinnamon, clove, vanilla bean, mint, juniper berries, lemon peel, hibiscus, butterfly pea flower, coffee beans, cacao nibs, smoked chili, roasted barley, jasmine, lavender, ginger root)','2 glass infusion bottles','Funnel & strainer','Recipe booklet with 10+ recipes & flavor guides','Custom labels']
+    includes:['15 botanicals (orange peel, cinnamon, clove, vanilla bean, mint, juniper berries, lemon peel, hibiscus, butterfly pea flower, coffee beans, cacao nibs, smoked chili, roasted barley, jasmine, lavender, ginger root)','2 glass infusion bottles','Funnel & strainer','Recipe booklet with 10+ recipes & flavor guides','Custom labels'],
+    banners:['images/All_in_1.jpeg','images/All_in_1_Gin.jpeg','images/All_in_1_Rum.jpeg','images/All_in_1_Tequila.jpeg','images/All_in_1_Vodka.jpeg','images/All_in_1_Whiskey.jpeg']
   }
 ];
 
@@ -708,6 +713,7 @@ const $prodPrice = document.getElementById('prodPrice');
 const $prodDesc = document.getElementById('prodDesc');
 const $includesList = document.getElementById('includesList');
 const $buyBtn = document.getElementById('buyBtn');
+const $bannersContainer = document.getElementById('bannersContainer');
 
 // Build variant grid (3x3)
 PRODUCTS.forEach((p, i) => {
@@ -763,6 +769,18 @@ function selectVariant(idx) {
     li.textContent = item;
     $includesList.appendChild(li);
   });
+
+  // Banners
+  $bannersContainer.innerHTML = '';
+  if (p.banners && p.banners.length) {
+    p.banners.forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = p.name + ' lifestyle image';
+      img.loading = 'lazy';
+      $bannersContainer.appendChild(img);
+    });
+  }
 }
 
 function selectThumb(idx, src) {
