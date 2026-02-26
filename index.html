@@ -192,19 +192,54 @@ button{font-family:var(--font);cursor:pointer}
 .volume-save{font-size:11px;font-weight:600;color:#16a34a;margin-top:2px}
 
 /*═══════════════════════════════════════════════════════════════
-  MINI CART
+  SIDE CART PANEL
 ═══════════════════════════════════════════════════════════════*/
-.mini-cart{position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--black);
-  border-top:2px solid var(--gold);box-shadow:0 -8px 30px rgba(0,0,0,.25);
-  padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:20px}
-.mini-cart-inner{max-width:1200px;width:100%;display:flex;align-items:center;justify-content:space-between}
-.mini-cart-info{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.mini-cart-name{font-size:14px;font-weight:700;color:var(--white)}
-.mini-cart-count{font-size:13px;color:rgba(255,255,255,.5)}
-.mini-cart-count b{color:var(--white)}
-.mini-cart-total{font-size:20px;font-weight:800;color:var(--gold)}
-.mini-cart .btn-gold{padding:12px 28px;font-size:14px}
-body.cart-open{padding-bottom:64px}
+.side-cart-overlay{position:fixed;inset:0;z-index:998;background:rgba(0,0,0,.4);
+  backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .3s}
+.side-cart-overlay.open{opacity:1;pointer-events:auto}
+.side-cart{position:fixed;top:0;right:0;bottom:0;z-index:999;width:380px;max-width:90vw;
+  background:var(--white);box-shadow:-8px 0 30px rgba(0,0,0,.15);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column}
+.side-cart.open{transform:translateX(0)}
+.side-cart-header{display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;border-bottom:1px solid var(--gray-200)}
+.side-cart-header h3{font-size:18px;font-weight:800;margin:0}
+.side-cart-close{width:32px;height:32px;border-radius:50%;border:none;
+  background:var(--gray-100);font-size:18px;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;color:var(--gray-500);transition:all var(--transition)}
+.side-cart-close:hover{background:var(--gray-200);color:var(--black)}
+.side-cart-items{flex:1;overflow-y:auto;padding:16px 24px}
+.side-cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--gray-100);align-items:center}
+.side-cart-item:last-child{border-bottom:none}
+.side-cart-thumb{width:56px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;
+  border:1px solid var(--gray-200);background:var(--gray-50)}
+.side-cart-thumb img{width:100%;height:100%;object-fit:contain}
+.side-cart-item-info{flex:1;display:flex;flex-direction:column;gap:2px}
+.side-cart-item-name{font-size:13px;font-weight:600;line-height:1.3}
+.side-cart-item-meta{font-size:11px;color:var(--gray-400)}
+.side-cart-item-price{font-size:14px;font-weight:700;color:var(--gold)}
+.side-cart-remove{background:none;border:none;color:var(--gray-400);font-size:18px;
+  cursor:pointer;padding:0 4px;transition:color var(--transition);flex-shrink:0}
+.side-cart-remove:hover{color:var(--black)}
+.side-cart-footer{padding:20px 24px;border-top:1px solid var(--gray-200);background:var(--gray-50)}
+.side-cart-totals{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.side-cart-row{display:flex;justify-content:space-between;font-size:13px;color:var(--gray-500)}
+.side-cart-row.total{font-size:16px;font-weight:800;color:var(--black);padding-top:8px;
+  border-top:1px solid var(--gray-200)}
+.side-cart-row.total .side-cart-row-val{color:var(--gold)}
+.side-cart .btn-gold{width:100%;padding:14px;font-size:15px}
+
+/* Floating Cart Button */
+.cart-fab{position:fixed;bottom:24px;right:24px;z-index:997;width:56px;height:56px;
+  border-radius:50%;background:var(--gold);color:var(--white);border:none;
+  box-shadow:0 4px 20px rgba(212,168,71,.4);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all var(--transition)}
+.cart-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(212,168,71,.5)}
+.cart-fab svg{width:24px;height:24px}
+.cart-fab-badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;
+  border-radius:10px;background:var(--black);color:var(--white);font-size:11px;
+  font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
 
 /*═══════════════════════════════════════════════════════════════
   REVIEWS
@@ -497,17 +532,23 @@ body.cart-open{padding-bottom:64px}
   </div>
 </footer>
 
-<!-- ═══ Mini Cart ═══ -->
-<div class="mini-cart" id="miniCart">
-  <div class="mini-cart-inner">
-    <div class="mini-cart-info">
-      <span class="mini-cart-name" id="miniCartName"></span>
-      <span class="mini-cart-count" id="miniCartCount"></span>
-      <span class="mini-cart-total" id="miniCartTotal"></span>
-    </div>
-    <a id="miniCartCheckout" href="#" target="_blank" rel="noopener" class="btn-gold">Checkout&ensp;&rarr;</a>
+<!-- ═══ Side Cart Panel ═══ -->
+<div class="side-cart-overlay" id="sideCartOverlay"></div>
+<div class="side-cart" id="sideCart">
+  <div class="side-cart-header">
+    <h3>Your Cart</h3>
+    <button class="side-cart-close" id="sideCartClose">&times;</button>
+  </div>
+  <div class="side-cart-items" id="sideCartItems"></div>
+  <div class="side-cart-footer">
+    <div class="side-cart-totals" id="sideCartTotals"></div>
+    <a id="sideCartCheckout" href="#" target="_blank" rel="noopener" class="btn-gold">Checkout&ensp;&rarr;</a>
   </div>
 </div>
+<button class="cart-fab" id="cartFab" aria-label="Open cart">
+  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+  <span class="cart-fab-badge" id="cartFabBadge">2</span>
+</button>
 
 <!-- ═══ Admin ═══ -->
 <div class="admin-bar">
@@ -569,9 +610,11 @@ const PRODUCTS = [
     cartLink:'https://craftymixologist.com/cart/51316421099839:1',
     images:[
       'https://craftymixologist.com/cdn/shop/files/WhiskeyMainIMageFInal.png?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81CGMfkoNfL._AC_SL1500__1.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81W7hhz5oYL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81jJxTF9n2L._AC_SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/81jJxTF9n2L._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/8163K1bMegL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81EjM4JKYWL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81uk6VcgZnL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/91DuQYdghHL._AC_SL1500.jpg?width=800'
     ],
     includes:['Refillable torch (butane not included)','2 premium whiskey glasses','6 wood chip flavors (cherry, oak, pecan, apple, walnut & pear)','Wooden smoking plate','Elegant glass dome'],
     banners:['images/smoker_instructions.jpeg','images/SMoker.jpeg','images/butane_insturctions.jpeg']
@@ -583,7 +626,10 @@ const PRODUCTS = [
     images:[
       'https://craftymixologist.com/cdn/shop/files/mainImage.png?width=800',
       'https://craftymixologist.com/cdn/shop/files/BJ6A9066.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81CGMfkoNfL._AC_SL1500__1.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81W7hhz5oYL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81kKTtXB2eL._AC_SL1500.jpg?width=800'
     ],
     includes:['6 exotic botanicals (cane sugar, vanilla powder, cocoa beans, nutmeg, coffee beans, cardamom)','Measuring teaspoon & tablespoon','2 stylish martini glasses','Espresso martini decor','Recipe booklet'],
     banners:['images/Martini_1.jpeg','images/Martini_2.jpeg','images/Martini_3.jpeg','images/espresso_instructions.jpeg']
@@ -736,16 +782,84 @@ function getCartItemCount() {
   return selectedQty + addedAddons.size;
 }
 
+function openSideCart() {
+  $sideCart.classList.add('open');
+  $sideCartOverlay.classList.add('open');
+}
+function closeSideCart() {
+  $sideCart.classList.remove('open');
+  $sideCartOverlay.classList.remove('open');
+}
+
 function updateCartUI() {
   const url = buildCartUrl();
   $buyBtn.href = url;
-  $miniCartCheckout.href = url;
+  $sideCartCheckout.href = url;
+
   const p = PRODUCTS[activeVariant];
-  const total = getCartTotal();
-  const addonCount = addedAddons.size;
-  $miniCartName.textContent = p.name + ' \u00d7 ' + selectedQty;
-  $miniCartCount.innerHTML = addonCount > 0 ? '+ ' + addonCount + ' add-on' + (addonCount > 1 ? 's' : '') : '';
-  $miniCartTotal.textContent = fmt(total);
+  const unitPrice = parsePrice(p.price);
+  const discounts = [0.10, 0.15, 0.20];
+  const disc = discounts[selectedQty - 1] || 0.20;
+  const kitTotal = unitPrice * selectedQty * (1 - disc);
+
+  // Build cart items HTML
+  let itemsHTML = '';
+
+  // Kit item (always present)
+  itemsHTML += '<div class="side-cart-item">' +
+    '<div class="side-cart-thumb"><img src="' + p.images[0] + '" alt="' + p.name + '"/></div>' +
+    '<div class="side-cart-item-info">' +
+      '<div class="side-cart-item-name">' + p.name + '</div>' +
+      '<div class="side-cart-item-meta">Qty: ' + selectedQty + ' &middot; ' + Math.round(disc*100) + '% off</div>' +
+      '<div class="side-cart-item-price">' + fmt(kitTotal) + '</div>' +
+    '</div>' +
+  '</div>';
+
+  // Add-on items
+  let addonsTotal = 0;
+  addedAddons.forEach(vid => {
+    UPSELL_GROUPS.forEach(g => g.items.forEach(u => {
+      if (u.variantId === vid) {
+        const addonPrice = parsePrice(u.price);
+        addonsTotal += addonPrice;
+        itemsHTML += '<div class="side-cart-item">' +
+          '<div class="side-cart-thumb"><img src="' + u.img + '" alt="' + u.name + '"/></div>' +
+          '<div class="side-cart-item-info">' +
+            '<div class="side-cart-item-name">' + u.name + '</div>' +
+            '<div class="side-cart-item-meta">Add-on</div>' +
+            '<div class="side-cart-item-price">' + u.price + '</div>' +
+          '</div>' +
+          '<button class="side-cart-remove" data-vid="' + u.variantId + '" title="Remove">&times;</button>' +
+        '</div>';
+      }
+    }));
+  });
+
+  $sideCartItems.innerHTML = itemsHTML;
+
+  // Attach remove handlers for add-ons
+  $sideCartItems.querySelectorAll('.side-cart-remove').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const vid = this.dataset.vid;
+      addedAddons.delete(vid);
+      const toggleBtn = document.querySelector('.btn-toggle[data-vid="' + vid + '"]');
+      if (toggleBtn) {
+        toggleBtn.classList.remove('added');
+        toggleBtn.innerHTML = '+ Add';
+      }
+      updateCartUI();
+    });
+  });
+
+  // Totals
+  const grandTotal = kitTotal + addonsTotal;
+  let totalsHTML = '<div class="side-cart-row"><span>Subtotal</span><span>' + fmt(grandTotal) + '</span></div>' +
+    '<div class="side-cart-row"><span>Shipping</span><span>' + (grandTotal >= 100 ? 'Free' : 'Calculated at checkout') + '</span></div>' +
+    '<div class="side-cart-row total"><span>Total</span><span class="side-cart-row-val">' + fmt(grandTotal) + '</span></div>';
+  $sideCartTotals.innerHTML = totalsHTML;
+
+  // Update floating badge
+  $cartFabBadge.textContent = getCartItemCount();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -762,11 +876,14 @@ const $includesList = document.getElementById('includesList');
 const $buyBtn = document.getElementById('buyBtn');
 const $bannersContainer = document.getElementById('bannersContainer');
 const $volumeOptions = document.getElementById('volumeOptions');
-const $miniCart = document.getElementById('miniCart');
-const $miniCartName = document.getElementById('miniCartName');
-const $miniCartTotal = document.getElementById('miniCartTotal');
-const $miniCartCount = document.getElementById('miniCartCount');
-const $miniCartCheckout = document.getElementById('miniCartCheckout');
+const $sideCart = document.getElementById('sideCart');
+const $sideCartOverlay = document.getElementById('sideCartOverlay');
+const $sideCartClose = document.getElementById('sideCartClose');
+const $sideCartItems = document.getElementById('sideCartItems');
+const $sideCartTotals = document.getElementById('sideCartTotals');
+const $sideCartCheckout = document.getElementById('sideCartCheckout');
+const $cartFab = document.getElementById('cartFab');
+const $cartFabBadge = document.getElementById('cartFabBadge');
 
 /* ═══════════════════════════════════════════════════════════════
    VARIANT GRID
@@ -918,6 +1035,7 @@ UPSELL_GROUPS.forEach((group) => {
         addedAddons.add(u.variantId);
         this.classList.add('added');
         this.innerHTML = '&#10003; Added';
+        openSideCart();
       }
       updateCartUI();
     });
@@ -1052,9 +1170,13 @@ const obs = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
 /* ═══════════════════════════════════════════════════════════════
-   STICKY MINI CART — always visible
+   SIDE CART — floating button & panel
 ═══════════════════════════════════════════════════════════════ */
-document.body.classList.add('cart-open');
+$cartFab.addEventListener('click', () => {
+  $sideCart.classList.contains('open') ? closeSideCart() : openSideCart();
+});
+$sideCartClose.addEventListener('click', closeSideCart);
+$sideCartOverlay.addEventListener('click', closeSideCart);
 </script>
 </body>
 </html>
