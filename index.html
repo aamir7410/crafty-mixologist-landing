@@ -960,6 +960,15 @@ function updateCartUI() {
   const count = getCartItemCount();
   $cartFabBadge.textContent = count;
   $cartFabBadge.style.display = count > 0 ? 'flex' : 'none';
+
+  // Sync volume selector with cart quantity so discount tier updates on decrease
+  if (kitCount > 0) {
+    const syncQty = Math.min(kitCount, 3);
+    if (syncQty !== selectedQty) {
+      selectedQty = syncQty;
+      renderVolumeSelector();
+    }
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
