@@ -1396,12 +1396,19 @@ function scrollCards(dir) {
 $arrowL.addEventListener('click', () => scrollCards(-1));
 $arrowR.addEventListener('click', () => scrollCards(1));
 
-// Auto-scroll
-let autoInterval = setInterval(() => { $track.scrollBy({ left: 1, behavior: 'auto' }); }, 30);
-$track.addEventListener('mouseenter', () => clearInterval(autoInterval));
-$track.addEventListener('mouseleave', () => {
-  autoInterval = setInterval(() => { $track.scrollBy({ left: 1, behavior: 'auto' }); }, 30);
-});
+// Auto-scroll — smooth rAF, ~0.06px/ms ≈ one card every ~6s
+let autoScrolling = true, lastAutoTime = 0;
+(function autoTick(ts) {
+  if (autoScrolling && lastAutoTime) {
+    $track.scrollLeft += (ts - lastAutoTime) * 0.06;
+  }
+  lastAutoTime = autoScrolling ? ts : 0;
+  requestAnimationFrame(autoTick);
+})(0);
+$track.addEventListener('mouseenter', () => { autoScrolling = false; });
+$track.addEventListener('mouseleave', () => { autoScrolling = true; });
+$track.addEventListener('touchstart', () => { autoScrolling = false; }, { passive: true });
+$track.addEventListener('touchend', () => { autoScrolling = true; }, { passive: true });
 
 // Touch/drag support
 let isDragging = false, startX = 0, scrollStart = 0;
