@@ -132,20 +132,8 @@ button{font-family:var(--font);cursor:pointer}
 .trust-item svg{flex-shrink:0}
 
 /*═══════════════════════════════════════════════════════════════
-  A+ CONTENT
+  A+ BANNER IMAGES
 ═══════════════════════════════════════════════════════════════*/
-.aplus-section{padding:64px 0;background:var(--bg);border-top:1px solid var(--gray-100)}
-.aplus-how-header{margin-bottom:36px}
-.aplus-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:48px}
-.aplus-step{text-align:center;padding:32px 24px;background:var(--white);
-  border:1px solid var(--gray-100);border-radius:var(--radius-lg);transition:all var(--transition)}
-.aplus-step:hover{box-shadow:var(--shadow);border-color:var(--gold-light)}
-.aplus-step-icon{font-size:36px;margin-bottom:8px;line-height:1}
-.aplus-step-num{display:inline-flex;align-items:center;justify-content:center;
-  width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--white);
-  font-size:13px;font-weight:700;margin-bottom:12px}
-.aplus-step h4{font-size:16px;font-weight:700;margin-bottom:8px}
-.aplus-step p{font-size:14px;color:var(--gray-500);line-height:1.6}
 .banners-section{padding:48px 0;background:var(--bg);border-top:1px solid var(--gray-100)}
 .banners-stack{display:flex;flex-direction:column;gap:16px}
 .banners-stack img{width:100%;border-radius:var(--radius-lg);display:block;
@@ -155,23 +143,24 @@ button{font-family:var(--font);cursor:pointer}
 /*═══════════════════════════════════════════════════════════════
   UPSELL SECTION
 ═══════════════════════════════════════════════════════════════*/
-.upsell-section{padding:64px 0 80px;background:var(--bg-alt);border-top:1px solid var(--gray-100)}
-.upsell-category{font-size:16px;font-weight:700;color:var(--black);margin:28px 0 14px}
-.upsell-category:first-child{margin-top:0}
-.upsell-scroll{display:flex;gap:20px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
-.upsell-scroll::-webkit-scrollbar{height:4px}
-.upsell-scroll::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:4px}
-.upsell-card{min-width:280px;max-width:300px;background:var(--white);border:1px solid var(--gray-200);
-  border-radius:var(--radius-lg);overflow:hidden;scroll-snap-align:start;flex-shrink:0;transition:all var(--transition)}
+.upsell-section{padding:40px 0 48px;background:var(--bg-alt);border-top:1px solid var(--gray-100)}
+.upsell-row{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+.upsell-row::-webkit-scrollbar{height:4px}
+.upsell-row::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:4px}
+.upsell-divider{flex-shrink:0;display:flex;align-items:center;padding:0 4px;
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);
+  writing-mode:vertical-rl;text-orientation:mixed}
+.upsell-card{min-width:150px;max-width:150px;background:var(--white);border:1px solid var(--gray-200);
+  border-radius:var(--radius);overflow:hidden;scroll-snap-align:start;flex-shrink:0;transition:all var(--transition)}
 .upsell-card:hover{box-shadow:var(--shadow)}
-.upsell-img{height:200px;overflow:hidden;background:var(--gray-50)}
+.upsell-img{height:120px;overflow:hidden;background:var(--gray-50)}
 .upsell-img img{width:100%;height:100%;object-fit:contain}
-.upsell-body{padding:18px}
-.upsell-name{font-size:15px;font-weight:700;margin-bottom:4px}
-.upsell-prices{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.upsell-price{font-size:17px;font-weight:700;color:var(--gold)}
-.upsell-compare{font-size:13px;color:var(--gray-400);text-decoration:line-through}
-.btn-upsell{display:block;width:100%;padding:10px;border-radius:var(--radius);font-size:13px;font-weight:600;
+.upsell-body{padding:10px}
+.upsell-name{font-size:12px;font-weight:700;margin-bottom:2px;line-height:1.3}
+.upsell-prices{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.upsell-price{font-size:14px;font-weight:700;color:var(--gold)}
+.upsell-compare{font-size:11px;color:var(--gray-400);text-decoration:line-through}
+.btn-upsell{display:block;width:100%;padding:7px;border-radius:var(--radius);font-size:11px;font-weight:600;
   border:1px solid var(--gold);background:transparent;color:var(--gold);transition:all var(--transition);
   text-align:center;text-decoration:none}
 .btn-upsell:hover{background:var(--gold);color:var(--white)}
@@ -298,8 +287,6 @@ button{font-family:var(--font);cursor:pointer}
   .variant-grid{grid-template-columns:repeat(3,1fr);gap:6px}
   .variant-btn{padding:10px 6px;font-size:11px}
   .footer-top{flex-direction:column}
-  .aplus-steps{grid-template-columns:1fr}
-  .aplus-block{padding:28px 20px}
   .product-title{font-size:36px}
 }
 @media(max-width:480px){
@@ -383,36 +370,6 @@ button{font-family:var(--font);cursor:pointer}
             Fast delivery
           </span>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ A+ Content ═══ -->
-<section class="aplus-section" id="aplusContent">
-  <div class="container">
-    <div class="text-center aplus-how-header reveal">
-      <span class="section-label">How It Works</span>
-      <h2 class="section-title" style="font-size:28px">Three Simple Steps</h2>
-    </div>
-    <div class="aplus-steps reveal">
-      <div class="aplus-step">
-        <div class="aplus-step-icon">&#127919;</div>
-        <div class="aplus-step-num">1</div>
-        <h4>Choose Your Kit</h4>
-        <p>Pick from 9 handcrafted kits &mdash; whiskey, tequila, espresso martini, margarita, and more. Each comes with everything you need.</p>
-      </div>
-      <div class="aplus-step">
-        <div class="aplus-step-icon">&#129347;</div>
-        <div class="aplus-step-num">2</div>
-        <h4>Add Your Spirit</h4>
-        <p>Pour in 350ml of your favorite spirit. Mix in wood chips and botanicals from the kit. No experience needed &mdash; just follow the included recipe book.</p>
-      </div>
-      <div class="aplus-step">
-        <div class="aplus-step-icon">&#10024;</div>
-        <div class="aplus-step-num">3</div>
-        <h4>Infuse &amp; Enjoy</h4>
-        <p>Let it infuse, strain, and enjoy your custom creation. Perfect for date nights, parties, or a quiet evening at home.</p>
       </div>
     </div>
   </div>
@@ -799,17 +756,24 @@ function selectThumb(idx, src) {
 selectVariant(0);
 
 /* ═══════════════════════════════════════════════════════════════
-   UPSELLS (grouped by category)
+   UPSELLS (single horizontal row)
 ═══════════════════════════════════════════════════════════════ */
 const $upsellContainer = document.getElementById('upsellContainer');
-UPSELL_GROUPS.forEach(group => {
-  const heading = document.createElement('h4');
-  heading.className = 'upsell-category';
-  heading.textContent = group.title;
-  $upsellContainer.appendChild(heading);
+const upsellRow = document.createElement('div');
+upsellRow.className = 'upsell-row';
 
-  const scroll = document.createElement('div');
-  scroll.className = 'upsell-scroll';
+UPSELL_GROUPS.forEach((group, gi) => {
+  if (gi > 0) {
+    const divider = document.createElement('div');
+    divider.className = 'upsell-divider';
+    divider.textContent = group.title;
+    upsellRow.appendChild(divider);
+  } else {
+    const divider = document.createElement('div');
+    divider.className = 'upsell-divider';
+    divider.textContent = group.title;
+    upsellRow.appendChild(divider);
+  }
 
   group.items.forEach(u => {
     const card = document.createElement('div');
@@ -819,13 +783,13 @@ UPSELL_GROUPS.forEach(group => {
       '<div class="upsell-body">' +
         '<div class="upsell-name">' + u.name + '</div>' +
         '<div class="upsell-prices"><span class="upsell-price">' + u.price + '</span></div>' +
-        '<a href="' + group.link + '" target="_blank" rel="noopener" class="btn-upsell">View Product</a>' +
+        '<a href="' + group.link + '" target="_blank" rel="noopener" class="btn-upsell">View</a>' +
       '</div>';
-    scroll.appendChild(card);
+    upsellRow.appendChild(card);
   });
-
-  $upsellContainer.appendChild(scroll);
 });
+
+$upsellContainer.appendChild(upsellRow);
 
 /* ═══════════════════════════════════════════════════════════════
    REVIEWS
