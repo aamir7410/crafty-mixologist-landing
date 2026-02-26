@@ -171,25 +171,23 @@ button{font-family:var(--font);cursor:pointer}
 .btn-toggle.added{background:var(--gold);color:var(--white);border-color:var(--gold)}
 
 /*═══════════════════════════════════════════════════════════════
-  VOLUME DISCOUNT
+  CART QTY CONTROLS & DISCOUNT BANNER
 ═══════════════════════════════════════════════════════════════*/
-.volume-box{margin-bottom:28px}
-.volume-header{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.volume-options{display:flex;flex-direction:column;gap:8px}
-.volume-option{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--radius);
-  border:1px solid var(--gray-200);background:var(--white);cursor:pointer;transition:all var(--transition)}
-.volume-option:hover{border-color:var(--gold-light)}
-.volume-option.active{border-color:var(--gold);background:var(--gold-bg);box-shadow:0 0 0 1px var(--gold)}
-.volume-option input[type="radio"]{accent-color:var(--gold);width:18px;height:18px;cursor:pointer;flex-shrink:0}
-.volume-label{font-size:14px;font-weight:600;flex:1}
-.volume-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.5px;
-  display:inline-block;margin-left:6px}
-.volume-badge.popular{background:#2563eb;color:var(--white)}
-.volume-badge.best{background:#16a34a;color:var(--white)}
-.volume-prices{text-align:right;flex-shrink:0}
-.volume-original{font-size:12px;color:var(--gray-400);text-decoration:line-through}
-.volume-final{font-size:16px;font-weight:800;color:var(--black)}
-.volume-save{font-size:11px;font-weight:600;color:#16a34a;margin-top:2px}
+.cart-qty{display:flex;align-items:center;gap:0;flex-shrink:0}
+.cart-qty button{width:26px;height:26px;border:1px solid var(--gray-200);background:var(--white);
+  font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--gray-600);transition:all var(--transition)}
+.cart-qty button:hover{border-color:var(--gold);color:var(--gold)}
+.cart-qty button:first-child{border-radius:6px 0 0 6px}
+.cart-qty button:last-child{border-radius:0 6px 6px 0}
+.cart-qty span{width:28px;height:26px;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;border-top:1px solid var(--gray-200);border-bottom:1px solid var(--gray-200)}
+.cart-discount-banner{padding:10px 14px;border-radius:var(--radius);margin-bottom:8px;
+  font-size:12px;font-weight:600;line-height:1.4}
+.cart-discount-banner.green{background:rgba(22,163,74,.08);color:#16a34a;border:1px solid rgba(22,163,74,.15)}
+.cart-discount-banner.blue{background:rgba(37,99,235,.06);color:#2563eb;border:1px solid rgba(37,99,235,.12)}
+.cart-empty{text-align:center;padding:40px 20px;color:var(--gray-400);font-size:14px}
+.cart-empty svg{margin:0 auto 12px;opacity:.4}
 
 /*═══════════════════════════════════════════════════════════════
   SIDE CART PANEL
@@ -423,18 +421,13 @@ button{font-family:var(--font);cursor:pointer}
         <!-- Variant Grid (3x3) -->
         <div class="variant-grid" id="variantGrid"></div>
 
-        <div class="volume-box" id="volumeBox">
-          <div class="volume-header">Get more, save more &#127881;</div>
-          <div class="volume-options" id="volumeOptions"></div>
-        </div>
-
         <div class="includes-box">
           <h4>&#9989;&ensp;What's Included</h4>
           <ul class="includes-list" id="includesList"></ul>
         </div>
 
         <div class="buy-actions">
-          <a id="buyBtn" href="#" target="_blank" rel="noopener" class="btn-gold">Buy Now&ensp;&rarr;</a>
+          <button id="addToCartBtn" class="btn-gold">Add to Cart&ensp;+</button>
         </div>
 
         <div class="trust-row">
@@ -750,36 +743,48 @@ function parsePrice(str) { return parseFloat(str.replace('$','')); }
 function fmt(n) { return '$' + n.toFixed(2); }
 
 /* ═══════════════════════════════════════════════════════════════
-   CART STATE
+   CART STATE — mix & match kits + add-ons
 ═══════════════════════════════════════════════════════════════ */
 let activeVariant = 0;
 let activeThumb = 0;
-let selectedQty = 2; // default: Buy 2
-const addedAddons = new Set(); // stores variantId strings
+const cartKits = new Map();       // variantId (string) → qty (number)
+const addedAddons = new Set();    // variantId strings
+
+function getProductByVariantId(vid) {
+  return PRODUCTS.find(p => p.variantId === vid);
+}
+
+function getTotalKitCount() {
+  let n = 0;
+  cartKits.forEach(qty => { n += qty; });
+  return n;
+}
+
+function getDiscountTier() {
+  const n = getTotalKitCount();
+  if (n >= 3) return { pct:0.20, label:'20% off' };
+  if (n === 2) return { pct:0.15, label:'15% off' };
+  if (n === 1) return { pct:0.10, label:'10% off' };
+  return { pct:0, label:'' };
+}
 
 function buildCartUrl() {
-  const p = PRODUCTS[activeVariant];
-  const parts = [p.variantId + ':' + selectedQty];
-  addedAddons.forEach(vid => parts.push(vid + ':1'));
+  const parts = [];
+  cartKits.forEach((qty, vid) => { parts.push(vid + ':' + qty); });
+  addedAddons.forEach(vid => { parts.push(vid + ':1'); });
+  if (parts.length === 0) return '#';
   return 'https://craftymixologist.com/cart/' + parts.join(',');
 }
 
-function getCartTotal() {
-  const p = PRODUCTS[activeVariant];
-  const unitPrice = parsePrice(p.price);
-  const discounts = [0.10, 0.15, 0.20];
-  const disc = discounts[selectedQty - 1] || 0.20;
-  let total = unitPrice * selectedQty * (1 - disc);
-  addedAddons.forEach(vid => {
-    UPSELL_GROUPS.forEach(g => g.items.forEach(u => {
-      if (u.variantId === vid) total += parsePrice(u.price);
-    }));
-  });
-  return total;
+function getCartItemCount() {
+  return getTotalKitCount() + addedAddons.size;
 }
 
-function getCartItemCount() {
-  return selectedQty + addedAddons.size;
+function addToCart(variantId) {
+  const current = cartKits.get(variantId) || 0;
+  cartKits.set(variantId, current + 1);
+  updateCartUI();
+  openSideCart();
 }
 
 function openSideCart() {
@@ -793,27 +798,50 @@ function closeSideCart() {
 
 function updateCartUI() {
   const url = buildCartUrl();
-  $buyBtn.href = url;
   $sideCartCheckout.href = url;
+  const tier = getDiscountTier();
+  const kitCount = getTotalKitCount();
 
-  const p = PRODUCTS[activeVariant];
-  const unitPrice = parsePrice(p.price);
-  const discounts = [0.10, 0.15, 0.20];
-  const disc = discounts[selectedQty - 1] || 0.20;
-  const kitTotal = unitPrice * selectedQty * (1 - disc);
-
-  // Build cart items HTML
   let itemsHTML = '';
 
-  // Kit item (always present)
-  itemsHTML += '<div class="side-cart-item">' +
-    '<div class="side-cart-thumb"><img src="' + p.images[0] + '" alt="' + p.name + '"/></div>' +
-    '<div class="side-cart-item-info">' +
-      '<div class="side-cart-item-name">' + p.name + '</div>' +
-      '<div class="side-cart-item-meta">Qty: ' + selectedQty + ' &middot; ' + Math.round(disc*100) + '% off</div>' +
-      '<div class="side-cart-item-price">' + fmt(kitTotal) + '</div>' +
-    '</div>' +
-  '</div>';
+  // Discount tier banner
+  if (kitCount > 0 && tier.pct > 0) {
+    if (kitCount < 3) {
+      const nextPct = kitCount === 1 ? '15%' : '20%';
+      itemsHTML += '<div class="cart-discount-banner blue">Bundle Discount: ' + tier.label +
+        ' &mdash; add ' + (kitCount === 1 ? '1 more kit' : '1 more kit') + ' for ' + nextPct + ' off!</div>';
+    } else {
+      itemsHTML += '<div class="cart-discount-banner green">Bundle Discount: ' + tier.label + ' applied &mdash; max savings!</div>';
+    }
+  }
+
+  // Empty cart
+  if (kitCount === 0 && addedAddons.size === 0) {
+    itemsHTML += '<div class="cart-empty"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Your cart is empty.<br>Browse kits and click "Add to Cart".</div>';
+  }
+
+  // Kit items
+  let kitsSubtotal = 0;
+  cartKits.forEach((qty, vid) => {
+    const p = getProductByVariantId(vid);
+    if (!p) return;
+    const unitPrice = parsePrice(p.price);
+    const lineTotal = unitPrice * qty * (1 - tier.pct);
+    kitsSubtotal += lineTotal;
+    itemsHTML += '<div class="side-cart-item">' +
+      '<div class="side-cart-thumb"><img src="' + p.images[0] + '" alt="' + p.name + '"/></div>' +
+      '<div class="side-cart-item-info">' +
+        '<div class="side-cart-item-name">' + p.name + '</div>' +
+        '<div class="side-cart-item-meta">' + p.price + ' ea' + (tier.pct > 0 ? ' &middot; ' + Math.round(tier.pct*100) + '% off' : '') + '</div>' +
+        '<div class="side-cart-item-price">' + fmt(lineTotal) + '</div>' +
+      '</div>' +
+      '<div class="cart-qty">' +
+        '<button data-vid="' + vid + '" data-action="dec">&minus;</button>' +
+        '<span>' + qty + '</span>' +
+        '<button data-vid="' + vid + '" data-action="inc">+</button>' +
+      '</div>' +
+    '</div>';
+  });
 
   // Add-on items
   let addonsTotal = 0;
@@ -837,6 +865,23 @@ function updateCartUI() {
 
   $sideCartItems.innerHTML = itemsHTML;
 
+  // Attach qty +/- handlers
+  $sideCartItems.querySelectorAll('.cart-qty button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const vid = this.dataset.vid;
+      const action = this.dataset.action;
+      let qty = cartKits.get(vid) || 0;
+      if (action === 'inc') {
+        cartKits.set(vid, qty + 1);
+      } else {
+        qty--;
+        if (qty <= 0) cartKits.delete(vid);
+        else cartKits.set(vid, qty);
+      }
+      updateCartUI();
+    });
+  });
+
   // Attach remove handlers for add-ons
   $sideCartItems.querySelectorAll('.side-cart-remove').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -852,14 +897,31 @@ function updateCartUI() {
   });
 
   // Totals
-  const grandTotal = kitTotal + addonsTotal;
-  let totalsHTML = '<div class="side-cart-row"><span>Subtotal</span><span>' + fmt(grandTotal) + '</span></div>' +
-    '<div class="side-cart-row"><span>Shipping</span><span>' + (grandTotal >= 100 ? 'Free' : 'Calculated at checkout') + '</span></div>' +
-    '<div class="side-cart-row total"><span>Total</span><span class="side-cart-row-val">' + fmt(grandTotal) + '</span></div>';
+  const subtotalBeforeDiscount = (function() {
+    let s = 0;
+    cartKits.forEach((qty, vid) => {
+      const p = getProductByVariantId(vid);
+      if (p) s += parsePrice(p.price) * qty;
+    });
+    return s + addonsTotal;
+  })();
+  const grandTotal = kitsSubtotal + addonsTotal;
+  const discountAmt = subtotalBeforeDiscount - grandTotal;
+  let totalsHTML = '';
+  if (kitCount > 0 || addonsTotal > 0) {
+    totalsHTML += '<div class="side-cart-row"><span>Subtotal</span><span>' + fmt(subtotalBeforeDiscount) + '</span></div>';
+    if (discountAmt > 0) {
+      totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.round(tier.pct*100) + '%)</span><span>-' + fmt(discountAmt) + '</span></div>';
+    }
+    totalsHTML += '<div class="side-cart-row"><span>Shipping</span><span>' + (grandTotal >= 100 ? 'Free' : 'Calculated at checkout') + '</span></div>';
+    totalsHTML += '<div class="side-cart-row total"><span>Total</span><span class="side-cart-row-val">' + fmt(grandTotal) + '</span></div>';
+  }
   $sideCartTotals.innerHTML = totalsHTML;
 
   // Update floating badge
-  $cartFabBadge.textContent = getCartItemCount();
+  const count = getCartItemCount();
+  $cartFabBadge.textContent = count;
+  $cartFabBadge.style.display = count > 0 ? 'flex' : 'none';
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -873,9 +935,8 @@ const $prodTitle = document.getElementById('prodTitle');
 const $prodPrice = document.getElementById('prodPrice');
 const $prodDesc = document.getElementById('prodDesc');
 const $includesList = document.getElementById('includesList');
-const $buyBtn = document.getElementById('buyBtn');
+const $addToCartBtn = document.getElementById('addToCartBtn');
 const $bannersContainer = document.getElementById('bannersContainer');
-const $volumeOptions = document.getElementById('volumeOptions');
 const $sideCart = document.getElementById('sideCart');
 const $sideCartOverlay = document.getElementById('sideCartOverlay');
 const $sideCartClose = document.getElementById('sideCartClose');
@@ -895,43 +956,6 @@ PRODUCTS.forEach((p, i) => {
   btn.addEventListener('click', () => selectVariant(i));
   $variantGrid.appendChild(btn);
 });
-
-/* ═══════════════════════════════════════════════════════════════
-   VOLUME DISCOUNT
-═══════════════════════════════════════════════════════════════ */
-const VOLUME_TIERS = [
-  { qty:1, discount:0.10, label:'Buy 1', badge:'' },
-  { qty:2, discount:0.15, label:'Buy 2', badge:'<span class="volume-badge popular">Most Popular &#9889;</span>' },
-  { qty:3, discount:0.20, label:'Buy 3+', badge:'<span class="volume-badge best">Best Savings &#128176;</span>' }
-];
-
-function buildVolumeOptions(unitPrice) {
-  $volumeOptions.innerHTML = '';
-  VOLUME_TIERS.forEach((tier, i) => {
-    const orig = unitPrice * tier.qty;
-    const final = orig * (1 - tier.discount);
-    const save = orig - final;
-    const opt = document.createElement('label');
-    opt.className = 'volume-option' + (tier.qty === selectedQty ? ' active' : '');
-    opt.innerHTML =
-      '<input type="radio" name="volume" value="' + tier.qty + '"' + (tier.qty === selectedQty ? ' checked' : '') + '/>' +
-      '<div class="volume-label">' + tier.label + ' &mdash; ' + Math.round(tier.discount*100) + '% off' + tier.badge + '</div>' +
-      '<div class="volume-prices">' +
-        '<div class="volume-original">' + fmt(orig) + '</div>' +
-        '<div class="volume-final">' + fmt(final) + '</div>' +
-        '<div class="volume-save">You save ' + fmt(save) + '</div>' +
-      '</div>';
-    opt.addEventListener('click', () => {
-      selectedQty = tier.qty;
-      document.querySelectorAll('.volume-option').forEach((o, j) => {
-        o.classList.toggle('active', j === i);
-      });
-      opt.querySelector('input').checked = true;
-      updateCartUI();
-    });
-    $volumeOptions.appendChild(opt);
-  });
-}
 
 /* ═══════════════════════════════════════════════════════════════
    SELECT VARIANT
@@ -975,8 +999,6 @@ function selectVariant(idx) {
     $includesList.appendChild(li);
   });
 
-  buildVolumeOptions(parsePrice(p.price));
-
   $bannersContainer.innerHTML = '';
   if (p.banners && p.banners.length) {
     p.banners.forEach(src => {
@@ -987,8 +1009,6 @@ function selectVariant(idx) {
       $bannersContainer.appendChild(img);
     });
   }
-
-  updateCartUI();
 }
 
 function selectThumb(idx, src) {
@@ -1177,6 +1197,14 @@ $cartFab.addEventListener('click', () => {
 });
 $sideCartClose.addEventListener('click', closeSideCart);
 $sideCartOverlay.addEventListener('click', closeSideCart);
+
+$addToCartBtn.addEventListener('click', () => {
+  const p = PRODUCTS[activeVariant];
+  addToCart(p.variantId);
+});
+
+// Initialize cart UI (empty state)
+updateCartUI();
 </script>
 </body>
 </html>
