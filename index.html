@@ -274,7 +274,7 @@ button{font-family:var(--font);cursor:pointer}
 /*═══════════════════════════════════════════════════════════════
   REVIEWS CAROUSEL
 ═══════════════════════════════════════════════════════════════*/
-.reviews-section{padding:80px 0;background:var(--bg);overflow:hidden}
+.reviews-section{padding:80px 0;background:var(--bg)}
 .reviews-header{margin-bottom:48px}
 .reviews-badge{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;
   color:var(--gold);margin-top:8px}
@@ -284,8 +284,8 @@ button{font-family:var(--font);cursor:pointer}
   scrollbar-width:none;cursor:grab;touch-action:pan-x pan-y}
 .carousel-track:active{cursor:grabbing}
 .carousel-track::-webkit-scrollbar{display:none}
-.carousel-card{flex:0 0 calc(33.333% - 14px);scroll-snap-align:start;background:var(--white);
-  border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:24px;
+.carousel-card{flex:0 0 calc(30% - 15px);scroll-snap-align:start;background:var(--white);
+  border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:20px;
   transition:all var(--transition);display:flex;flex-direction:column}
 .carousel-card:hover{border-color:var(--gold-light);box-shadow:var(--shadow)}
 .carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:40px;height:40px;
@@ -293,8 +293,8 @@ button{font-family:var(--font);cursor:pointer}
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   color:var(--gray-600);transition:all var(--transition);font-size:18px}
 .carousel-arrow:hover{border-color:var(--gold);color:var(--gold);box-shadow:var(--shadow)}
-.carousel-arrow.left{left:-16px}
-.carousel-arrow.right{right:-16px}
+.carousel-arrow.left{left:8px}
+.carousel-arrow.right{right:8px}
 .review-stars{color:var(--gold);font-size:14px;letter-spacing:1px;margin-bottom:8px}
 .review-stars .empty{color:var(--gray-200)}
 .review-title{font-size:14px;font-weight:700;margin-bottom:6px;line-height:1.4;color:var(--black)}
@@ -305,7 +305,7 @@ button{font-family:var(--font);cursor:pointer}
   background:none;padding:0;margin-bottom:12px}
 .review-readmore:hover{text-decoration:underline}
 .review-photos{display:flex;gap:8px;margin-bottom:12px}
-.review-photos img{width:120px;height:120px;border-radius:10px;object-fit:cover;border:1px solid var(--gray-200);cursor:pointer;transition:all var(--transition)}
+.review-photos img{width:100px;height:100px;border-radius:10px;object-fit:cover;border:1px solid var(--gray-200);cursor:pointer;transition:all var(--transition)}
 .review-photos img:hover{border-color:var(--gold);box-shadow:var(--shadow)}
 .photo-lightbox{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);display:flex;
   align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;
@@ -327,8 +327,11 @@ button{font-family:var(--font);cursor:pointer}
   color:#16a34a;background:rgba(22,163,74,.08);padding:3px 8px;border-radius:20px;flex-shrink:0}
 .review-verified svg{width:10px;height:10px}
 @media(max-width:880px){
-  .carousel-card{flex:0 0 calc(83.333% - 10px)}
-  .carousel-arrow{display:none}
+  .carousel-card{flex:0 0 calc(75% - 10px);padding:16px}
+  .carousel-arrow{width:32px;height:32px;font-size:16px}
+  .carousel-arrow.left{left:4px}
+  .carousel-arrow.right{right:4px}
+  .review-photos img{width:100%;height:auto;max-height:120px;object-fit:cover}
 }
 
 /*═══════════════════════════════════════════════════════════════
@@ -439,12 +442,13 @@ button{font-family:var(--font);cursor:pointer}
   .section-title{margin-bottom:8px}
   .reviews-header{margin-bottom:28px}
 
-  /* ── Gallery: fixed aspect-ratio container for consistent image size ── */
-  .gallery-main{aspect-ratio:1/1;max-height:none;height:auto}
-  .gallery-main img{max-height:none;width:100%;height:100%;object-fit:contain}
-  .gallery-thumbs{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
-    scroll-snap-type:x proximity;padding-bottom:4px}
-  .gallery-thumbs .thumb{width:60px;height:60px;flex-shrink:0;scroll-snap-align:start}
+  /* ── Gallery: consistent image container on mobile ── */
+  .gallery-main{aspect-ratio:auto;max-height:350px;height:350px}
+  .gallery-main img{max-height:350px;width:100%;height:100%;object-fit:contain}
+  .gallery-thumbs{display:flex !important;flex-wrap:nowrap !important;gap:8px;
+    overflow-x:auto !important;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;padding-bottom:6px;margin:0 -16px;padding-left:16px;padding-right:16px}
+  .gallery-thumbs .thumb{min-width:64px;width:64px;height:64px;flex-shrink:0 !important;scroll-snap-align:start}
 
   /* ── Product info: flex column with order for mobile reorder ── */
   .product-info{display:flex;flex-direction:column;padding:0}
