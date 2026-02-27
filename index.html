@@ -1012,7 +1012,7 @@ function updateCartUI() {
     const p = getProductByVariantId(vid);
     if (!p) return;
     const unitPrice = parsePrice(p.price);
-    const discountedUnit = Math.round(unitPrice * (1 - tier.pct) * 100) / 100;
+    const discountedUnit = Math.ceil(unitPrice * (1 - tier.pct) * 100) / 100;
     const lineTotal = discountedUnit * qty;
     kitsSubtotal += lineTotal;
     itemsHTML += '<div class="side-cart-item">' +
@@ -1298,7 +1298,7 @@ function renderVolumeSelector() {
 
   var pct = getVolumeTierPct(selectedQty);
   var orig = price * selectedQty;
-  var discUnit = Math.round(price * (1 - pct) * 100) / 100;
+  var discUnit = Math.ceil(price * (1 - pct) * 100) / 100;
   var disc = discUnit * selectedQty;
   var saved = orig - disc;
   html += '<div class="volume-pricing">' +
