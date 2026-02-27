@@ -288,7 +288,7 @@ button{font-family:var(--font);cursor:pointer}
   border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:20px;
   transition:all var(--transition);display:flex;flex-direction:column}
 .carousel-card:hover{border-color:var(--gold-light);box-shadow:var(--shadow)}
-.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:40px;height:40px;
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:100;width:40px;height:40px;pointer-events:auto;
   border-radius:50%;border:1px solid var(--gray-200);background:var(--white);box-shadow:var(--shadow-sm);
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   color:var(--gray-600);transition:all var(--transition);font-size:18px}
@@ -747,12 +747,12 @@ const PRODUCTS = [
     desc:'Elevate your mixology skills and impress guests with smoky cocktails. Enhance whiskey, bourbon, or craft drinks with six aromatic wood chip flavors. Easy to use for beginners and seasoned mixologists alike.',
     cartLink:'https://craftymixologist.com/cart/51316421099839:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/WhiskeyMainIMageFInal.png?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81jJxTF9n2L._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/8163K1bMegL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81EjM4JKYWL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81uk6VcgZnL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/91DuQYdghHL._AC_SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/81JQCollfJL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/910eVKR42LL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/912Pb9HTX2L._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/91WTA44xmeL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/71slgy2oXAL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81CGMfkoNfL._AC_SL1500__1.jpg?width=800'
     ],
     includes:['Refillable torch (butane not included)','2 premium whiskey glasses','6 wood chip flavors (cherry, oak, pecan, apple, walnut & pear)','Wooden smoking plate','Elegant glass dome'],
     banners:['images/smoker_instructions.jpeg','images/SMoker.jpeg','images/butane_insturctions.jpeg']
@@ -767,7 +767,8 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/81Bl5xYrwVL._AC_SL1500__1.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/81M2rPUnk7L._AC_SL1500__1.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81URVpOBRvL._AC_SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/81URVpOBRvL._AC_SL1500.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81tRBK_0boL._AC_SL1500.jpg?width=800'
     ],
     includes:['6 exotic botanicals (cane sugar, vanilla powder, cocoa beans, nutmeg, coffee beans, cardamom)','Measuring teaspoon & tablespoon','2 stylish martini glasses','Espresso martini decor','Recipe booklet'],
     banners:['images/Martini_1.jpeg','images/Martini_2.jpeg','images/Martini_3.jpeg','images/espresso_instructions.jpeg']
@@ -1425,8 +1426,8 @@ function scrollCards(dir) {
   const w = card.offsetWidth + gap;
   $track.scrollBy({ left: dir * w, behavior: 'smooth' });
 }
-$arrowL.addEventListener('click', (e) => { e.stopPropagation(); scrollCards(-1); });
-$arrowR.addEventListener('click', (e) => { e.stopPropagation(); scrollCards(1); });
+$arrowL.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); console.log('arrow clicked: LEFT'); scrollCards(-1); });
+$arrowR.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); console.log('arrow clicked: RIGHT'); scrollCards(1); });
 
 // Auto-scroll — smooth rAF, ~0.06px/ms ≈ one card every ~6s
 let autoScrolling = true, lastAutoTime = 0;
