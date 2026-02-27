@@ -305,8 +305,17 @@ button{font-family:var(--font);cursor:pointer}
   background:none;padding:0;margin-bottom:12px}
 .review-readmore:hover{text-decoration:underline}
 .review-photos{display:flex;gap:8px;margin-bottom:12px}
-.review-photos img{width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid var(--gray-200);cursor:pointer;transition:all var(--transition)}
-.review-photos img:hover{border-color:var(--gold);box-shadow:var(--shadow-sm)}
+.review-photos img{width:120px;height:120px;border-radius:10px;object-fit:cover;border:1px solid var(--gray-200);cursor:pointer;transition:all var(--transition)}
+.review-photos img:hover{border-color:var(--gold);box-shadow:var(--shadow)}
+.photo-lightbox{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);display:flex;
+  align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;
+  backdrop-filter:blur(4px)}
+.photo-lightbox.open{opacity:1;pointer-events:auto}
+.photo-lightbox img{max-width:90vw;max-height:85vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.photo-lightbox-close{position:absolute;top:20px;right:24px;width:40px;height:40px;border-radius:50%;
+  border:none;background:rgba(255,255,255,.15);color:var(--white);font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .2s}
+.photo-lightbox-close:hover{background:rgba(255,255,255,.3)}
 .review-meta{margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:12px;
   border-top:1px solid var(--gray-100)}
 .review-avatar{width:34px;height:34px;border-radius:50%;background:var(--gold);display:flex;
@@ -638,6 +647,12 @@ button{font-family:var(--font);cursor:pointer}
     <div class="footer-copy">&copy; 2025 Crafty Mixologist. All Rights Reserved.</div>
   </div>
 </footer>
+
+<!-- ═══ Photo Lightbox ═══ -->
+<div class="photo-lightbox" id="photoLightbox">
+  <button class="photo-lightbox-close" id="lightboxClose">&times;</button>
+  <img id="lightboxImg" src="" alt="Review photo"/>
+</div>
 
 <!-- ═══ Side Cart Panel ═══ -->
 <div class="side-cart-overlay" id="sideCartOverlay"></div>
@@ -1418,6 +1433,19 @@ $track.addEventListener('mouseup', () => { isDragging = false; $track.style.scro
 $track.addEventListener('mouseleave', () => { isDragging = false; $track.style.scrollBehavior = ''; });
 $track.addEventListener('touchstart', e => { startX = e.touches[0].pageX; scrollStart = $track.scrollLeft; }, { passive: true });
 $track.addEventListener('touchmove', e => { $track.scrollLeft = scrollStart - (e.touches[0].pageX - startX); }, { passive: true });
+
+// Photo lightbox
+const $lightbox = document.getElementById('photoLightbox');
+const $lbImg = document.getElementById('lightboxImg');
+$track.addEventListener('click', e => {
+  const img = e.target.closest('.review-photos img');
+  if (!img) return;
+  $lbImg.src = img.src;
+  $lightbox.classList.add('open');
+});
+document.getElementById('lightboxClose').addEventListener('click', () => { $lightbox.classList.remove('open'); });
+$lightbox.addEventListener('click', e => { if (e.target === $lightbox) $lightbox.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $lightbox.classList.contains('open')) $lightbox.classList.remove('open'); });
 
 /* ═══════════════════════════════════════════════════════════════
    POPUP (shows once, 3s delay)
