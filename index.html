@@ -435,7 +435,7 @@ button{font-family:var(--font);cursor:pointer}
 
   /* ── Reduced vertical spacing (30-40% less) ── */
   .container{padding:0 16px}
-  .product-layout{gap:20px}
+  .product-layout{gap:20px;max-width:100vw;overflow:hidden;box-sizing:border-box}
   .reviews-section{padding:40px 0}
   .why-section{padding:40px 0}
   .why-grid{margin-top:28px}
@@ -454,7 +454,7 @@ button{font-family:var(--font);cursor:pointer}
   .gallery-thumbs .thumb{min-width:64px;width:64px;height:64px;flex-shrink:0 !important;scroll-snap-align:start}
 
   /* ── Product info: flex column with order for mobile reorder ── */
-  .product-info{display:flex;flex-direction:column;padding:0}
+  .product-info{display:flex;flex-direction:column;padding:0;max-width:100%;overflow:hidden;box-sizing:border-box}
   .product-rating{order:1;margin-bottom:8px}
   .product-title{order:2;font-size:28px;margin-bottom:4px}
   .product-price{order:3;font-size:22px;margin-bottom:10px}
@@ -472,7 +472,7 @@ button{font-family:var(--font);cursor:pointer}
   .buy-actions{order:7;flex-direction:column;margin-bottom:12px}
   .trust-row{order:8;flex-direction:row;flex-wrap:wrap;gap:10px;margin-bottom:16px}
   .includes-box{order:9;margin-bottom:16px;padding:18px}
-  .includes-list{grid-template-columns:1fr}
+  .includes-list{grid-template-columns:1fr;word-break:break-word;overflow-wrap:break-word}
 
   /* ── Volume discount compact ── */
   .volume-selector h4{font-size:13px;margin-bottom:8px}
