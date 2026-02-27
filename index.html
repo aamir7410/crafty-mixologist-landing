@@ -1315,6 +1315,20 @@ function selectThumb(idx, src) {
 
 selectVariant(0);
 
+// Swipe on product image (mobile)
+(function(){
+  var el = document.getElementById('galleryMain'), sx = 0;
+  el.addEventListener('touchstart', function(e){ sx = e.changedTouches[0].clientX; }, {passive:true});
+  el.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) < 50) return;
+    var imgs = PRODUCTS[activeVariant].images, len = imgs.length;
+    if (len < 2) return;
+    var next = dx < 0 ? (activeThumb + 1) % len : (activeThumb - 1 + len) % len;
+    selectThumb(next, imgs[next]);
+  }, {passive:true});
+})();
+
 /* ═══════════════════════════════════════════════════════════════
    UPSELLS — variant-specific add-ons
 ═══════════════════════════════════════════════════════════════ */
