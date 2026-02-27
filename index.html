@@ -279,8 +279,8 @@ button{font-family:var(--font);cursor:pointer}
 .reviews-badge{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;
   color:var(--gold);margin-top:8px}
 .carousel-wrap{position:relative}
-.carousel-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;
-  scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:4px 0 16px;
+.carousel-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;padding:4px 0 16px;
   scrollbar-width:none;cursor:grab;touch-action:pan-x pan-y}
 .carousel-track:active{cursor:grabbing}
 .carousel-track::-webkit-scrollbar{display:none}
@@ -765,9 +765,9 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/mainImage.png?width=800',
       'https://craftymixologist.com/cdn/shop/files/BJ6A9066.jpg?width=800',
       'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81CGMfkoNfL._AC_SL1500__1.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81W7hhz5oYL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81kKTtXB2eL._AC_SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/81Bl5xYrwVL._AC_SL1500__1.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81M2rPUnk7L._AC_SL1500__1.jpg?width=800',
+      'https://craftymixologist.com/cdn/shop/files/81URVpOBRvL._AC_SL1500.jpg?width=800'
     ],
     includes:['6 exotic botanicals (cane sugar, vanilla powder, cocoa beans, nutmeg, coffee beans, cardamom)','Measuring teaspoon & tablespoon','2 stylish martini glasses','Espresso martini decor','Recipe booklet'],
     banners:['images/Martini_1.jpeg','images/Martini_2.jpeg','images/Martini_3.jpeg','images/espresso_instructions.jpeg']
@@ -1421,11 +1421,12 @@ $track.addEventListener('click', e => {
 function scrollCards(dir) {
   const card = $track.querySelector('.carousel-card');
   if (!card) return;
-  const w = card.offsetWidth + 20;
+  const gap = 20;
+  const w = card.offsetWidth + gap;
   $track.scrollBy({ left: dir * w, behavior: 'smooth' });
 }
-$arrowL.addEventListener('click', () => scrollCards(-1));
-$arrowR.addEventListener('click', () => scrollCards(1));
+$arrowL.addEventListener('click', (e) => { e.stopPropagation(); scrollCards(-1); });
+$arrowR.addEventListener('click', (e) => { e.stopPropagation(); scrollCards(1); });
 
 // Auto-scroll — smooth rAF, ~0.06px/ms ≈ one card every ~6s
 let autoScrolling = true, lastAutoTime = 0;
