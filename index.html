@@ -198,8 +198,11 @@ button{font-family:var(--font);cursor:pointer}
 .cart-qty button:hover{border-color:var(--gold);color:var(--gold)}
 .cart-qty button:first-child{border-radius:6px 0 0 6px}
 .cart-qty button:last-child{border-radius:0 6px 6px 0}
-.cart-qty span{width:28px;height:26px;display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:700;border-top:1px solid var(--gray-200);border-bottom:1px solid var(--gray-200)}
+.cart-qty input{width:40px;height:26px;text-align:center;
+  font-size:12px;font-weight:700;border:none;border-top:1px solid var(--gray-200);border-bottom:1px solid var(--gray-200);
+  background:var(--white);color:var(--black);font-family:var(--font);outline:none;padding:0;
+  -moz-appearance:textfield;appearance:textfield}
+.cart-qty input::-webkit-outer-spin-button,.cart-qty input::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}
 .cart-discount-banner{padding:10px 14px;border-radius:var(--radius);margin-bottom:8px;
   font-size:12px;font-weight:600;line-height:1.4}
 .cart-discount-banner.green{background:rgba(22,163,74,.08);color:#16a34a;border:1px solid rgba(22,163,74,.15)}
@@ -1020,7 +1023,7 @@ function updateCartUI() {
       '</div>' +
       '<div class="cart-qty">' +
         '<button data-vid="' + vid + '" data-action="dec">&minus;</button>' +
-        '<span>' + qty + '</span>' +
+        '<input type="number" min="1" value="' + qty + '" data-vid="' + vid + '"/>' +
         '<button data-vid="' + vid + '" data-action="inc">+</button>' +
       '</div>' +
     '</div>';
@@ -1093,6 +1096,20 @@ function updateCartUI() {
       }
       updateCartUI();
     });
+  });
+
+  // Attach qty input handlers
+  $sideCartItems.querySelectorAll('.cart-qty input').forEach(function(input) {
+    function applyQty() {
+      var val = parseInt(input.value);
+      if (isNaN(val) || val < 1) val = 1;
+      val = Math.floor(val);
+      input.value = val;
+      cartKits.set(input.dataset.vid, val);
+      updateCartUI();
+    }
+    input.addEventListener('blur', applyQty);
+    input.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); applyQty(); } });
   });
 
   // Attach remove handlers for add-ons
