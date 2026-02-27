@@ -422,6 +422,7 @@ button{font-family:var(--font);cursor:pointer}
   .why-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:768px){
+  body{overflow-x:hidden}
   :root{--nav-h:70px}
   .nav-links{display:none;position:absolute;top:var(--nav-h);left:0;right:0;
     background:var(--bg);border-bottom:1px solid var(--gray-200);flex-direction:column;
@@ -486,7 +487,7 @@ button{font-family:var(--font);cursor:pointer}
   .volume-pricing .save{font-size:11px}
 
   /* ── Reduce gap between product section and add-ons ── */
-  .product-section{padding:16px 0 20px}
+  .product-section{padding:16px 0 20px;max-width:100vw;overflow-x:hidden}
   .upsell-section{padding:16px 0 24px}
 
   /* ── Floating cart: bottom-right above browser bar ── */
