@@ -982,10 +982,6 @@ function updateCartUI() {
   const url = buildCartUrl();
   $sideCartCheckout.href = url;
   const kitCount = getTotalKitCount();
-  // Sync volume selector before calculating discount so tier reflects actual cart
-  if (kitCount > 0) {
-    selectedQty = Math.min(kitCount, 3);
-  }
   const tier = getDiscountTier();
 
   let itemsHTML = '';
