@@ -122,8 +122,8 @@ button{font-family:var(--font);cursor:pointer}
   padding:16px 20px;margin-bottom:18px}
 .includes-box h4{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .includes-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.includes-list li{font-size:13px;color:var(--gray-600);display:flex;align-items:center;gap:8px;line-height:1.4}
-.includes-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.includes-list li{font-size:13px;color:var(--gray-600);display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.includes-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px}
 
 .volume-selector{margin-bottom:18px}
 .volume-selector h4{font-size:13px;font-weight:700;margin-bottom:8px}
@@ -288,9 +288,9 @@ button{font-family:var(--font);cursor:pointer}
   border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:20px;
   transition:all var(--transition);display:flex;flex-direction:column}
 .carousel-card:hover{border-color:var(--gold-light);box-shadow:var(--shadow)}
-.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:40px;height:40px;
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:100;width:40px;height:40px;
   border-radius:50%;border:1px solid var(--gray-200);background:var(--white);box-shadow:var(--shadow-sm);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;
   color:var(--gray-600);transition:all var(--transition);font-size:18px}
 .carousel-arrow:hover{border-color:var(--gold);color:var(--gold);box-shadow:var(--shadow)}
 .carousel-arrow.left{left:8px}
@@ -1420,14 +1420,16 @@ $track.addEventListener('click', e => {
 
 // Arrow navigation
 function scrollCards(dir) {
+  autoScrolling = false;
   const card = $track.querySelector('.carousel-card');
   if (!card) return;
   const gap = 20;
   const w = card.offsetWidth + gap;
   $track.scrollBy({ left: dir * w, behavior: 'smooth' });
+  setTimeout(() => { autoScrolling = true; }, 3000);
 }
-$arrowL.addEventListener('click', (e) => { e.stopPropagation(); scrollCards(-1); });
-$arrowR.addEventListener('click', (e) => { e.stopPropagation(); scrollCards(1); });
+$arrowL.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); scrollCards(-1); });
+$arrowR.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); scrollCards(1); });
 
 // Auto-scroll — smooth rAF, ~0.06px/ms ≈ one card every ~6s
 let autoScrolling = true, lastAutoTime = 0;
