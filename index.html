@@ -281,7 +281,7 @@ button{font-family:var(--font);cursor:pointer}
 .carousel-wrap{position:relative}
 .carousel-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;
   scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:4px 0 16px;
-  scrollbar-width:none;cursor:grab}
+  scrollbar-width:none;cursor:grab;touch-action:pan-x pan-y}
 .carousel-track:active{cursor:grabbing}
 .carousel-track::-webkit-scrollbar{display:none}
 .carousel-card{flex:0 0 calc(33.333% - 14px);scroll-snap-align:start;background:var(--white);
@@ -430,10 +430,8 @@ button{font-family:var(--font);cursor:pointer}
   .footer-top{flex-direction:column}
 
   /* ── Reduced vertical spacing (30-40% less) ── */
-  .product-section{padding:16px 0 40px}
   .container{padding:0 16px}
   .product-layout{gap:20px}
-  .upsell-section{padding:24px 0 28px}
   .reviews-section{padding:40px 0}
   .why-section{padding:40px 0}
   .why-grid{margin-top:28px}
@@ -481,8 +479,12 @@ button{font-family:var(--font);cursor:pointer}
   .volume-pricing .orig{font-size:13px}
   .volume-pricing .save{font-size:11px}
 
-  /* ── Floating cart: top-right to avoid overlapping variant grid ── */
-  .cart-fab{bottom:auto;top:calc(var(--nav-h) + var(--banner-h) + 8px);right:16px;width:48px;height:48px}
+  /* ── Reduce gap between product section and add-ons ── */
+  .product-section{padding:16px 0 20px}
+  .upsell-section{padding:16px 0 24px}
+
+  /* ── Floating cart: bottom-right above browser bar ── */
+  .cart-fab{bottom:80px;top:auto;right:20px;width:48px;height:48px;z-index:997}
   .cart-fab svg{width:20px;height:20px}
 
   /* ── Side cart: full width on mobile ── */
@@ -1435,14 +1437,12 @@ $track.addEventListener('mouseleave', () => { autoScrolling = true; });
 $track.addEventListener('touchstart', () => { autoScrolling = false; }, { passive: true });
 $track.addEventListener('touchend', () => { autoScrolling = true; }, { passive: true });
 
-// Touch/drag support
-let isDragging = false, startX = 0, scrollStart = 0;
-$track.addEventListener('mousedown', e => { isDragging = true; startX = e.pageX; scrollStart = $track.scrollLeft; $track.style.scrollBehavior = 'auto'; });
-$track.addEventListener('mousemove', e => { if (!isDragging) return; e.preventDefault(); $track.scrollLeft = scrollStart - (e.pageX - startX); });
+// Desktop drag support (mouse only — touch uses native overflow scroll)
+let isDragging = false, dragStartX = 0, dragScrollStart = 0;
+$track.addEventListener('mousedown', e => { isDragging = true; dragStartX = e.pageX; dragScrollStart = $track.scrollLeft; $track.style.scrollBehavior = 'auto'; });
+$track.addEventListener('mousemove', e => { if (!isDragging) return; e.preventDefault(); $track.scrollLeft = dragScrollStart - (e.pageX - dragStartX); });
 $track.addEventListener('mouseup', () => { isDragging = false; $track.style.scrollBehavior = ''; });
 $track.addEventListener('mouseleave', () => { isDragging = false; $track.style.scrollBehavior = ''; });
-$track.addEventListener('touchstart', e => { startX = e.touches[0].pageX; scrollStart = $track.scrollLeft; }, { passive: true });
-$track.addEventListener('touchmove', e => { $track.scrollLeft = scrollStart - (e.touches[0].pageX - startX); }, { passive: true });
 
 // Photo lightbox
 const $lightbox = document.getElementById('photoLightbox');
