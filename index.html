@@ -972,14 +972,12 @@ function getDiscountTier() {
   const n = getTotalKitCount();
   // Mix-and-match tier based on total kits in cart
   let mixPct = 0;
-  if (n >= 3) mixPct = 0.20;
-  else if (n === 2) mixPct = 0.15;
-  else if (n === 1) mixPct = 0.10;
+  if (n >= 3) mixPct = 0.15;
+  else if (n === 2) mixPct = 0.10;
   // Volume selector tier
   const volPct = getVolumeTierPct(selectedQty);
   // Use whichever is higher
   const pct = n > 0 ? Math.max(mixPct, volPct) : 0;
-  if (pct >= 0.20) return { pct:0.20, label:'20% off' };
   if (pct >= 0.15) return { pct:0.15, label:'15% off' };
   if (pct >= 0.10) return { pct:0.10, label:'10% off' };
   return { pct:0, label:'' };
@@ -1000,9 +998,9 @@ function getCartItemCount() {
 let selectedQty = 1;
 
 function getVolumeTierPct(qty) {
-  if (qty >= 3) return 0.20;
-  if (qty === 2) return 0.15;
-  return 0.10;
+  if (qty >= 3) return 0.15;
+  if (qty === 2) return 0.10;
+  return 0;
 }
 
 function addToCart(variantId) {
@@ -1032,12 +1030,13 @@ function updateCartUI() {
   let itemsHTML = '';
 
   // Discount tier banner
-  if (kitCount > 0 && tier.pct > 0) {
-    if (kitCount < 3) {
-      const nextPct = kitCount === 1 ? '15%' : '20%';
+  if (kitCount > 0) {
+    if (kitCount === 1 && tier.pct === 0) {
+      itemsHTML += '<div class="cart-discount-banner blue">Add 1 more kit for 10% off!</div>';
+    } else if (kitCount === 2 && tier.pct > 0 && tier.pct < 0.15) {
       itemsHTML += '<div class="cart-discount-banner blue">Bundle Discount: ' + tier.label +
-        ' &mdash; add ' + (kitCount === 1 ? '1 more kit' : '1 more kit') + ' for ' + nextPct + ' off!</div>';
-    } else {
+        ' &mdash; add 1 more kit for 15% off!</div>';
+    } else if (tier.pct >= 0.15) {
       itemsHTML += '<div class="cart-discount-banner green">Bundle Discount: ' + tier.label + ' applied &mdash; max savings!</div>';
     }
   }
@@ -1322,9 +1321,9 @@ function renderVolumeSelector() {
   const p = PRODUCTS[activeVariant];
   const price = parsePrice(p.price);
   const tiers = [
-    { qty:1, label:'Buy 1', pct:0.10, badge:'', badgeClass:'' },
-    { qty:2, label:'Buy 2', pct:0.15, badge:'Most Popular', badgeClass:'popular' },
-    { qty:3, label:'Buy 3+', pct:0.20, badge:'Best Savings', badgeClass:'best' }
+    { qty:1, label:'Buy 1', pct:0, badge:'', badgeClass:'' },
+    { qty:2, label:'Buy 2', pct:0.10, badge:'Save 10%', badgeClass:'popular' },
+    { qty:3, label:'Buy 3+', pct:0.15, badge:'Save 15%', badgeClass:'best' }
   ];
 
   let html = '<h3>Volume Discount</h3><div class="volume-options">';
@@ -1342,11 +1341,18 @@ function renderVolumeSelector() {
   var discUnit = Math.ceil(price * (1 - pct) * 100) / 100;
   var disc = discUnit * selectedQty;
   var saved = orig - disc;
-  html += '<div class="volume-pricing">' +
-    '<span class="orig">' + fmt(orig) + '</span>' +
-    '<span class="disc">' + fmt(disc) + '</span>' +
-    '<span class="save">You save ' + fmt(saved) + '</span>' +
-  '</div>';
+  if (pct > 0) {
+    html += '<div class="volume-pricing">' +
+      '<span class="orig">' + fmt(orig) + '</span>' +
+      '<span class="disc">' + fmt(disc) + '</span>' +
+      '<span class="save">You save ' + fmt(saved) + '</span>' +
+    '</div>';
+  } else {
+    html += '<div class="volume-pricing">' +
+      '<span class="disc">' + fmt(orig) + '</span>' +
+      '<span class="save">Buy 2, Save 10% &mdash; Buy 3+, Save 15%</span>' +
+    '</div>';
+  }
 
   document.getElementById('volumeSelector').innerHTML = html;
 
