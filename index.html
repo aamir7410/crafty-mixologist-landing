@@ -18,7 +18,7 @@
   <link rel="icon" href="https://craftymixologist.com/cdn/shop/files/Logo_2_Preview_File_d216aa01-808f-4958-9f00-33897e054208.png?width=32" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
   <style>
 /*═══════════════════════════════════════════════════════════════
   RESET & VARIABLES
@@ -574,6 +574,7 @@ button{font-family:var(--font);cursor:pointer}
 </nav>
 
 <!-- ═══ Product Section ═══ -->
+<main>
 <section class="product-section" id="products">
   <div class="container">
     <!-- Product Layout -->
@@ -582,7 +583,7 @@ button{font-family:var(--font);cursor:pointer}
       <div class="gallery" id="gallery">
         <div class="gallery-main" id="galleryMain">
           <span class="gallery-badge" id="galleryBadge">BEST SELLER</span>
-          <img id="mainImg" src="" alt="Product image"/>
+          <img id="mainImg" src="" alt="Product image" width="800" height="800"/>
         </div>
         <div class="gallery-thumbs" id="galleryThumbs"></div>
       </div>
@@ -593,7 +594,7 @@ button{font-family:var(--font);cursor:pointer}
           <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
           <span class="count">4.7 (832 reviews)</span>
         </div>
-        <h2 class="product-title" id="prodTitle"></h2>
+        <h1 class="product-title" id="prodTitle"></h1>
         <div class="product-price" id="prodPrice"></div>
         <p class="product-desc" id="prodDesc"></p>
         <button class="product-desc-more" id="prodDescMore">Read more</button>
@@ -691,6 +692,7 @@ button{font-family:var(--font);cursor:pointer}
     <div class="text-center"><a href="#products" class="btn-gold">Shop Now&ensp;&rarr;</a></div>
   </div>
 </section>
+</main>
 
 <!-- ═══ Footer ═══ -->
 <footer class="site-footer">
@@ -749,7 +751,7 @@ button{font-family:var(--font);cursor:pointer}
     <h3>Get 10% Off</h3>
     <p class="popup-sub">Your first order. Join for exclusive deals &amp; recipes.</p>
     <form id="popupForm">
-      <input type="email" id="popupEmail" placeholder="Your email address" required/>
+      <input type="email" id="popupEmail" name="email" placeholder="Your email address" required/>
       <label class="consent-row"><input type="checkbox" id="popupConsent" required/> I agree to receive emails</label>
       <button type="submit" class="btn-gold">Claim My Discount</button>
     </form>
