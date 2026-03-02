@@ -25,10 +25,10 @@
   RESET & VARIABLES
 ═══════════════════════════════════════════════════════════════*/
 :root{
-  --gold:#D4A847;--gold-hover:#c49b3f;--gold-light:#f5e6c4;--gold-bg:rgba(212,168,71,.07);
+  --gold:#b8922e;--gold-hover:#a6832a;--gold-light:#f5e6c4;--gold-bg:rgba(212,168,71,.07);
   --black:#1a1a1a;--white:#ffffff;--bg:#f9f6f1;--bg-alt:#f5f0e8;--bg-warm:#efe9dd;
   --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
-  --gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;
+  --gray-400:#6b7280;--gray-500:#4b5563;--gray-600:#4b5563;--gray-700:#374151;
   --font:'Inter',system-ui,-apple-system,sans-serif;
   --radius:10px;--radius-lg:14px;--radius-xl:20px;
   --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow:0 4px 20px rgba(0,0,0,.06);
@@ -626,7 +626,7 @@ button{font-family:var(--font);cursor:pointer}
         </div>
 
         <div class="includes-box">
-          <h4>&#9989;&ensp;What's Included</h4>
+          <h2>&#9989;&ensp;What's Included</h2>
           <ul class="includes-list" id="includesList"></ul>
         </div>
       </div>
@@ -639,7 +639,7 @@ button{font-family:var(--font);cursor:pointer}
   <div class="container">
     <div class="reveal" style="margin-bottom:28px">
       <span class="section-label">Add-Ons</span>
-      <h3 class="section-title" style="font-size:24px">Complete Your Bar</h3>
+      <h2 class="section-title" style="font-size:24px">Complete Your Bar</h2>
     </div>
     <div id="upsellContainer" class="reveal"></div>
   </div>
@@ -677,10 +677,10 @@ button{font-family:var(--font);cursor:pointer}
       <p class="section-sub" style="margin-left:auto;margin-right:auto">We obsess over every detail so you can focus on enjoying the perfect drink.</p>
     </div>
     <div class="why-grid">
-      <div class="why-card reveal"><div class="why-icon">&#127807;</div><h4>Premium Ingredients</h4><p>All-natural botanicals and spices sourced for exceptional quality and flavor.</p></div>
-      <div class="why-card reveal"><div class="why-icon">&#127873;</div><h4>Everything Included</h4><p>Complete kits with everything you need — just add your spirit and start mixing.</p></div>
-      <div class="why-card reveal"><div class="why-icon">&#10024;</div><h4>Gift-Ready Packaging</h4><p>Elegant boxes crafted for any occasion. Impress before the first sip.</p></div>
-      <div class="why-card reveal"><div class="why-icon">&#9829;</div><h4>832+ Happy Customers</h4><p>Loved by mixology enthusiasts everywhere. See what they're saying.</p></div>
+      <div class="why-card reveal"><div class="why-icon">&#127807;</div><h3>Premium Ingredients</h3><p>All-natural botanicals and spices sourced for exceptional quality and flavor.</p></div>
+      <div class="why-card reveal"><div class="why-icon">&#127873;</div><h3>Everything Included</h3><p>Complete kits with everything you need — just add your spirit and start mixing.</p></div>
+      <div class="why-card reveal"><div class="why-icon">&#10024;</div><h3>Gift-Ready Packaging</h3><p>Elegant boxes crafted for any occasion. Impress before the first sip.</p></div>
+      <div class="why-card reveal"><div class="why-icon">&#9829;</div><h3>832+ Happy Customers</h3><p>Loved by mixology enthusiasts everywhere. See what they're saying.</p></div>
     </div>
   </div>
 </section>
@@ -717,7 +717,7 @@ button{font-family:var(--font);cursor:pointer}
 
 <!-- ═══ Photo Lightbox ═══ -->
 <div class="photo-lightbox" id="photoLightbox">
-  <button class="photo-lightbox-close" id="lightboxClose">&times;</button>
+  <button class="photo-lightbox-close" id="lightboxClose" aria-label="Close image">&times;</button>
   <img id="lightboxImg" src="" alt="Review photo"/>
 </div>
 
@@ -726,7 +726,7 @@ button{font-family:var(--font);cursor:pointer}
 <div class="side-cart" id="sideCart">
   <div class="side-cart-header">
     <h3>Your Cart</h3>
-    <button class="side-cart-close" id="sideCartClose">&times;</button>
+    <button class="side-cart-close" id="sideCartClose" aria-label="Close cart">&times;</button>
   </div>
   <div class="side-cart-items" id="sideCartItems"></div>
   <div class="side-cart-footer">
@@ -748,7 +748,7 @@ button{font-family:var(--font);cursor:pointer}
 <!-- ═══ Popup ═══ -->
 <div class="popup-overlay" id="popupOverlay">
   <div class="popup">
-    <button class="popup-close" id="popupClose">&times;</button>
+    <button class="popup-close" id="popupClose" aria-label="Close popup">&times;</button>
     <h3>Get 10% Off</h3>
     <p class="popup-sub">Your first order. Join for exclusive deals &amp; recipes.</p>
     <form id="popupForm">
@@ -1085,7 +1085,7 @@ function updateCartUI() {
             '<div class="side-cart-item-meta">Add-on</div>' +
             '<div class="side-cart-item-price">' + u.price + '</div>' +
           '</div>' +
-          '<button class="side-cart-remove" data-vid="' + u.variantId + '" title="Remove">&times;</button>' +
+          '<button class="side-cart-remove" data-vid="' + u.variantId + '" title="Remove" aria-label="Remove item">&times;</button>' +
         '</div>';
       }
     }));
@@ -1327,7 +1327,7 @@ function renderVolumeSelector() {
     { qty:3, label:'Buy 3+', pct:0.20, badge:'Best Savings', badgeClass:'best' }
   ];
 
-  let html = '<h4>Volume Discount</h4><div class="volume-options">';
+  let html = '<h3>Volume Discount</h3><div class="volume-options">';
   tiers.forEach(function(t) {
     html += '<div class="volume-opt' + (selectedQty === t.qty ? ' active' : '') + '" data-qty="' + t.qty + '">' +
       (t.badge ? '<span class="volume-opt-badge ' + t.badgeClass + '">' + t.badge + '</span>' : '') +
