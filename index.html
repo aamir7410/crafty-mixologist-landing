@@ -19,6 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+  <link rel="preload" as="image" href="https://craftymixologist.com/cdn/shop/files/mainImage.png?width=600"/>
   <style>
 /*═══════════════════════════════════════════════════════════════
   RESET & VARIABLES
@@ -583,7 +584,7 @@ button{font-family:var(--font);cursor:pointer}
       <div class="gallery" id="gallery">
         <div class="gallery-main" id="galleryMain">
           <span class="gallery-badge" id="galleryBadge">BEST SELLER</span>
-          <img id="mainImg" src="" alt="Product image" width="800" height="800"/>
+          <img id="mainImg" src="" alt="Product image" width="600" height="600" fetchpriority="high"/>
         </div>
         <div class="gallery-thumbs" id="galleryThumbs"></div>
       </div>
@@ -773,10 +774,10 @@ const PRODUCTS = [
     desc:'Unleash your inner distiller with this complete whiskey making kit. Infuse spirits with American oak, cinnamon, cacao beans & more. Blend bold flavors like dark chocolate, orange peel, coffee beans & Bird\u2019s Eye chilis to create your own signature whiskey.',
     cartLink:'https://craftymixologist.com/cart/51316421067071:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/Whiskey_Kit_-_Main_Image_-_Amazon.png?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81JQCollfJL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/910eVKR42LL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/912Pb9HTX2L._AC_SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/Whiskey_Kit_-_Main_Image_-_Amazon.png?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81JQCollfJL._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/910eVKR42LL._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/912Pb9HTX2L._AC_SL1500.jpg?width=600'
     ],
     includes:['2 elegant glass bottles with wooden corks','3 wood chip blends','6 botanical flavors (orange peel, chai mix, cinnamon, cocoa beans, coffee beans, bird\u2019s-eye chili)','Stainless steel funnel & strainer','6 metal whiskey stones','Custom labels','Instruction booklet with recipes'],
     banners:['images/All_in_1_Whiskey.jpeg','images/All_in_1.jpeg']
@@ -786,8 +787,8 @@ const PRODUCTS = [
     desc:'Craft your tequila just the way you like it. Whether you want a smokey blend, botanical flavors, or a unique creation, our kit lets you achieve refined tastes. With wood chip blends and botanicals, every sip is a personalized experience.',
     cartLink:'https://craftymixologist.com/cart/51316421034303:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/TequilaMain1.png?width=800',
-      'https://craftymixologist.com/cdn/shop/files/Whiskey_Infusion_Kit_and_water_drink_tequil.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/TequilaMain1.png?width=600',
+      'https://craftymixologist.com/cdn/shop/files/Whiskey_Infusion_Kit_and_water_drink_tequil.jpg?width=600'
     ],
     includes:['2 elegant tequila bottles','3 wood chip blends','9 botanical flavors','Filter funnel & strainer','Ceramic shot glasses','Custom labels','Instruction booklet with recipes'],
     banners:['images/All_in_1_Tequila.jpeg','images/Tequila_in_box.jpeg','images/Teuqila_Instructions.jpeg']
@@ -797,12 +798,12 @@ const PRODUCTS = [
     desc:'Elevate your mixology skills and impress guests with smoky cocktails. Enhance whiskey, bourbon, or craft drinks with six aromatic wood chip flavors. Easy to use for beginners and seasoned mixologists alike.',
     cartLink:'https://craftymixologist.com/cart/51316421099839:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/WhiskeyMainIMageFInal.png?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81jJxTF9n2L._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/8163K1bMegL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81EjM4JKYWL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81uk6VcgZnL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/91DuQYdghHL._AC_SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/WhiskeyMainIMageFInal.png?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81jJxTF9n2L._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/8163K1bMegL._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81EjM4JKYWL._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81uk6VcgZnL._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/91DuQYdghHL._AC_SL1500.jpg?width=600'
     ],
     includes:['Refillable torch (butane not included)','2 premium whiskey glasses','6 wood chip flavors (cherry, oak, pecan, apple, walnut & pear)','Wooden smoking plate','Elegant glass dome'],
     banners:['images/smoker_instructions.jpeg','images/SMoker.jpeg','images/butane_insturctions.jpeg']
@@ -812,9 +813,9 @@ const PRODUCTS = [
     desc:'This complete espresso martini kit includes 6 exotic botanicals for crafting exquisite espresso martinis with ease. Whether you\u2019re a seasoned mixologist or a home bartender, everything you need is in the box. Impress your guests with perfectly balanced cocktails.',
     cartLink:'https://craftymixologist.com/cart/51316421132607:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/mainImage.png?width=800',
-      'https://craftymixologist.com/cdn/shop/files/BJ6A9066.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/mainImage.png?width=600',
+      'https://craftymixologist.com/cdn/shop/files/BJ6A9066.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=600'
     ],
     includes:['6 exotic botanicals (cane sugar, vanilla powder, cocoa beans, nutmeg, coffee beans, cardamom)','Measuring teaspoon & tablespoon','2 stylish martini glasses','Espresso martini decor','Recipe booklet'],
     banners:['images/Martini_1.jpeg','images/Martini_2.jpeg','images/Martini_3.jpeg','images/espresso_instructions.jpeg']
@@ -824,9 +825,9 @@ const PRODUCTS = [
     desc:'The ultimate package for margarita lovers. Craft the perfect margarita with a pro-level stainless steel shaker, fresh botanicals, and lime-infused salt for the perfect rim. Includes a step-by-step recipe book for classic, spicy, and fruity margaritas.',
     cartLink:'https://craftymixologist.com/cart/51316421165375:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/81Gp-5X5FSL._AC_SX679.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81lgjjpShPL._AC_SX679.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81Q4RZoY4bL._AC_SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/81Gp-5X5FSL._AC_SX679.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81lgjjpShPL._AC_SX679.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81Q4RZoY4bL._AC_SL1500.jpg?width=600'
     ],
     includes:['550ml stainless steel shaker with built-in strainer','Stainless steel jigger','Citrus squeezer','5 botanicals (jalape\u00f1o, lime powder, agave, orange peel, hibiscus petals)','Dried lime slices','Lime-infused margarita salt','2 margarita glasses (11 oz)','Recipe book'],
     banners:['images/Margarita_1.jpg','images/Margarita_2.jpg','images/Margarita_3.jpg','images/Margarita_instructions.jpg']
@@ -836,10 +837,10 @@ const PRODUCTS = [
     desc:'Craft the perfect Moscow Mule with this premium kit featuring gorgeous copper mugs that keep drinks colder, longer. Includes 11 exotic botanicals for next-level flavor infusions and a cocktail recipe book to inspire endless creations.',
     cartLink:'https://craftymixologist.com/cart/51316421198143:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/61_0OvStRFL._AC_SX679.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81MngYAPCIL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81qkeMpVGrL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81siPwcxAaL._AC_SL1500_73ef9b47-a60f-46d1-a2df-734f194edd72.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/61_0OvStRFL._AC_SX679.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81MngYAPCIL._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81qkeMpVGrL._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81siPwcxAaL._AC_SL1500_73ef9b47-a60f-46d1-a2df-734f194edd72.jpg?width=600'
     ],
     includes:['2 handcrafted copper mugs (16 oz)','550ml stainless steel cocktail shaker','Stainless steel jigger','Muddler','11 botanicals (star anise, juniper berries, cardamom, cloves, cinnamon sticks, lemongrass, hibiscus, mint, orange peels, lemon peel, ginger root & lime)','Recipe book'],
     banners:['images/Moscow1.jpg','images/Moscow_2.jpg','images/Moscow_3.jpg','images/Moscow_instructions.jpg']
@@ -849,10 +850,10 @@ const PRODUCTS = [
     desc:'Crafted for purists \u2014 no synthetic additives, only flavor-rich botanicals for serious home cooks and entertainers. This isn\u2019t just a gift set \u2014 it\u2019s an experience. Ideal for olive oil dipping, flavored cooking oils, or a beautiful Italian gift basket.',
     cartLink:'https://craftymixologist.com/cart/51537599299903:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/image_21.png?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81E70h6pG4L._SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81M3GIFc3NL._SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81wuzXnWY3L._SL1500__1.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/image_21.png?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81E70h6pG4L._SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81M3GIFc3NL._SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81wuzXnWY3L._SL1500__1.jpg?width=600'
     ],
     includes:['4 flavored extra virgin olive oils','3 spice infusion blends','Bread dipping bowl','Recipe booklet'],
     banners:['images/oil_instructions.jpeg','images/oil_use_1.jpeg','images/oil_use_2.jpeg','images/oil_use_3.jpeg']
@@ -862,10 +863,10 @@ const PRODUCTS = [
     desc:'Discover 8 distinct flavor journeys with premium loose-leaf teas. Perfect for relaxing rituals, self-care moments, or cozy evenings. Mix and match to craft your own signature cup.',
     cartLink:'https://craftymixologist.com/cart/51537665950015:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/81raK6j9U8L._SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81ozRy6_-OL._SL1500__1.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81cfBAA9K1L._SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81iBDmovlWL._SL1500.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/81raK6j9U8L._SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81ozRy6_-OL._SL1500__1.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81cfBAA9K1L._SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81iBDmovlWL._SL1500.jpg?width=600'
     ],
     includes:['8 premium loose-leaf teas (Earl Grey, English Breakfast, Lavender, Peppermint, Green Tea Blend, Vanilla Chai, Jasmine, Lemon Honey)','Stainless steel tea infuser','Elegant gift packaging'],
     banners:['images/tea_drinking.jpeg','images/tea_drinking2.jpeg','images/Tea_instructions.jpeg']
@@ -875,10 +876,10 @@ const PRODUCTS = [
     desc:'Craft top-tier whiskey, vodka, gin, rum & tequila right at home with 15 botanicals for endless flavor possibilities. Includes 10+ delicious recipes and flavor guides for each spirit. The ultimate bartender-level gift.',
     cartLink:'https://craftymixologist.com/cart/51585567949119:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/815cJhUq3IL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81_wl_6fVkL._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81-pZP_JT-L._AC_SL1500.jpg?width=800',
-      'https://craftymixologist.com/cdn/shop/files/81RQ3qIwPdL._AC_SL1500__1.jpg?width=800'
+      'https://craftymixologist.com/cdn/shop/files/815cJhUq3IL._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81_wl_6fVkL._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81-pZP_JT-L._AC_SL1500.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81RQ3qIwPdL._AC_SL1500__1.jpg?width=600'
     ],
     includes:['15 botanicals (orange peel, cinnamon, clove, vanilla bean, mint, juniper berries, lemon peel, hibiscus, butterfly pea flower, coffee beans, cacao nibs, smoked chili, roasted barley, jasmine, lavender, ginger root)','2 glass infusion bottles','Funnel & strainer','Recipe booklet with 10+ recipes & flavor guides','Custom labels'],
     banners:['images/All_in_1.jpeg','images/All_in_1_Gin.jpeg','images/All_in_1_Rum.jpeg','images/All_in_1_Tequila.jpeg','images/All_in_1_Vodka.jpeg','images/All_in_1_Whiskey.jpeg']
