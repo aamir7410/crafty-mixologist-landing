@@ -236,6 +236,11 @@ button{font-family:var(--font);cursor:pointer}
 .side-cart-header{display:flex;align-items:center;justify-content:space-between;
   padding:20px 24px;border-bottom:1px solid var(--gray-200)}
 .side-cart-header h3{font-size:18px;font-weight:800;margin:0}
+.shipping-progress{padding:12px 24px;border-bottom:1px solid var(--gray-200);display:none}
+.shipping-progress.visible{display:block}
+.shipping-progress-text{font-size:12px;font-weight:600;margin-bottom:6px}
+.shipping-progress-bar{height:4px;border-radius:4px;background:#eee;overflow:hidden}
+.shipping-progress-fill{height:100%;border-radius:4px;background:var(--gold);transition:width .3s ease}
 .side-cart-close{width:32px;height:32px;border-radius:50%;border:none;
   background:var(--gray-100);font-size:18px;display:flex;align-items:center;
   justify-content:center;cursor:pointer;color:var(--gray-500);transition:all var(--transition)}
@@ -553,7 +558,7 @@ button{font-family:var(--font);cursor:pointer}
 <body>
 
 <!-- ═══ Top Banner ═══ -->
-<div class="top-banner">&#x2713;&ensp;FREE Shipping on orders $100+</div>
+<div class="top-banner">&#x2713;&ensp;FREE Shipping on orders $75+</div>
 
 <!-- ═══ Navigation ═══ -->
 <nav class="nav">
@@ -617,7 +622,7 @@ button{font-family:var(--font);cursor:pointer}
           </span>
           <span class="trust-item">
             <svg width="16" height="16" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-            Free shipping $100+
+            Free shipping $75+
           </span>
           <span class="trust-item">
             <svg width="16" height="16" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5a2 2 0 01-2 2h-1"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
@@ -728,6 +733,7 @@ button{font-family:var(--font);cursor:pointer}
     <h3>Your Cart</h3>
     <button class="side-cart-close" id="sideCartClose" aria-label="Close cart">&times;</button>
   </div>
+  <div class="shipping-progress" id="shippingProgress"></div>
   <div class="side-cart-items" id="sideCartItems"></div>
   <div class="side-cart-footer">
     <div class="side-cart-totals" id="sideCartTotals"></div>
@@ -1199,10 +1205,29 @@ function updateCartUI() {
     if (discountAmt > 0) {
       totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.round(tier.pct*100) + '%)</span><span>-' + fmt(discountAmt) + '</span></div>';
     }
-    totalsHTML += '<div class="side-cart-row"><span>Shipping</span><span>' + (grandTotal >= 100 ? 'Free' : 'Calculated at checkout') + '</span></div>';
+    totalsHTML += '<div class="side-cart-row"><span>Shipping</span><span>' + (grandTotal >= 75 ? 'Free' : 'Calculated at checkout') + '</span></div>';
     totalsHTML += '<div class="side-cart-row total"><span>Total</span><span class="side-cart-row-val">' + fmt(grandTotal) + '</span></div>';
   }
   $sideCartTotals.innerHTML = totalsHTML;
+
+  // Update shipping progress bar
+  var $shipBar = document.getElementById('shippingProgress');
+  if (kitCount > 0 || addonsTotal > 0) {
+    var shipThreshold = 75;
+    var shipPct = Math.min(grandTotal / shipThreshold * 100, 100);
+    var shipRemaining = Math.max(shipThreshold - grandTotal, 0);
+    $shipBar.classList.add('visible');
+    if (grandTotal >= shipThreshold) {
+      $shipBar.innerHTML = '<div class="shipping-progress-text" style="color:#16a34a">\uD83C\uDF89 You qualify for FREE shipping!</div>' +
+        '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:100%;background:#16a34a"></div></div>';
+    } else {
+      $shipBar.innerHTML = '<div class="shipping-progress-text" style="color:var(--gold)">You\u2019re ' + fmt(shipRemaining) + ' away from FREE shipping!</div>' +
+        '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:' + shipPct + '%"></div></div>';
+    }
+  } else {
+    $shipBar.classList.remove('visible');
+    $shipBar.innerHTML = '';
+  }
 
   // Update floating badge
   const count = getCartItemCount();
