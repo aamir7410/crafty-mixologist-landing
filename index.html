@@ -1725,6 +1725,9 @@ selectVariant = function(idx) {
   $prodDesc.classList.add('mob-truncated');
   $descMore.textContent = 'Read more';
   checkDescTruncation();
+  // Update sticky bar price
+  var stickyPrice = document.getElementById('stickyPriceVal');
+  if (stickyPrice) stickyPrice.textContent = PRODUCTS[idx].price;
 };
 
 checkDescTruncation();
@@ -1802,6 +1805,7 @@ selectVariant(3);
     justify-content: space-between;
     max-width: 480px;
     margin: 0 auto;
+    padding: 0 8px;
   }
   #sticky-atc-bar .sticky-price {
     font-size: 18px;
@@ -1836,7 +1840,7 @@ selectVariant(3);
 <div id="sticky-atc-bar">
   <div class="sticky-inner">
     <div class="sticky-price">
-      $69.99
+      <span id="stickyPriceVal">$69.99</span>
       <span>Free shipping $75+</span>
     </div>
     <button class="sticky-btn" onclick="document.getElementById('addToCartBtn').click();">Add to Cart +</button>
