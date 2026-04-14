@@ -1392,6 +1392,19 @@ function renderVolumeSelector() {
   });
 
   $addToCartBtn.textContent = selectedQty > 1 ? 'Add ' + selectedQty + ' to Cart  +' : 'Add to Cart  +';
+
+  // Update sticky bar
+  var stickyPrice = document.getElementById('stickyPriceVal');
+  var stickyBtn = document.querySelector('#sticky-atc-bar .sticky-btn');
+  if (stickyPrice) {
+    var pctSticky = getVolumeTierPct(selectedQty);
+    var discUnitSticky = Math.ceil(price * (1 - pctSticky) * 100) / 100;
+    var totalSticky = discUnitSticky * selectedQty;
+    stickyPrice.textContent = fmt(totalSticky);
+  }
+  if (stickyBtn) {
+    stickyBtn.textContent = selectedQty > 1 ? 'Add ' + selectedQty + ' to Cart +' : 'Add to Cart +';
+  }
 }
 
 function selectThumb(idx, src) {
