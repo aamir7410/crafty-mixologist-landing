@@ -1060,14 +1060,14 @@ function updateCartUI() {
     const p = getProductByVariantId(vid);
     if (!p) return;
     const unitPrice = parsePrice(p.price);
-    const discountedUnit = Math.round(unitPrice * (1 - tier.pct) * 100) / 100;
+    const discountedUnit = Math.ceil(unitPrice * (1 - tier.pct) * 100) / 100;
     const lineTotal = discountedUnit * qty;
     kitsSubtotal += lineTotal;
     itemsHTML += '<div class="side-cart-item">' +
       '<div class="side-cart-thumb"><img src="' + p.images[0] + '" alt="' + p.name + '"/></div>' +
       '<div class="side-cart-item-info">' +
         '<div class="side-cart-item-name">' + p.name + '</div>' +
-        '<div class="side-cart-item-meta">' + p.price + ' ea' + (tier.pct > 0 ? ' &middot; ' + Math.round(tier.pct*100) + '% off' : '') + '</div>' +
+        '<div class="side-cart-item-meta">' + p.price + ' ea' + (tier.pct > 0 ? ' &middot; ' + Math.ceil(tier.pct*100) + '% off' : '') + '</div>' +
         '<div class="side-cart-item-price">' + fmt(lineTotal) + '</div>' +
       '</div>' +
       '<div class="cart-qty">' +
@@ -1205,7 +1205,7 @@ function updateCartUI() {
   if (kitCount > 0 || addonsTotal > 0) {
     totalsHTML += '<div class="side-cart-row"><span>Subtotal</span><span>' + fmt(subtotalBeforeDiscount) + '</span></div>';
     if (discountAmt > 0) {
-      totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.round(tier.pct*100) + '%)</span><span>-' + fmt(discountAmt) + '</span></div>';
+      totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.ceil(tier.pct*100) + '%)</span><span>-' + fmt(discountAmt) + '</span></div>';
     }
     totalsHTML += '<div class="side-cart-row"><span>Shipping</span><span>' + (grandTotal >= 75 ? 'Free' : 'Calculated at checkout') + '</span></div>';
     totalsHTML += '<div class="side-cart-row total"><span>Total</span><span class="side-cart-row-val">' + fmt(grandTotal) + '</span></div>';
@@ -1358,14 +1358,14 @@ function renderVolumeSelector() {
     html += '<div class="volume-opt' + (selectedQty === t.qty ? ' active' : '') + '" data-qty="' + t.qty + '">' +
       (t.badge ? '<span class="volume-opt-badge ' + t.badgeClass + '">' + t.badge + '</span>' : '') +
       '<div class="volume-opt-qty">' + t.label + '</div>' +
-      '<div class="volume-opt-pct">' + Math.round(t.pct * 100) + '% off</div>' +
+      '<div class="volume-opt-pct">' + Math.ceil(t.pct * 100) + '% off</div>' +
     '</div>';
   });
   html += '</div>';
 
   var pct = getVolumeTierPct(selectedQty);
   var orig = price * selectedQty;
-  var discUnit = Math.round(price * (1 - pct) * 100) / 100;
+  var discUnit = Math.ceil(price * (1 - pct) * 100) / 100;
   var disc = discUnit * selectedQty;
   var saved = orig - disc;
   if (pct > 0) {
