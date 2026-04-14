@@ -1740,9 +1740,15 @@ selectVariant = function(idx) {
   $prodDesc.classList.add('mob-truncated');
   $descMore.textContent = 'Read more';
   checkDescTruncation();
-  // Update sticky bar price
+  // Update sticky bar price with volume discount
   var stickyPrice = document.getElementById('stickyPriceVal');
-  if (stickyPrice) stickyPrice.textContent = PRODUCTS[idx].price;
+  if (stickyPrice) {
+    var p = PRODUCTS[idx];
+    var unitPrice = parsePrice(p.price);
+    var pctOff = getVolumeTierPct(selectedQty);
+    var discUnit = Math.ceil(unitPrice * (1 - pctOff) * 100) / 100;
+    stickyPrice.textContent = fmt(discUnit * selectedQty);
+  }
 };
 
 checkDescTruncation();
