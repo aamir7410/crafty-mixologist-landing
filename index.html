@@ -1595,7 +1595,8 @@ $overlay.addEventListener('click', (e) => {
    EMAIL / SUBSCRIBER LOGIC
 ═══════════════════════════════════════════════════════════════ */
 const STORAGE_KEY = 'crafty_mixologist_subscribers_v1';
-const WEBHOOK_URL = '';
+const KLAVIYO_API_KEY = 'TSxnKs';
+const KLAVIYO_LIST_ID = 'WNWm3C';
 
 function loadSubscribers() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
@@ -1607,15 +1608,42 @@ function saveSubscriber(obj) {
 }
 function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
+function subscribeToKlaviyo(email) {
+  fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + KLAVIYO_API_KEY, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'revision': '2024-10-15'
+    },
+    body: JSON.stringify({
+      data: {
+        type: 'subscription',
+        attributes: {
+          custom_source: 'Netlify Landing Page',
+          profile: {
+            data: {
+              type: 'profile',
+              attributes: { email: email }
+            }
+          }
+        },
+        relationships: {
+          list: {
+            data: { type: 'list', id: KLAVIYO_LIST_ID }
+          }
+        }
+      }
+    })
+  }).catch(() => {});
+}
+
 function handleSignup(emailEl, consentEl, formEl, thanksEl) {
   const email = emailEl.value.trim();
   if (!validateEmail(email)) { alert('Please enter a valid email address.'); return; }
   if (!consentEl.checked) { alert('Please agree to receive emails.'); return; }
   const sub = { email, date: new Date().toISOString() };
   saveSubscriber(sub);
-  if (WEBHOOK_URL) {
-    fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(sub) }).catch(()=>{});
-  }
+  subscribeToKlaviyo(email);
   formEl.style.display = 'none';
   thanksEl.style.display = 'block';
   localStorage.setItem(POPUP_KEY, '1');
