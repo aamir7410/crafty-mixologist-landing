@@ -490,9 +490,8 @@ button{font-family:var(--font);cursor:pointer}
 
   .volume-selector{order:6;margin-bottom:16px}
   .buy-actions{order:7;flex-direction:column;margin-bottom:12px}
-  .guarantee-badge{order:8;margin-bottom:12px}
-  .trust-row{order:9;flex-direction:row;flex-wrap:wrap;gap:10px;margin-bottom:16px}
-  .includes-box{order:10;margin-bottom:16px;padding:18px}
+  .trust-row{order:8;flex-direction:row;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+  .includes-box{order:9;margin-bottom:16px;padding:18px}
   .includes-list{grid-template-columns:1fr;word-break:break-word;overflow-wrap:break-word}
 
   /* ── Volume discount compact ── */
@@ -1765,16 +1764,15 @@ updateCartUI();
 selectVariant(3);
 </script>
 
-<!-- 30-Day Satisfaction Guarantee badge -->
+<!-- 30-Day Guarantee badge -->
 <script>
 (function() {
-  var buyActions = document.querySelector('.buy-actions');
-  if (!buyActions) return;
-  var guarantee = document.createElement('div');
-  guarantee.className = 'guarantee-badge';
-  guarantee.style.cssText = 'text-align:center; margin-top:10px; padding:8px 0; font-size:13px; color:#555; letter-spacing:0.3px;';
-  guarantee.innerHTML = '🛡️ <strong style="color:#333;">30-Day Satisfaction Guarantee</strong> — Love it or your money back';
-  buyActions.parentNode.insertBefore(guarantee, buyActions.nextSibling);
+  var trustRow = document.querySelector('.trust-row');
+  if (!trustRow) return;
+  var badge = document.createElement('span');
+  badge.className = 'trust-item';
+  badge.innerHTML = '<svg width="16" height="16" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg> 30-Day Guarantee';
+  trustRow.appendChild(badge);
 })();
 </script>
 
