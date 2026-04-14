@@ -28,7 +28,7 @@
   --gold:#b8922e;--gold-hover:#a6832a;--gold-light:#f5e6c4;--gold-bg:rgba(212,168,71,.07);
   --black:#1a1a1a;--white:#ffffff;--bg:#f9f6f1;--bg-alt:#f5f0e8;--bg-warm:#efe9dd;
   --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
-  --gray-400:#6b7280;--gray-500:#4b5563;--gray-600:#4b5563;--gray-700:#374151;
+  --gray-400:#5c6470;--gray-500:#4b5563;--gray-600:#4b5563;--gray-700:#374151;
   --font:'Inter',system-ui,-apple-system,sans-serif;
   --radius:10px;--radius-lg:14px;--radius-xl:20px;
   --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow:0 4px 20px rgba(0,0,0,.06);
@@ -564,7 +564,7 @@ button{font-family:var(--font);cursor:pointer}
 <nav class="nav">
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <img src="https://craftymixologist.com/cdn/shop/files/Logo_2_Preview_File_d216aa01-808f-4958-9f00-33897e054208.png?width=400" alt="Crafty Mixologist" />
+      <img src="https://craftymixologist.com/cdn/shop/files/Logo_2_Preview_File_d216aa01-808f-4958-9f00-33897e054208.png?width=400" alt="Crafty Mixologist" width="200" height="50"/>
     </a>
     <div class="nav-links" id="navLinks">
       <a href="#products">Shop</a>
@@ -723,7 +723,7 @@ button{font-family:var(--font);cursor:pointer}
 <!-- ═══ Photo Lightbox ═══ -->
 <div class="photo-lightbox" id="photoLightbox">
   <button class="photo-lightbox-close" id="lightboxClose" aria-label="Close image">&times;</button>
-  <img id="lightboxImg" src="" alt="Review photo"/>
+  <img id="lightboxImg" src="" alt="Review photo" width="600" height="600"/>
 </div>
 
 <!-- ═══ Side Cart Panel ═══ -->
@@ -786,7 +786,7 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/912Pb9HTX2L._AC_SL1500.jpg?width=600'
     ],
     includes:['2 elegant glass bottles with wooden corks','3 wood chip blends','6 botanical flavors (orange peel, chai mix, cinnamon, cocoa beans, coffee beans, bird\u2019s-eye chili)','Stainless steel funnel & strainer','6 metal whiskey stones','Custom labels','Instruction booklet with recipes'],
-    banners:['images/All_in_1_Whiskey.jpeg','images/All_in_1.jpeg']
+    banners:['images/All_in_1_Whiskey.webp','images/All_in_1.webp']
   },
   {
     id:'tequila', name:'Tequila Infusion Kit', price:'$69.99', badge:'', variantId:'51316421034303',
@@ -797,7 +797,7 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/Whiskey_Infusion_Kit_and_water_drink_tequil.jpg?width=600'
     ],
     includes:['2 elegant tequila bottles','3 wood chip blends','9 botanical flavors','Filter funnel & strainer','Ceramic shot glasses','Custom labels','Instruction booklet with recipes'],
-    banners:['images/All_in_1_Tequila.jpeg','images/Tequila_in_box.jpeg','images/Teuqila_Instructions.jpeg']
+    banners:['images/All_in_1_Tequila.webp','images/Tequila_in_box.webp','images/Teuqila_Instructions.webp']
   },
   {
     id:'smoker', name:'Cocktail Smoker Kit', price:'$49.99', badge:'', variantId:'51316421099839',
@@ -812,7 +812,7 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/91DuQYdghHL._AC_SL1500.jpg?width=600'
     ],
     includes:['Refillable torch (butane not included)','2 premium whiskey glasses','6 wood chip flavors (cherry, oak, pecan, apple, walnut & pear)','Wooden smoking plate','Elegant glass dome'],
-    banners:['images/smoker_instructions.jpeg','images/SMoker.jpeg','images/butane_insturctions.jpeg']
+    banners:['images/smoker_instructions.webp','images/SMoker.webp','images/butane_insturctions.webp']
   },
   {
     id:'espresso', name:'Espresso Martini Kit', price:'$69.99', badge:'BEST SELLER', variantId:'51316421132607',
@@ -824,7 +824,7 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81eTU_yfInL._AC_SL1500.jpg?width=600'
     ],
     includes:['6 exotic botanicals (cane sugar, vanilla powder, cocoa beans, nutmeg, coffee beans, cardamom)','Measuring teaspoon & tablespoon','2 stylish martini glasses','Espresso martini decor','Recipe booklet'],
-    banners:['images/Martini_1.jpeg','images/Martini_2.jpeg','images/Martini_3.jpeg','images/espresso_instructions.jpeg']
+    banners:['images/Martini_1.webp','images/Martini_2.webp','images/Martini_3.webp','images/espresso_instructions.webp']
   },
   {
     id:'margarita', name:'Margarita Kit', price:'$69.99', badge:'', variantId:'51316421165375',
@@ -836,7 +836,7 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81Q4RZoY4bL._AC_SL1500.jpg?width=600'
     ],
     includes:['550ml stainless steel shaker with built-in strainer','Stainless steel jigger','Citrus squeezer','5 botanicals (jalape\u00f1o, lime powder, agave, orange peel, hibiscus petals)','Dried lime slices','Lime-infused margarita salt','2 margarita glasses (11 oz)','Recipe book'],
-    banners:['images/Margarita_1.jpg','images/Margarita_2.jpg','images/Margarita_3.jpg','images/Margarita_instructions.jpg']
+    banners:['images/Margarita_1.webp','images/Margarita_2.webp','images/Margarita_3.webp','images/Margarita_instructions.webp']
   },
   {
     id:'mule', name:'Moscow Mule Kit', price:'$69.99', badge:'', variantId:'51316421198143',
@@ -849,7 +849,7 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81siPwcxAaL._AC_SL1500_73ef9b47-a60f-46d1-a2df-734f194edd72.jpg?width=600'
     ],
     includes:['2 handcrafted copper mugs (16 oz)','550ml stainless steel cocktail shaker','Stainless steel jigger','Muddler','11 botanicals (star anise, juniper berries, cardamom, cloves, cinnamon sticks, lemongrass, hibiscus, mint, orange peels, lemon peel, ginger root & lime)','Recipe book'],
-    banners:['images/Moscow1.jpg','images/Moscow_2.jpg','images/Moscow_3.jpg','images/Moscow_instructions.jpg']
+    banners:['images/Moscow1.webp','images/Moscow_2.webp','images/Moscow_3.webp','images/Moscow_instructions.webp']
   },
   {
     id:'olive', name:'Olive Oil Infusion Kit', price:'$49.99', badge:'', variantId:'51537599299903',
@@ -862,7 +862,7 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81wuzXnWY3L._SL1500__1.jpg?width=600'
     ],
     includes:['4 flavored extra virgin olive oils','3 spice infusion blends','Bread dipping bowl','Recipe booklet'],
-    banners:['images/oil_instructions.jpeg','images/oil_use_1.jpeg','images/oil_use_2.jpeg','images/oil_use_3.jpeg']
+    banners:['images/oil_instructions.webp','images/oil_use_1.webp','images/oil_use_2.webp','images/oil_use_3.webp']
   },
   {
     id:'tea', name:'Tea Infusion Kit', price:'$49.99', badge:'', variantId:'51537665950015',
@@ -875,7 +875,7 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81iBDmovlWL._SL1500.jpg?width=600'
     ],
     includes:['8 premium loose-leaf teas (Earl Grey, English Breakfast, Lavender, Peppermint, Green Tea Blend, Vanilla Chai, Jasmine, Lemon Honey)','Stainless steel tea infuser','Elegant gift packaging'],
-    banners:['images/tea_drinking.jpeg','images/tea_drinking2.jpeg','images/Tea_instructions.jpeg']
+    banners:['images/tea_drinking.webp','images/tea_drinking2.webp','images/Tea_instructions.webp']
   },
   {
     id:'allinone', name:'All In One Kit', price:'$69.99', badge:'', variantId:'51585567949119',
@@ -888,7 +888,7 @@ const PRODUCTS = [
       'https://craftymixologist.com/cdn/shop/files/81RQ3qIwPdL._AC_SL1500__1.jpg?width=600'
     ],
     includes:['15 botanicals (orange peel, cinnamon, clove, vanilla bean, mint, juniper berries, lemon peel, hibiscus, butterfly pea flower, coffee beans, cacao nibs, smoked chili, roasted barley, jasmine, lavender, ginger root)','2 glass infusion bottles','Funnel & strainer','Recipe booklet with 10+ recipes & flavor guides','Custom labels'],
-    banners:['images/All_in_1.jpeg','images/All_in_1_Gin.jpeg','images/All_in_1_Rum.jpeg','images/All_in_1_Tequila.jpeg','images/All_in_1_Vodka.jpeg','images/All_in_1_Whiskey.jpeg']
+    banners:['images/All_in_1.webp','images/All_in_1_Gin.webp','images/All_in_1_Rum.webp','images/All_in_1_Tequila.webp','images/All_in_1_Vodka.webp','images/All_in_1_Whiskey.webp']
   }
 ];
 
@@ -1062,7 +1062,7 @@ function updateCartUI() {
     const lineTotal = discountedUnit * qty;
     kitsSubtotal += lineTotal;
     itemsHTML += '<div class="side-cart-item">' +
-      '<div class="side-cart-thumb"><img src="' + p.images[0] + '" alt="' + p.name + '"/></div>' +
+      '<div class="side-cart-thumb"><img src="' + p.images[0] + '" alt="' + p.name + '" width="60" height="60" loading="lazy"/></div>' +
       '<div class="side-cart-item-info">' +
         '<div class="side-cart-item-name">' + p.name + '</div>' +
         '<div class="side-cart-item-meta">' + p.price + ' ea' + (tier.pct > 0 ? ' &middot; ' + Math.round(tier.pct*100) + '% off' : '') + '</div>' +
@@ -1084,7 +1084,7 @@ function updateCartUI() {
         const addonPrice = parsePrice(u.price);
         addonsTotal += addonPrice;
         itemsHTML += '<div class="side-cart-item">' +
-          '<div class="side-cart-thumb"><img src="' + u.img + '" alt="' + u.name + '"/></div>' +
+          '<div class="side-cart-thumb"><img src="' + u.img + '" alt="' + u.name + '" width="60" height="60" loading="lazy"/></div>' +
           '<div class="side-cart-item-info">' +
             '<div class="side-cart-item-name">' + u.name + '</div>' +
             '<div class="side-cart-item-meta">Add-on</div>' +
@@ -1114,7 +1114,7 @@ function updateCartUI() {
         const u = ADDON_BY_VID[vid];
         if (!u) return;
         itemsHTML += '<div class="cart-upsell-item">' +
-          '<div class="cart-upsell-thumb"><img src="' + u.img + '" alt="' + u.name + '"/></div>' +
+          '<div class="cart-upsell-thumb"><img src="' + u.img + '" alt="' + u.name + '" width="50" height="50" loading="lazy"/></div>' +
           '<div class="cart-upsell-info">' +
             '<div class="cart-upsell-name">' + u.name + '</div>' +
             '<div class="cart-upsell-price">' + u.price + '</div>' +
@@ -1303,7 +1303,7 @@ function selectVariant(idx) {
   p.images.forEach((src, i) => {
     const div = document.createElement('div');
     div.className = 'thumb' + (i === 0 ? ' active' : '');
-    div.innerHTML = '<img src="' + src + '" alt="' + p.name + ' image ' + (i+1) + '" loading="lazy"/>';
+    div.innerHTML = '<img src="' + src + '" alt="' + p.name + ' image ' + (i+1) + '" width="80" height="80" loading="lazy"/>';
     div.addEventListener('click', () => selectThumb(i, src));
     $galleryThumbs.appendChild(div);
   });
@@ -1327,6 +1327,8 @@ function selectVariant(idx) {
       img.src = src;
       img.alt = p.name + ' lifestyle image';
       img.loading = 'lazy';
+      img.width = 600;
+      img.height = 400;
       $bannersContainer.appendChild(img);
     });
   }
@@ -1438,7 +1440,7 @@ function renderAddons() {
     card.className = 'upsell-card';
     const isAdded = addedAddons.has(u.variantId);
     card.innerHTML =
-      '<div class="upsell-img"><img src="' + u.img + '" alt="' + u.name + '" loading="lazy"/></div>' +
+      '<div class="upsell-img"><img src="' + u.img + '" alt="' + u.name + '" width="200" height="200" loading="lazy"/></div>' +
       '<div class="upsell-body">' +
         '<div class="upsell-name">' + u.name + '</div>' +
         '<div class="upsell-prices"><span class="upsell-price">' + u.price + '</span></div>' +
@@ -1489,7 +1491,7 @@ REVIEWS.forEach((r, idx) => {
   html += '<button class="review-readmore" data-idx="' + idx + '" style="display:none">Read more</button>';
   if (r.photos && r.photos.length) {
     html += '<div class="review-photos">';
-    r.photos.forEach(src => { html += '<img src="' + src + '" alt="Customer photo" loading="lazy"/>'; });
+    r.photos.forEach(src => { html += '<img src="' + src + '" alt="Customer photo" width="80" height="80" loading="lazy"/>'; });
     html += '</div>';
   }
   html += '<div class="review-meta">' +

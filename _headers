@@ -1,0 +1,12 @@
+# Cache static assets
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML - cache briefly, revalidate
+/
+  Cache-Control: public, max-age=300, must-revalidate
+/index.html
+  Cache-Control: public, max-age=300, must-revalidate
