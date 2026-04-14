@@ -1021,6 +1021,8 @@ function addToCart(variantId) {
 function openSideCart() {
   $sideCart.classList.add('open');
   $sideCartOverlay.classList.add('open');
+  var sb = document.getElementById('sticky-atc-bar');
+  if (sb) sb.classList.remove('visible');
 }
 function closeSideCart() {
   $sideCart.classList.remove('open');
