@@ -1763,5 +1763,105 @@ $addToCartBtn.addEventListener('click', () => {
 updateCartUI();
 selectVariant(3);
 </script>
+
+<!-- 30-Day Satisfaction Guarantee badge -->
+<script>
+(function() {
+  var trustRow = document.querySelector('.trust-row');
+  if (!trustRow) return;
+  var guarantee = document.createElement('div');
+  guarantee.style.cssText = 'text-align:center; margin-top:10px; padding:8px 0; font-size:13px; color:#555; letter-spacing:0.3px;';
+  guarantee.innerHTML = '🛡️ <strong style="color:#333;">30-Day Satisfaction Guarantee</strong> — Love it or your money back';
+  trustRow.parentNode.insertBefore(guarantee, trustRow.nextSibling);
+})();
+</script>
+
+<!-- Sticky Add to Cart bar on mobile -->
+<style>
+  #sticky-atc-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: #fff;
+    border-top: 1px solid #e0d5c0;
+    padding: 10px 16px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+    transform: translateY(100%);
+  }
+  #sticky-atc-bar.visible {
+    transform: translateY(0);
+  }
+  #sticky-atc-bar .sticky-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  #sticky-atc-bar .sticky-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #C5A358;
+  }
+  #sticky-atc-bar .sticky-price span {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: #888;
+  }
+  #sticky-atc-bar .sticky-btn {
+    background: #C5A358;
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+  }
+  #sticky-atc-bar .sticky-btn:active {
+    background: #b08f48;
+  }
+  @media (min-width: 769px) {
+    #sticky-atc-bar { display: none !important; }
+  }
+</style>
+
+<div id="sticky-atc-bar">
+  <div class="sticky-inner">
+    <div class="sticky-price">
+      $69.99
+      <span>Free shipping $75+</span>
+    </div>
+    <button class="sticky-btn" onclick="document.getElementById('addToCartBtn').click();">Add to Cart +</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  if (window.innerWidth > 768) return;
+  var stickyBar = document.getElementById('sticky-atc-bar');
+  var addToCartBtn = document.getElementById('addToCartBtn');
+  if (!stickyBar || !addToCartBtn) return;
+  stickyBar.style.display = 'block';
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        stickyBar.classList.remove('visible');
+      } else {
+        stickyBar.classList.add('visible');
+      }
+    });
+  }, { threshold: 0 });
+  observer.observe(addToCartBtn);
+})();
+</script>
+
 </body>
 </html>
