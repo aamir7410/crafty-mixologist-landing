@@ -1001,9 +1001,7 @@ function renderShipBanner(hasItems, grandTotal) {
     $bar.innerHTML = '<div class="ship-banner applied">' + checkSvg + 'FREE shipping applied!</div>';
     return;
   }
-  // No email yet: show Claim button + progress bar
-  var truckSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5a2 2 0 01-2 2h-1"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>';
-  var claimBtnHTML = '<button type="button" class="ship-claim-btn" id="cartClaimShipBtn">' + truckSvg + 'Claim FREE Shipping</button>';
+  // No email yet
   var shipThreshold = 75;
   var shipPct = Math.min(grandTotal / shipThreshold * 100, 100);
   var shipRemaining = Math.max(shipThreshold - grandTotal, 0);
@@ -1011,10 +1009,14 @@ function renderShipBanner(hasItems, grandTotal) {
   if (grandTotal >= shipThreshold) {
     progressHTML = '<div class="shipping-progress-text" style="color:#16a34a">\uD83C\uDF89 You qualify for FREE shipping!</div>' +
       '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:100%;background:#16a34a"></div></div>';
-  } else {
-    progressHTML = '<div class="shipping-progress-text" style="color:var(--gold)">You\u2019re ' + fmt(shipRemaining) + ' away from FREE shipping!</div>' +
-      '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:' + shipPct + '%"></div></div>';
+    // $75+: no claim button, user already qualifies
+    $bar.innerHTML = progressHTML;
+    return;
   }
+  progressHTML = '<div class="shipping-progress-text" style="color:var(--gold)">You\u2019re ' + fmt(shipRemaining) + ' away from FREE shipping!</div>' +
+    '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:' + shipPct + '%"></div></div>';
+  var truckSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5a2 2 0 01-2 2h-1"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>';
+  var claimBtnHTML = '<button type="button" class="ship-claim-btn" id="cartClaimShipBtn">' + truckSvg + 'Claim FREE Shipping Here</button>';
   $bar.innerHTML = claimBtnHTML + progressHTML;
   var claimBtn = document.getElementById('cartClaimShipBtn');
   if (claimBtn) claimBtn.addEventListener('click', function() { showPopup(true); });
