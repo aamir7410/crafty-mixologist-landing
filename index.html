@@ -244,6 +244,9 @@ button{font-family:var(--font);cursor:pointer}
 .ship-banner{padding:12px 24px;font-size:13px;font-weight:700;color:var(--white);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
 .ship-banner.applied{background:#16a34a}
 .ship-banner svg{flex-shrink:0}
+.ship-claim-btn{width:100%;margin-bottom:12px;padding:10px 16px;font-size:13px;font-weight:700;color:var(--white);background:#16a34a;border:none;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
+.ship-claim-btn:hover{background:#128a3e}
+.ship-claim-btn svg{flex-shrink:0}
 .side-cart-close{width:32px;height:32px;border-radius:50%;border:none;
   background:var(--gray-100);font-size:18px;display:flex;align-items:center;
   justify-content:center;cursor:pointer;color:var(--gray-500);transition:all var(--transition)}
@@ -998,17 +1001,23 @@ function renderShipBanner(hasItems, grandTotal) {
     $bar.innerHTML = '<div class="ship-banner applied">' + checkSvg + 'FREE shipping applied!</div>';
     return;
   }
-  // Default: original progress bar behavior
+  // No email yet: show Claim button + progress bar
+  var truckSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5a2 2 0 01-2 2h-1"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>';
+  var claimBtnHTML = '<button type="button" class="ship-claim-btn" id="cartClaimShipBtn">' + truckSvg + 'Claim FREE Shipping</button>';
   var shipThreshold = 75;
   var shipPct = Math.min(grandTotal / shipThreshold * 100, 100);
   var shipRemaining = Math.max(shipThreshold - grandTotal, 0);
+  var progressHTML;
   if (grandTotal >= shipThreshold) {
-    $bar.innerHTML = '<div class="shipping-progress-text" style="color:#16a34a">\uD83C\uDF89 You qualify for FREE shipping!</div>' +
+    progressHTML = '<div class="shipping-progress-text" style="color:#16a34a">\uD83C\uDF89 You qualify for FREE shipping!</div>' +
       '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:100%;background:#16a34a"></div></div>';
   } else {
-    $bar.innerHTML = '<div class="shipping-progress-text" style="color:var(--gold)">You\u2019re ' + fmt(shipRemaining) + ' away from FREE shipping!</div>' +
+    progressHTML = '<div class="shipping-progress-text" style="color:var(--gold)">You\u2019re ' + fmt(shipRemaining) + ' away from FREE shipping!</div>' +
       '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:' + shipPct + '%"></div></div>';
   }
+  $bar.innerHTML = claimBtnHTML + progressHTML;
+  var claimBtn = document.getElementById('cartClaimShipBtn');
+  if (claimBtn) claimBtn.addEventListener('click', function() { showPopup(true); });
 }
 
 function getDiscountTier() {
@@ -1619,8 +1628,15 @@ const POPUP_KEY = 'crafty_popup_shown';
 const $overlay = document.getElementById('popupOverlay');
 const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-function showPopup() {
-  if (sessionStorage.getItem(POPUP_KEY)) return;
+function showPopup(force) {
+  if (!force && sessionStorage.getItem(POPUP_KEY)) return;
+  // Reset to form view in case this is a re-open after dismiss
+  var form = document.getElementById('popupForm');
+  var thanks = document.getElementById('popupThanks');
+  if (form && thanks && !hasEmailCode()) {
+    form.style.display = '';
+    thanks.style.display = 'none';
+  }
   $overlay.classList.add('show');
   sessionStorage.setItem(POPUP_KEY, '1');
 }
