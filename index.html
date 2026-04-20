@@ -1855,10 +1855,10 @@ $addToCartBtn.addEventListener('click', () => {
   cartKits.set(p.variantId, current + selectedQty);
   lastAddedKitId = p.id;
   updateCartUI();
-  // Intercept: show popup first if user hasn't seen it yet
-  if (!sessionStorage.getItem(POPUP_KEY)) {
+  // Intercept: show popup first if user hasn't claimed free shipping yet
+  if (!hasEmailCode()) {
     window.__openSideCartAfterPopup = true;
-    showPopup();
+    showPopup(true);
   } else {
     openSideCart();
   }
