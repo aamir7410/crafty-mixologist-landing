@@ -241,6 +241,11 @@ button{font-family:var(--font);cursor:pointer}
 .shipping-progress-text{font-size:12px;font-weight:600;margin-bottom:6px}
 .shipping-progress-bar{height:4px;border-radius:4px;background:#eee;overflow:hidden}
 .shipping-progress-fill{height:100%;border-radius:4px;background:var(--gold);transition:width .3s ease}
+.ship-banner{padding:12px 24px;font-size:13px;font-weight:700;color:var(--white);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
+.ship-banner.applied{background:#16a34a}
+.ship-banner.timer{background:var(--gold)}
+.ship-banner svg{flex-shrink:0}
+.ship-expired{padding:10px 24px;font-size:12px;color:var(--gray-500);text-align:center;font-style:italic;border-bottom:1px solid var(--gray-200)}
 .side-cart-close{width:32px;height:32px;border-radius:50%;border:none;
   background:var(--gray-100);font-size:18px;display:flex;align-items:center;
   justify-content:center;cursor:pointer;color:var(--gray-500);transition:all var(--transition)}
@@ -415,8 +420,15 @@ button{font-family:var(--font);cursor:pointer}
 .popup .consent-row input{accent-color:var(--gold);width:16px;height:16px;cursor:pointer}
 .popup .btn-gold{width:100%}
 .popup-thanks{display:none;text-align:center;padding:16px 0}
-.popup-thanks h4{color:var(--gold);font-size:18px;margin-bottom:4px}
-.popup-thanks p{color:var(--gray-500);font-size:14px}
+.popup-thanks h4{color:var(--gold);font-size:18px;margin-bottom:12px}
+.popup-thanks p{color:var(--gray-500);font-size:14px;margin-top:12px}
+.popup-code-box{display:flex;align-items:center;gap:8px;justify-content:center;
+  background:var(--gold-bg);border:2px dashed var(--gold);border-radius:var(--radius);
+  padding:12px 16px;margin:8px auto;max-width:260px}
+.popup-code-box span{font-size:20px;font-weight:800;letter-spacing:1.5px;color:var(--gold)}
+.popup-copy-btn{background:var(--gold);color:var(--white);border:none;border-radius:6px;
+  padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.popup-copy-btn:hover{background:var(--gold-hover)}
 .popup-note{font-size:11px;color:var(--gray-400);text-align:center;margin-top:8px}
 
 /*═══════════════════════════════════════════════════════════════
@@ -558,7 +570,7 @@ button{font-family:var(--font);cursor:pointer}
 <body>
 
 <!-- ═══ Top Banner ═══ -->
-<div class="top-banner">&#x2713;&ensp;FREE Shipping on orders $75+</div>
+<div class="top-banner">&#x2713;&ensp;FREE Shipping on Your First Order</div>
 
 <!-- ═══ Navigation ═══ -->
 <nav class="nav">
@@ -755,16 +767,20 @@ button{font-family:var(--font);cursor:pointer}
 <div class="popup-overlay" id="popupOverlay">
   <div class="popup">
     <button class="popup-close" id="popupClose" aria-label="Close popup">&times;</button>
-    <h3>Get 10% Off</h3>
-    <p class="popup-sub">Your first order. Join for exclusive deals &amp; recipes.</p>
+    <h3>Get FREE Shipping</h3>
+    <p class="popup-sub">Your first order. Enter your email to claim your code.</p>
     <form id="popupForm">
       <input type="email" id="popupEmail" name="email" placeholder="Your email address" required/>
       <label class="consent-row"><input type="checkbox" id="popupConsent" required/> I agree to receive emails</label>
-      <button type="submit" class="btn-gold">Claim My Discount</button>
+      <button type="submit" class="btn-gold">Claim Free Shipping</button>
     </form>
     <div class="popup-thanks" id="popupThanks">
-      <h4>Thanks — you're in!</h4>
-      <p>Check your inbox for your discount code.</p>
+      <h4>You&rsquo;re in! Here&rsquo;s your code:</h4>
+      <div class="popup-code-box">
+        <span id="popupCode">FIRSTSHIP</span>
+        <button type="button" id="popupCopyBtn" class="popup-copy-btn">Copy</button>
+      </div>
+      <p>Use code <strong>FIRSTSHIP</strong> at checkout for free shipping!</p>
     </div>
     <p class="popup-note">No spam. Unsubscribe anytime.</p>
   </div>
@@ -974,6 +990,82 @@ function getTotalKitCount() {
   return n;
 }
 
+/* ═══ Free shipping state ═══ */
+const FREESHIP_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+let freeShipTimerInterval = null;
+
+function hasEmailCode() {
+  return sessionStorage.getItem('freeShipCode') === 'FIRSTSHIP';
+}
+function getTimerExpiry() {
+  var v = sessionStorage.getItem('freeShipExpiry');
+  return v ? parseInt(v, 10) : 0;
+}
+function isTimerActive() {
+  var exp = getTimerExpiry();
+  return exp > 0 && Date.now() < exp;
+}
+function isFreeShipActive() {
+  return hasEmailCode() || isTimerActive();
+}
+function startFreeShipTimer() {
+  if (hasEmailCode()) return; // no timer needed
+  if (getTimerExpiry() > 0) return; // already started
+  sessionStorage.setItem('freeShipExpiry', String(Date.now() + FREESHIP_DURATION_MS));
+}
+function formatTimeLeft(ms) {
+  if (ms < 0) ms = 0;
+  var total = Math.floor(ms / 1000);
+  var m = Math.floor(total / 60);
+  var s = total % 60;
+  return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}
+function renderShipBanner(hasItems, grandTotal) {
+  var $bar = document.getElementById('shippingProgress');
+  if (!$bar) return;
+  if (freeShipTimerInterval) { clearInterval(freeShipTimerInterval); freeShipTimerInterval = null; }
+  if (!hasItems) {
+    $bar.classList.remove('visible');
+    $bar.innerHTML = '';
+    return;
+  }
+  $bar.classList.add('visible');
+  var truckSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5a2 2 0 01-2 2h-1"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>';
+  if (hasEmailCode()) {
+    $bar.innerHTML = '<div class="ship-banner applied">' + truckSvg + 'FREE shipping applied! Code: FIRSTSHIP</div>';
+    return;
+  }
+  if (isTimerActive()) {
+    var expiry = getTimerExpiry();
+    $bar.innerHTML = '<div class="ship-banner timer">' + truckSvg + 'FREE shipping on your order! Expires in <span id="freeShipCountdown">' + formatTimeLeft(expiry - Date.now()) + '</span></div>';
+    freeShipTimerInterval = setInterval(function() {
+      var left = expiry - Date.now();
+      if (left <= 0) {
+        clearInterval(freeShipTimerInterval);
+        freeShipTimerInterval = null;
+        updateCartUI();
+        return;
+      }
+      var el = document.getElementById('freeShipCountdown');
+      if (el) el.textContent = formatTimeLeft(left);
+    }, 1000);
+    return;
+  }
+  // Timer expired or never started — fall back to progress bar
+  var shipThreshold = 75;
+  var shipPct = Math.min(grandTotal / shipThreshold * 100, 100);
+  var shipRemaining = Math.max(shipThreshold - grandTotal, 0);
+  var expired = getTimerExpiry() > 0;
+  if (grandTotal >= shipThreshold) {
+    $bar.innerHTML = '<div class="shipping-progress-text" style="color:#16a34a">\uD83C\uDF89 You qualify for FREE shipping!</div>' +
+      '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:100%;background:#16a34a"></div></div>';
+  } else {
+    $bar.innerHTML = (expired ? '<div class="ship-expired">Free shipping expired &mdash; enter your email above to get it back!</div>' : '') +
+      '<div class="shipping-progress-text" style="color:var(--gold)">You\u2019re ' + fmt(shipRemaining) + ' away from FREE shipping!</div>' +
+      '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:' + shipPct + '%"></div></div>';
+  }
+}
+
 function getDiscountTier() {
   const n = getTotalKitCount();
   // Mix-and-match tier based on total kits in cart
@@ -994,7 +1086,9 @@ function buildCartUrl() {
   cartKits.forEach((qty, vid) => { parts.push(vid + ':' + qty); });
   addedAddons.forEach(vid => { parts.push(vid + ':1'); });
   if (parts.length === 0) return '#';
-  return 'https://craftymixologist.com/cart/' + parts.join(',');
+  var url = 'https://craftymixologist.com/cart/' + parts.join(',');
+  if (isFreeShipActive()) url += '?discount=FIRSTSHIP';
+  return url;
 }
 
 function getCartItemCount() {
@@ -1207,29 +1301,17 @@ function updateCartUI() {
     if (discountAmt > 0) {
       totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.ceil(tier.pct*100) + '%)</span><span>-' + fmt(discountAmt) + '</span></div>';
     }
-    totalsHTML += '<div class="side-cart-row"><span>Shipping</span><span>' + (grandTotal >= 75 ? 'Free' : 'Calculated at checkout') + '</span></div>';
+    var freeShipActive = isFreeShipActive();
+    var shippingCell = freeShipActive
+      ? '<span style="color:#16a34a;font-weight:700">FREE</span>'
+      : (grandTotal >= 75 ? 'Free' : 'Calculated at checkout');
+    totalsHTML += '<div class="side-cart-row"><span>Shipping</span><span>' + shippingCell + '</span></div>';
     totalsHTML += '<div class="side-cart-row total"><span>Total</span><span class="side-cart-row-val">' + fmt(grandTotal) + '</span></div>';
   }
   $sideCartTotals.innerHTML = totalsHTML;
 
-  // Update shipping progress bar
-  var $shipBar = document.getElementById('shippingProgress');
-  if (kitCount > 0 || addonsTotal > 0) {
-    var shipThreshold = 75;
-    var shipPct = Math.min(grandTotal / shipThreshold * 100, 100);
-    var shipRemaining = Math.max(shipThreshold - grandTotal, 0);
-    $shipBar.classList.add('visible');
-    if (grandTotal >= shipThreshold) {
-      $shipBar.innerHTML = '<div class="shipping-progress-text" style="color:#16a34a">\uD83C\uDF89 You qualify for FREE shipping!</div>' +
-        '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:100%;background:#16a34a"></div></div>';
-    } else {
-      $shipBar.innerHTML = '<div class="shipping-progress-text" style="color:var(--gold)">You\u2019re ' + fmt(shipRemaining) + ' away from FREE shipping!</div>' +
-        '<div class="shipping-progress-bar"><div class="shipping-progress-fill" style="width:' + shipPct + '%"></div></div>';
-    }
-  } else {
-    $shipBar.classList.remove('visible');
-    $shipBar.innerHTML = '';
-  }
+  // Update shipping banner/progress area
+  renderShipBanner(kitCount + (addonsTotal > 0 ? 1 : 0) > 0, grandTotal);
 
   // Update floating badge
   const count = getCartItemCount();
@@ -1590,19 +1672,48 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && $lightbox.
 ═══════════════════════════════════════════════════════════════ */
 const POPUP_KEY = 'crafty_popup_shown';
 const $overlay = document.getElementById('popupOverlay');
+const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-if (!localStorage.getItem(POPUP_KEY)) {
-  setTimeout(() => { $overlay.classList.add('show'); }, 3000);
+function showPopup() {
+  if (sessionStorage.getItem(POPUP_KEY)) return;
+  $overlay.classList.add('show');
+  sessionStorage.setItem(POPUP_KEY, '1');
+}
+
+if (!sessionStorage.getItem(POPUP_KEY)) {
+  // 30s timer on all devices
+  setTimeout(showPopup, 30000);
+  // Exit-intent on desktop only
+  if (!isMobile) {
+    document.addEventListener('mouseleave', function exitHandler(e) {
+      if (e.clientY <= 0 && !sessionStorage.getItem(POPUP_KEY)) {
+        showPopup();
+        document.removeEventListener('mouseleave', exitHandler);
+      }
+    });
+  }
 }
 
 document.getElementById('popupClose').addEventListener('click', () => {
   $overlay.classList.remove('show');
-  localStorage.setItem(POPUP_KEY, '1');
+  sessionStorage.setItem(POPUP_KEY, '1');
 });
 $overlay.addEventListener('click', (e) => {
   if (e.target === $overlay) {
     $overlay.classList.remove('show');
-    localStorage.setItem(POPUP_KEY, '1');
+    sessionStorage.setItem(POPUP_KEY, '1');
+  }
+});
+
+// Copy code button
+document.getElementById('popupCopyBtn').addEventListener('click', (e) => {
+  const code = document.getElementById('popupCode').textContent;
+  const btn = e.target;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    });
   }
 });
 
@@ -1659,9 +1770,11 @@ function handleSignup(emailEl, consentEl, formEl, thanksEl) {
   const sub = { email, date: new Date().toISOString() };
   saveSubscriber(sub);
   subscribeToKlaviyo(email);
+  sessionStorage.setItem('freeShipCode', 'FIRSTSHIP');
   formEl.style.display = 'none';
   thanksEl.style.display = 'block';
-  localStorage.setItem(POPUP_KEY, '1');
+  sessionStorage.setItem(POPUP_KEY, '1');
+  if (typeof updateCartUI === 'function') updateCartUI();
 }
 
 document.getElementById('popupForm').addEventListener('submit', (e) => {
@@ -1779,6 +1892,7 @@ $addToCartBtn.addEventListener('click', () => {
   const current = cartKits.get(p.variantId) || 0;
   cartKits.set(p.variantId, current + selectedQty);
   lastAddedKitId = p.id;
+  startFreeShipTimer();
   updateCartUI();
   openSideCart();
 });
