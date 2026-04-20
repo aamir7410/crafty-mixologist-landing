@@ -1639,15 +1639,17 @@ if (!sessionStorage.getItem(POPUP_KEY)) {
   }
 }
 
-document.getElementById('popupClose').addEventListener('click', () => {
+function closePopup() {
   $overlay.classList.remove('show');
   sessionStorage.setItem(POPUP_KEY, '1');
-});
-$overlay.addEventListener('click', (e) => {
-  if (e.target === $overlay) {
-    $overlay.classList.remove('show');
-    sessionStorage.setItem(POPUP_KEY, '1');
+  if (window.__openSideCartAfterPopup) {
+    window.__openSideCartAfterPopup = false;
+    openSideCart();
   }
+}
+document.getElementById('popupClose').addEventListener('click', closePopup);
+$overlay.addEventListener('click', (e) => {
+  if (e.target === $overlay) closePopup();
 });
 
 
@@ -1719,6 +1721,14 @@ document.getElementById('popupForm').addEventListener('submit', (e) => {
     document.getElementById('popupForm'),
     document.getElementById('popupThanks')
   );
+  // Auto-dismiss popup and continue to cart after 2s
+  setTimeout(() => {
+    $overlay.classList.remove('show');
+    if (window.__openSideCartAfterPopup) {
+      window.__openSideCartAfterPopup = false;
+      openSideCart();
+    }
+  }, 2000);
 });
 
 /* Export / Clear */
@@ -1827,7 +1837,13 @@ $addToCartBtn.addEventListener('click', () => {
   cartKits.set(p.variantId, current + selectedQty);
   lastAddedKitId = p.id;
   updateCartUI();
-  openSideCart();
+  // Intercept: show popup first if user hasn't seen it yet
+  if (!sessionStorage.getItem(POPUP_KEY)) {
+    window.__openSideCartAfterPopup = true;
+    showPopup();
+  } else {
+    openSideCart();
+  }
 });
 
 // Initialize cart UI (empty state)
