@@ -1015,7 +1015,7 @@ function hasEmailCode() {
   return !!sessionStorage.getItem('freeShipCode');
 }
 function isFreeShipActive() {
-  return hasEmailCode();
+  return hasEmailCode() || getUrlDiscountPct() > 0;
 }
 function renderShipBanner(hasItems, grandTotal) {
   var $bar = document.getElementById('shippingProgress');
@@ -1067,13 +1067,24 @@ function getDiscountTier() {
   return { pct:0, label:'' };
 }
 
+/* Known campaign codes: percentage off for display in the cart.
+   Shopify applies the real discount at checkout; this is just for UI parity. */
+const CAMPAIGN_DISCOUNTS = {
+  MOM10: 0.10
+};
+
 function getUrlDiscountCode() {
   try {
     var code = new URLSearchParams(window.location.search).get('discount');
     if (!code) return null;
     // Whitelist safe chars to prevent URL injection
-    return /^[A-Za-z0-9_-]{1,64}$/.test(code) ? code : null;
+    return /^[A-Za-z0-9_-]{1,64}$/.test(code) ? code.toUpperCase() : null;
   } catch (e) { return null; }
+}
+
+function getUrlDiscountPct() {
+  var code = getUrlDiscountCode();
+  return code && CAMPAIGN_DISCOUNTS[code] ? CAMPAIGN_DISCOUNTS[code] : 0;
 }
 
 function buildCartUrl() {
@@ -1291,15 +1302,22 @@ function updateCartUI() {
     });
     return s + addonsTotal;
   })();
-  const grandTotal = kitsSubtotal + addonsTotal;
-  const discountAmt = subtotalBeforeDiscount - grandTotal;
+  const bundleTotal = kitsSubtotal + addonsTotal;
+  const bundleDiscountAmt = subtotalBeforeDiscount - bundleTotal;
+  const campaignPct = getUrlDiscountPct();
+  const campaignCode = getUrlDiscountCode();
+  const campaignDiscountAmt = campaignPct > 0 ? Math.ceil(bundleTotal * campaignPct * 100) / 100 : 0;
+  const grandTotal = Math.max(bundleTotal - campaignDiscountAmt, 0);
   let totalsHTML = '';
   if (kitCount > 0 || addonsTotal > 0) {
     totalsHTML += '<div class="side-cart-row"><span>Subtotal</span><span>' + fmt(subtotalBeforeDiscount) + '</span></div>';
-    if (discountAmt > 0) {
-      totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.ceil(tier.pct*100) + '%)</span><span>-' + fmt(discountAmt) + '</span></div>';
+    if (bundleDiscountAmt > 0) {
+      totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.ceil(tier.pct*100) + '%)</span><span>-' + fmt(bundleDiscountAmt) + '</span></div>';
     }
-    var freeShipActive = isFreeShipActive();
+    if (campaignDiscountAmt > 0) {
+      totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Code ' + campaignCode + ' (' + Math.round(campaignPct*100) + '% off)</span><span>-' + fmt(campaignDiscountAmt) + '</span></div>';
+    }
+    var freeShipActive = isFreeShipActive() || campaignPct > 0;
     var shippingCell = freeShipActive
       ? '<span style="color:#16a34a;font-weight:700">FREE</span>'
       : (grandTotal >= 75 ? 'Free' : 'Calculated at checkout');
