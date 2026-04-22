@@ -1306,16 +1306,18 @@ function updateCartUI() {
   const bundleDiscountAmt = subtotalBeforeDiscount - bundleTotal;
   const campaignPct = getUrlDiscountPct();
   const campaignCode = getUrlDiscountCode();
-  const campaignDiscountAmt = campaignPct > 0 ? Math.ceil(bundleTotal * campaignPct * 100) / 100 : 0;
-  const grandTotal = Math.max(bundleTotal - campaignDiscountAmt, 0);
+  const campaignDiscountAmt = campaignPct > 0 ? Math.ceil(subtotalBeforeDiscount * campaignPct * 100) / 100 : 0;
+  // Codes do NOT stack with bundle discount — apply whichever saves more (matches Shopify checkout)
+  const useCampaign = campaignDiscountAmt > bundleDiscountAmt;
+  const appliedDiscountAmt = useCampaign ? campaignDiscountAmt : bundleDiscountAmt;
+  const grandTotal = Math.max(subtotalBeforeDiscount - appliedDiscountAmt, 0);
   let totalsHTML = '';
   if (kitCount > 0 || addonsTotal > 0) {
     totalsHTML += '<div class="side-cart-row"><span>Subtotal</span><span>' + fmt(subtotalBeforeDiscount) + '</span></div>';
-    if (bundleDiscountAmt > 0) {
-      totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.ceil(tier.pct*100) + '%)</span><span>-' + fmt(bundleDiscountAmt) + '</span></div>';
-    }
-    if (campaignDiscountAmt > 0) {
+    if (useCampaign && campaignDiscountAmt > 0) {
       totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Code ' + campaignCode + ' (' + Math.round(campaignPct*100) + '% off)</span><span>-' + fmt(campaignDiscountAmt) + '</span></div>';
+    } else if (bundleDiscountAmt > 0) {
+      totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.ceil(tier.pct*100) + '%)</span><span>-' + fmt(bundleDiscountAmt) + '</span></div>';
     }
     var freeShipActive = isFreeShipActive();
     var shippingCell = freeShipActive
