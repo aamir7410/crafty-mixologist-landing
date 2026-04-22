@@ -571,23 +571,26 @@ button{font-family:var(--font);cursor:pointer}
 <div class="campaign-banner" id="campaignBanner" hidden>&#127873;&ensp;Mother&rsquo;s Day Sale &mdash; Code MOM10: 10% Off + Free Shipping on Your First Order!</div>
 <script>
 (function(){
-  try {
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('discount')) {
+  function applyCampaign() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      if (!params.get('discount')) return;
       var b = document.getElementById('campaignBanner');
-      if (b) {
-        b.hidden = false;
-        // Hide the default top banner to avoid duplicate shipping messages
-        var tb = document.querySelector('.top-banner');
-        if (tb) tb.style.display = 'none';
-        // Offset the sticky nav so it doesn't overlap the banner when scrolling
-        var h = b.offsetHeight;
-        var style = document.createElement('style');
-        style.textContent = '.nav{top:' + h + 'px!important}';
-        document.head.appendChild(style);
-      }
-    }
-  } catch(e) {}
+      if (!b) return;
+      b.hidden = false;
+      var tb = document.querySelector('.top-banner');
+      if (tb) tb.style.display = 'none';
+      var h = b.offsetHeight;
+      var style = document.createElement('style');
+      style.textContent = '.nav{top:' + h + 'px!important}';
+      document.head.appendChild(style);
+    } catch(e) {}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyCampaign);
+  } else {
+    applyCampaign();
+  }
 })();
 </script>
 
