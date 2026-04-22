@@ -577,6 +577,9 @@ button{font-family:var(--font);cursor:pointer}
       var b = document.getElementById('campaignBanner');
       if (b) {
         b.hidden = false;
+        // Hide the default top banner to avoid duplicate shipping messages
+        var tb = document.querySelector('.top-banner');
+        if (tb) tb.style.display = 'none';
         // Offset the sticky nav so it doesn't overlap the banner when scrolling
         var h = b.offsetHeight;
         var style = document.createElement('style');
