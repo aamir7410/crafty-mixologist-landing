@@ -1026,7 +1026,7 @@ function renderShipBanner(hasItems, grandTotal) {
     return;
   }
   $bar.classList.add('visible');
-  if (hasEmailCode()) {
+  if (isFreeShipActive()) {
     var checkSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>';
     $bar.innerHTML = '<div class="ship-banner applied">' + checkSvg + 'FREE shipping applied!</div>';
     return;
