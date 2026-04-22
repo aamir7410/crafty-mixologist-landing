@@ -568,7 +568,7 @@ button{font-family:var(--font);cursor:pointer}
 <body>
 
 <!-- ═══ Campaign Banner (shown only when ?discount=... in URL) ═══ -->
-<div class="campaign-banner" id="campaignBanner" hidden>&#127873;&ensp;Mother&rsquo;s Day Sale &mdash; Code MOM10: 10% Off + Free Shipping on Your First Order!</div>
+<div class="campaign-banner" id="campaignBanner" hidden>&#127873;&ensp;Mother&rsquo;s Day Sale &mdash; Code MOM10: 10% Off Your Order!</div>
 <script>
 (function(){
   function applyCampaign() {
@@ -1015,7 +1015,7 @@ function hasEmailCode() {
   return !!sessionStorage.getItem('freeShipCode');
 }
 function isFreeShipActive() {
-  return hasEmailCode() || getUrlDiscountPct() > 0;
+  return hasEmailCode();
 }
 function renderShipBanner(hasItems, grandTotal) {
   var $bar = document.getElementById('shippingProgress');
@@ -1317,7 +1317,7 @@ function updateCartUI() {
     if (campaignDiscountAmt > 0) {
       totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Code ' + campaignCode + ' (' + Math.round(campaignPct*100) + '% off)</span><span>-' + fmt(campaignDiscountAmt) + '</span></div>';
     }
-    var freeShipActive = isFreeShipActive() || campaignPct > 0;
+    var freeShipActive = isFreeShipActive();
     var shippingCell = freeShipActive
       ? '<span style="color:#16a34a;font-weight:700">FREE</span>'
       : (grandTotal >= 75 ? 'Free' : 'Calculated at checkout');
