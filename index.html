@@ -1037,13 +1037,25 @@ function getDiscountTier() {
   return { pct:0, label:'' };
 }
 
+function getUrlDiscountCode() {
+  try {
+    var code = new URLSearchParams(window.location.search).get('discount');
+    if (!code) return null;
+    // Whitelist safe chars to prevent URL injection
+    return /^[A-Za-z0-9_-]{1,64}$/.test(code) ? code : null;
+  } catch (e) { return null; }
+}
+
 function buildCartUrl() {
   const parts = [];
   cartKits.forEach((qty, vid) => { parts.push(vid + ':' + qty); });
   addedAddons.forEach(vid => { parts.push(vid + ':1'); });
   if (parts.length === 0) return '#';
   var url = 'https://craftymixologist.com/cart/' + parts.join(',');
-  if (isFreeShipActive()) url += '?discount=FIRSTSHIP';
+  // Campaign discount from URL takes priority; fall back to FIRSTSHIP for email claimers
+  var urlCode = getUrlDiscountCode();
+  var code = urlCode || (isFreeShipActive() ? 'FIRSTSHIP' : null);
+  if (code) url += (url.indexOf('?') === -1 ? '?' : '&') + 'discount=' + encodeURIComponent(code);
   return url;
 }
 
