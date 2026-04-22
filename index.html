@@ -72,6 +72,9 @@ button{font-family:var(--font);cursor:pointer}
 .top-banner{background:var(--gold);color:var(--white);text-align:center;padding:8px 20px;
   font-size:12px;font-weight:600;letter-spacing:1.2px;height:var(--banner-h);
   display:flex;align-items:center;justify-content:center}
+.campaign-banner{position:sticky;top:0;z-index:600;background:#C5A358;color:#000;
+  text-align:center;padding:10px 16px;font-size:13px;font-weight:700;line-height:1.4}
+.campaign-banner[hidden]{display:none}
 
 /*═══════════════════════════════════════════════════════════════
   NAVIGATION
@@ -563,6 +566,27 @@ button{font-family:var(--font);cursor:pointer}
   </script>
 </head>
 <body>
+
+<!-- ═══ Campaign Banner (shown only when ?discount=... in URL) ═══ -->
+<div class="campaign-banner" id="campaignBanner" hidden>&#127873;&ensp;Mother&rsquo;s Day Sale &mdash; Code MOM10: 10% Off + Free Shipping on Your First Order!</div>
+<script>
+(function(){
+  try {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('discount')) {
+      var b = document.getElementById('campaignBanner');
+      if (b) {
+        b.hidden = false;
+        // Offset the sticky nav so it doesn't overlap the banner when scrolling
+        var h = b.offsetHeight;
+        var style = document.createElement('style');
+        style.textContent = '.nav{top:' + h + 'px!important}';
+        document.head.appendChild(style);
+      }
+    }
+  } catch(e) {}
+})();
+</script>
 
 <!-- ═══ Top Banner ═══ -->
 <div class="top-banner">&#x2713;&ensp;FREE Shipping on Your First Order</div>
