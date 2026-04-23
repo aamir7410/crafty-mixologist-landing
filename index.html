@@ -1937,6 +1937,34 @@ $addToCartBtn.addEventListener('click', () => {
 // Initialize cart UI (empty state)
 updateCartUI();
 selectVariant(3);
+
+// Deep-link: ?product=slug selects and scrolls to the matching product
+(function() {
+  try {
+    var slug = new URLSearchParams(window.location.search).get('product');
+    if (!slug) return;
+    var SLUG_TO_ID = {
+      'espresso-martini': 'espresso',
+      'margarita': 'margarita',
+      'olive-oil': 'olive',
+      'tea': 'tea',
+      'whiskey': 'whiskey',
+      'tequila': 'tequila',
+      'smoker': 'smoker',
+      'moscow-mule': 'mule',
+      'all-in-one': 'allinone'
+    };
+    var targetId = SLUG_TO_ID[slug.toLowerCase()];
+    if (!targetId) return;
+    var idx = PRODUCTS.findIndex(function(p) { return p.id === targetId; });
+    if (idx < 0) return;
+    selectVariant(idx);
+    setTimeout(function() {
+      var el = document.getElementById('products');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  } catch(e) {}
+})();
 </script>
 
 <!-- 30-Day Guarantee badge -->
