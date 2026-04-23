@@ -1093,10 +1093,14 @@ function buildCartUrl() {
   addedAddons.forEach(vid => { parts.push(vid + ':1'); });
   if (parts.length === 0) return '#';
   var url = 'https://craftymixologist.com/cart/' + parts.join(',');
-  // Campaign discount from URL takes priority; fall back to FIRSTSHIP for email claimers
+  // Stack both codes — Shopify decides which combine (configured in Admin > Discounts)
+  var codes = [];
   var urlCode = getUrlDiscountCode();
-  var code = urlCode || (isFreeShipActive() ? 'FIRSTSHIP' : null);
-  if (code) url += (url.indexOf('?') === -1 ? '?' : '&') + 'discount=' + encodeURIComponent(code);
+  if (urlCode) codes.push(urlCode);
+  if (hasEmailCode() && codes.indexOf('FIRSTSHIP') === -1) codes.push('FIRSTSHIP');
+  if (codes.length > 0) {
+    url += '?discount=' + codes.map(encodeURIComponent).join(',');
+  }
   return url;
 }
 
