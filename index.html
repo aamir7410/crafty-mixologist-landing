@@ -140,7 +140,8 @@ button{font-family:var(--font);cursor:pointer}
 
 .product-title{font-size:36px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px}
 .product-price{font-size:24px;font-weight:800;color:var(--gold);margin-bottom:8px}
-.atc-counter{font-size:13px;font-weight:600;color:#d97706;margin-bottom:12px}
+.atc-counter{display:inline-flex;align-items:center;gap:6px;background:rgba(197,163,88,0.15);border:0.5px solid rgba(197,163,88,0.3);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:500;color:#A07C2A;margin-bottom:12px}
+.atc-counter .atc-emoji{font-size:14px;line-height:1}
 .atc-counter[hidden]{display:none}
 .product-desc{font-size:14px;color:var(--gray-500);line-height:1.6;margin-bottom:16px}
 .product-rating{display:flex;align-items:center;gap:10px;margin-bottom:14px}
@@ -693,7 +694,7 @@ button{font-family:var(--font);cursor:pointer}
         </div>
         <h1 class="product-title" id="prodTitle"></h1>
         <div class="product-price" id="prodPrice"></div>
-        <div class="atc-counter" id="atcCounter" hidden>&#128293;&ensp;Recently added to cart</div>
+        <div class="atc-counter" id="atcCounter" hidden><span class="atc-emoji">&#128293;</span>Recently added to cart</div>
         <p class="product-desc" id="prodDesc"></p>
         <button class="product-desc-more" id="prodDescMore">Read more</button>
 
