@@ -1461,7 +1461,13 @@ PRODUCTS.forEach((p, i) => {
   const btn = document.createElement('button');
   btn.className = 'variant-btn' + (i === 0 ? ' active' : '');
   btn.textContent = p.name;
-  btn.addEventListener('click', () => selectVariant(i));
+  btn.addEventListener('click', () => {
+    selectVariant(i);
+    if (window.innerWidth < 768) {
+      var $main = document.getElementById('galleryMain');
+      if ($main) $main.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
   $variantGrid.appendChild(btn);
 });
 
