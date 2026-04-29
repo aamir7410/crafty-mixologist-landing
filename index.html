@@ -2090,7 +2090,7 @@ selectVariant(3);
     if (!daily) { $counter.hidden = true; return; }
     var sum = 0;
     last7Keys().forEach(function(k) { sum += daily[k] || 0; });
-    if (sum <= 0) { $counter.hidden = true; return; }
+    if (sum < 10) { $counter.hidden = true; return; }
     $val.textContent = sum;
     $counter.hidden = false;
   }
