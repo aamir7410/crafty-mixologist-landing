@@ -119,7 +119,7 @@ button{font-family:var(--font);cursor:pointer}
 .photo-lightbox-nav.next{right:20px}
 .gallery-badge{position:absolute;top:14px;left:14px;background:var(--gold);color:var(--white);
   font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;letter-spacing:.5px;
-  text-transform:uppercase;display:none}
+  text-transform:uppercase;display:none;z-index:2;transition:opacity .15s ease}
 .gallery-thumbs{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
 .gallery-thumbs::-webkit-scrollbar{height:0}
 .thumb{width:72px;height:72px;border-radius:8px;overflow:hidden;border:2px solid transparent;
@@ -932,8 +932,8 @@ const PRODUCTS = [
     desc:'The ultimate package for margarita lovers. Craft the perfect margarita with a pro-level stainless steel shaker, fresh botanicals, and lime-infused salt for the perfect rim. Includes a step-by-step recipe book for classic, spicy, and fruity margaritas.',
     cartLink:'https://craftymixologist.com/cart/51316421165375:1',
     images:[
-      'https://craftymixologist.com/cdn/shop/files/81Gp-5X5FSL._AC_SX679.jpg?width=600',
       'https://craftymixologist.com/cdn/shop/files/81lgjjpShPL._AC_SX679.jpg?width=600',
+      'https://craftymixologist.com/cdn/shop/files/81Gp-5X5FSL._AC_SX679.jpg?width=600',
       'https://craftymixologist.com/cdn/shop/files/81Q4RZoY4bL._AC_SL1500.jpg?width=600'
     ],
     includes:['550ml stainless steel shaker with built-in strainer','Stainless steel jigger','Citrus squeezer','5 botanicals (jalape\u00f1o, lime powder, agave, orange peel, hibiscus petals)','Dried lime slices','Lime-infused margarita salt','2 margarita glasses (11 oz)','Recipe book'],
@@ -1469,14 +1469,15 @@ function selectVariant(idx) {
   });
 
   $mainImg.style.opacity = '0';
+  $galleryBadge.style.opacity = '0';
   setTimeout(() => {
     $mainImg.src = p.images[0];
     $mainImg.alt = p.name;
     $mainImg.style.opacity = '1';
+    $galleryBadge.textContent = p.badge;
+    $galleryBadge.style.display = p.badge ? 'block' : 'none';
+    $galleryBadge.style.opacity = p.badge ? '1' : '0';
   }, 150);
-
-  $galleryBadge.style.display = p.badge ? 'block' : 'none';
-  $galleryBadge.textContent = p.badge;
 
   $galleryThumbs.innerHTML = '';
   p.images.forEach((src, i) => {
