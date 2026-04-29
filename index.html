@@ -697,7 +697,7 @@ button{font-family:var(--font);cursor:pointer}
         </div>
         <h1 class="product-title" id="prodTitle"></h1>
         <div class="product-price" id="prodPrice"></div>
-        <div class="atc-counter" id="atcCounter" hidden>&#128293;&ensp;<span id="atcCountVal">0</span> added to cart this week</div>
+        <div class="atc-counter" id="atcCounter" hidden>&#128293;&ensp;Recently added to cart</div>
         <p class="product-desc" id="prodDesc"></p>
         <button class="product-desc-more" id="prodDescMore">Read more</button>
 
@@ -2101,9 +2101,7 @@ selectVariant(3);
     if (!daily) { $counter.hidden = true; return; }
     var sum = 0;
     last7Keys().forEach(function(k) { sum += daily[k] || 0; });
-    if (sum < 10) { $counter.hidden = true; return; }
-    $val.textContent = sum;
-    $counter.hidden = false;
+    $counter.hidden = sum < 1;
   }
 
   // Live read of all counts
