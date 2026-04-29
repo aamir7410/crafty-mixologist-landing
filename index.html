@@ -2059,7 +2059,7 @@ $addToCartBtn.addEventListener('click', () => {
 updateCartUI();
 selectVariant(3);
 
-/* ═══ Firebase ATC counter (real-time, weekly reset) ═══ */
+/* ═══ Firebase ATC counter (real-time, 7-day rolling) ═══ */
 (function(){
   if (!window.__atcDb) return;
   var ID_TO_SLUG = { whiskey:'whiskey', tequila:'tequila', smoker:'smoker', espresso:'espresso-martini', margarita:'margarita', mule:'moscow-mule', olive:'olive-oil', tea:'tea', allinone:'all-in-one' };
@@ -2067,26 +2067,31 @@ selectVariant(3);
   var $val = document.getElementById('atcCountVal');
   var atcCounts = {};
 
-  // Get current Monday as YYYY-MM-DD
-  function currentWeekStart() {
-    var d = new Date();
-    var day = d.getDay(); // 0=Sun
-    var diff = (day === 0 ? -6 : 1 - day);
-    d.setDate(d.getDate() + diff);
+  function dateKey(d) {
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
-  var weekStart = currentWeekStart();
+  function last7Keys() {
+    var keys = [];
+    var today = new Date();
+    for (var i = 0; i < 7; i++) {
+      var d = new Date(today);
+      d.setDate(today.getDate() - i);
+      keys.push(dateKey(d));
+    }
+    return keys;
+  }
 
   function renderForCurrent() {
     var p = PRODUCTS[activeVariant];
     if (!p) return;
     var slug = ID_TO_SLUG[p.id];
     var entry = atcCounts[slug];
-    if (!entry || entry.count <= 0 || entry.weekStart !== weekStart) {
-      $counter.hidden = true;
-      return;
-    }
-    $val.textContent = entry.count;
+    var daily = entry && entry.daily ? entry.daily : null;
+    if (!daily) { $counter.hidden = true; return; }
+    var sum = 0;
+    last7Keys().forEach(function(k) { sum += daily[k] || 0; });
+    if (sum <= 0) { $counter.hidden = true; return; }
+    $val.textContent = sum;
     $counter.hidden = false;
   }
 
@@ -2103,19 +2108,15 @@ selectVariant(3);
     renderForCurrent();
   };
 
-  // Increment on Add to Cart
+  // Increment today's bucket on Add to Cart
   window.__incrementAtc = function() {
     var p = PRODUCTS[activeVariant];
     if (!p) return;
     var slug = ID_TO_SLUG[p.id];
     if (!slug) return;
-    var ref = window.__atcDb.ref('atc_counts/' + slug);
-    ref.transaction(function(curr) {
-      if (!curr || curr.weekStart !== weekStart) {
-        return { count: 1, weekStart: weekStart };
-      }
-      return { count: (curr.count || 0) + 1, weekStart: weekStart };
-    });
+    var today = dateKey(new Date());
+    var ref = window.__atcDb.ref('atc_counts/' + slug + '/daily/' + today);
+    ref.transaction(function(curr) { return (curr || 0) + 1; });
   };
 })();
 
