@@ -1967,9 +1967,12 @@ document.getElementById('clearBtn').addEventListener('click', () => {
 /* ═══════════════════════════════════════════════════════════════
    MOBILE NAV
 ═══════════════════════════════════════════════════════════════ */
-document.getElementById('burger').addEventListener('click', () => {
-  document.getElementById('navLinks').classList.toggle('open');
-});
+var $burger = document.getElementById('burger');
+if ($burger) {
+  $burger.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+}
 document.querySelectorAll('.nav-links a').forEach(a => {
   a.addEventListener('click', () => {
     if (a.getAttribute('href').startsWith('#')) {
