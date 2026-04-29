@@ -141,7 +141,7 @@ button{font-family:var(--font);cursor:pointer}
 
 .product-title{font-size:36px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px}
 .product-price{font-size:24px;font-weight:800;color:var(--gold);margin-bottom:8px}
-.atc-counter{display:inline-flex;align-items:center;gap:6px;background:rgba(234,88,12,0.12);border:0.5px solid rgba(234,88,12,0.25);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:500;color:#C2410C;margin-bottom:12px}
+.atc-counter{display:inline-flex;align-self:flex-start;width:auto;align-items:center;gap:6px;background:rgba(234,88,12,0.12);border:0.5px solid rgba(234,88,12,0.25);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:500;color:#C2410C;margin-bottom:12px}
 .atc-counter .atc-emoji{font-size:14px;line-height:1}
 .atc-counter[hidden]{display:none}
 .product-desc{font-size:14px;color:var(--gray-500);line-height:1.6;margin-bottom:16px}
@@ -247,7 +247,7 @@ button{font-family:var(--font);cursor:pointer}
 .side-cart-overlay{position:fixed;inset:0;z-index:998;background:rgba(0,0,0,.4);
   backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .3s}
 .side-cart-overlay.open{opacity:1;pointer-events:auto}
-.side-cart{position:fixed;top:0;right:0;bottom:0;z-index:999;width:380px;max-width:90vw;
+.side-cart{position:fixed;top:0;right:0;bottom:0;z-index:999;width:380px;max-width:90vw;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
   background:var(--white);box-shadow:-8px 0 30px rgba(0,0,0,.15);
   transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
   display:flex;flex-direction:column;pointer-events:none}
@@ -618,6 +618,11 @@ button{font-family:var(--font);cursor:pointer}
     try {
       var params = new URLSearchParams(window.location.search);
       if (!params.get('discount')) return;
+      // Side cart urgency only on MOM10
+      if ((params.get('discount') || '').toUpperCase() === 'MOM10') {
+        var u = document.getElementById('sideCartUrgency');
+        if (u) u.hidden = false;
+      }
       var b = document.getElementById('campaignBanner');
       if (!b) return;
       b.hidden = false;
@@ -831,7 +836,7 @@ button{font-family:var(--font);cursor:pointer}
   <div class="side-cart-items" id="sideCartItems"></div>
   <div class="side-cart-footer">
     <div class="side-cart-totals" id="sideCartTotals"></div>
-    <div class="side-cart-urgency">
+    <div class="side-cart-urgency" id="sideCartUrgency" hidden>
       <div class="sc-urgency-line"><svg width="16" height="16" fill="none" stroke="#B45309" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Order by May 7th for Mother&rsquo;s Day delivery</div>
       <div class="sc-trust-line">&#128274;&ensp;Secure checkout &middot; Free shipping on first order</div>
     </div>
@@ -1194,11 +1199,15 @@ function openSideCart() {
   $sideCart.classList.add('open');
   $sideCartOverlay.classList.add('open');
   var sb = document.getElementById('sticky-atc-bar');
-  if (sb) sb.classList.remove('visible');
+  if (sb) { sb.classList.remove('visible'); sb.style.display = 'none'; }
+  document.body.style.overflow = 'hidden';
 }
 function closeSideCart() {
   $sideCart.classList.remove('open');
   $sideCartOverlay.classList.remove('open');
+  var sb = document.getElementById('sticky-atc-bar');
+  if (sb) sb.style.display = '';
+  document.body.style.overflow = '';
 }
 
 function updateCartUI() {
