@@ -77,8 +77,9 @@ button{font-family:var(--font);cursor:pointer}
   display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center}
 .campaign-banner[hidden]{display:none}
 .campaign-banner .cb-line{display:block}
-.campaign-banner .cb-countdown{font-size:12px;letter-spacing:0.3px}
-.campaign-banner .cb-countdown span{display:inline-block;min-width:1.2em;font-variant-numeric:tabular-nums}
+.campaign-banner .cb-countdown{font-size:12px;letter-spacing:0.3px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px}
+.campaign-banner .cb-unit{display:inline-flex;align-items:baseline;background:rgba(197,163,88,.15);border:1px solid rgba(197,163,88,.4);border-radius:4px;padding:2px 6px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.campaign-banner .cb-unit i{font-style:normal;font-size:9px;font-weight:600;margin-left:2px;opacity:.85}
 
 /*═══════════════════════════════════════════════════════════════
   NAVIGATION
@@ -605,7 +606,7 @@ button{font-family:var(--font);cursor:pointer}
 <!-- ═══ Campaign Banner (shown only when ?discount=... in URL) ═══ -->
 <div class="campaign-banner" id="campaignBanner" hidden>
   <div class="cb-line">&#127873;&ensp;Mother&rsquo;s Day Sale &mdash; Code MOM10: 10% Off + Free Shipping on Your First Order!</div>
-  <div class="cb-line cb-countdown" id="cbCountdown">&#9200;&ensp;Order by May 7th: <span id="cbDays">--</span>d <span id="cbHrs">--</span>h <span id="cbMins">--</span>m <span id="cbSecs">--</span>s</div>
+  <div class="cb-line cb-countdown" id="cbCountdown">&#9200;&ensp;Order by May 7th:&ensp;<span class="cb-unit"><span id="cbDays">--</span><i>d</i></span><span class="cb-unit"><span id="cbHrs">--</span><i>h</i></span><span class="cb-unit"><span id="cbMins">--</span><i>m</i></span><span class="cb-unit"><span id="cbSecs">--</span><i>s</i></span></div>
 </div>
 <script>
 (function(){
