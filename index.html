@@ -72,9 +72,16 @@ button{font-family:var(--font);cursor:pointer}
 .top-banner{background:var(--gold);color:var(--white);text-align:center;padding:8px 20px;
   font-size:12px;font-weight:600;letter-spacing:1.2px;height:var(--banner-h);
   display:flex;align-items:center;justify-content:center}
-.campaign-banner{position:sticky;top:0;z-index:600;background:#C5A358;color:#000;
-  text-align:center;padding:10px 16px;font-size:13px;font-weight:700;line-height:1.4}
+.campaign-banner{position:sticky;top:0;z-index:600;background:#000;color:#C5A358;
+  text-align:center;padding:8px 16px;font-size:13px;font-weight:700;line-height:1.4;
+  display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center}
 .campaign-banner[hidden]{display:none}
+.campaign-banner .cb-line{display:block}
+.campaign-banner .cb-countdown{font-size:12px;letter-spacing:0.3px}
+.campaign-banner .cb-countdown span{display:inline-block;min-width:1.2em;font-variant-numeric:tabular-nums}
+@media (min-width:768px){
+  .campaign-banner{flex-direction:row;gap:24px;font-size:13px}
+}
 
 /*═══════════════════════════════════════════════════════════════
   NAVIGATION
@@ -99,10 +106,17 @@ button{font-family:var(--font);cursor:pointer}
 
 /* Gallery */
 .gallery{position:sticky;top:calc(var(--nav-h) + var(--banner-h) + 24px)}
-.gallery-main{width:100%;max-height:450px;border-radius:var(--radius-lg);overflow:hidden;
+.gallery-main{width:100%;max-height:450px;border-radius:var(--radius-lg);overflow:hidden;cursor:zoom-in;
   border:1px solid var(--gray-200);background:var(--white);margin-bottom:10px;position:relative;
   display:flex;align-items:center;justify-content:center}
-.gallery-main img{width:100%;height:100%;max-height:450px;object-fit:contain;transition:opacity .3s}
+.gallery-main img{width:100%;height:100%;max-height:450px;object-fit:contain;transition:opacity .3s, transform .15s ease-out;transform-origin:center center}
+@media (min-width:768px){
+  .gallery-main.zooming img{transform:scale(2)}
+}
+.photo-lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;border:none;font-size:24px;cursor:pointer;z-index:10001;display:flex;align-items:center;justify-content:center}
+.photo-lightbox-nav:hover{background:rgba(255,255,255,.35)}
+.photo-lightbox-nav.prev{left:20px}
+.photo-lightbox-nav.next{right:20px}
 .gallery-badge{position:absolute;top:14px;left:14px;background:var(--gold);color:var(--white);
   font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;letter-spacing:.5px;
   text-transform:uppercase;display:none}
@@ -282,6 +296,9 @@ button{font-family:var(--font);cursor:pointer}
   transition:all var(--transition)}
 .cart-upsell-add:hover{background:var(--gold);color:var(--white)}
 .side-cart-footer{padding:20px 24px;border-top:1px solid var(--gray-200);background:var(--gray-50)}
+.side-cart-urgency{padding-top:10px;margin-top:10px;border-top:1px solid var(--gray-200);text-align:center}
+.side-cart-urgency .sc-urgency-line{font-size:13px;font-weight:700;color:#C5A358;margin-bottom:4px}
+.side-cart-urgency .sc-trust-line{font-size:12px;color:var(--gray-500);margin-bottom:12px}
 .side-cart-totals{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
 .side-cart-row{display:flex;justify-content:space-between;font-size:13px;color:var(--gray-500)}
 .side-cart-row.total{font-size:16px;font-weight:800;color:var(--black);padding-top:8px;
@@ -568,7 +585,10 @@ button{font-family:var(--font);cursor:pointer}
 <body>
 
 <!-- ═══ Campaign Banner (shown only when ?discount=... in URL) ═══ -->
-<div class="campaign-banner" id="campaignBanner" hidden>&#127873;&ensp;Mother&rsquo;s Day Sale &mdash; Code MOM10: 10% Off + Free Shipping on Your First Order!</div>
+<div class="campaign-banner" id="campaignBanner" hidden>
+  <div class="cb-line">&#127873;&ensp;Mother&rsquo;s Day Sale &mdash; Code MOM10: 10% Off + Free Shipping on Your First Order!</div>
+  <div class="cb-line cb-countdown" id="cbCountdown">&#9200;&ensp;Order by May 7th: <span id="cbDays">--</span>d <span id="cbHrs">--</span>h <span id="cbMins">--</span>m <span id="cbSecs">--</span>s</div>
+</div>
 <script>
 (function(){
   function applyCampaign() {
@@ -580,6 +600,30 @@ button{font-family:var(--font);cursor:pointer}
       b.hidden = false;
       var tb = document.querySelector('.top-banner');
       if (tb) tb.style.display = 'none';
+      // Start countdown to May 7, 2026 11:59 PM EST (UTC-5 = 04:59 UTC May 8)
+      var deadline = Date.UTC(2026, 4, 8, 4, 59, 0); // May = 4 (0-indexed)
+      var $days = document.getElementById('cbDays');
+      var $hrs = document.getElementById('cbHrs');
+      var $mins = document.getElementById('cbMins');
+      var $secs = document.getElementById('cbSecs');
+      var $cd = document.getElementById('cbCountdown');
+      function tick() {
+        var diff = deadline - Date.now();
+        if (diff <= 0) {
+          $cd.innerHTML = '\u26A0\uFE0F&ensp;Last chance! Mother\u2019s Day is May 10th \u2014 order now for fastest shipping';
+          return;
+        }
+        var d = Math.floor(diff / 86400000);
+        var hr = Math.floor(diff / 3600000) % 24;
+        var mn = Math.floor(diff / 60000) % 60;
+        var sc = Math.floor(diff / 1000) % 60;
+        if ($days) $days.textContent = d;
+        if ($hrs) $hrs.textContent = hr;
+        if ($mins) $mins.textContent = mn;
+        if ($secs) $secs.textContent = sc;
+      }
+      tick();
+      setInterval(tick, 1000);
       var h = b.offsetHeight;
       var style = document.createElement('style');
       style.textContent = '.nav{top:' + h + 'px!important}';
@@ -600,19 +644,12 @@ button{font-family:var(--font);cursor:pointer}
 <!-- ═══ Navigation ═══ -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="#" class="nav-logo">
+    <a href="https://www.craftymixologist.com" target="_blank" rel="noopener" class="nav-logo">
       <img src="https://craftymixologist.com/cdn/shop/files/Logo_2_Preview_File_d216aa01-808f-4958-9f00-33897e054208.png?width=400" alt="Crafty Mixologist" />
     </a>
     <div class="nav-links" id="navLinks">
-      <a href="#products">Shop</a>
-      <a href="https://craftymixologist.com/pages/about-us" target="_blank" rel="noopener">About Us</a>
-      <a href="https://craftymixologist.com/pages/faq" target="_blank" rel="noopener">FAQ</a>
-      <a href="https://craftymixologist.com/pages/wholesale" target="_blank" rel="noopener">Wholesale</a>
       <a href="#reviews">Reviews</a>
     </div>
-    <button class="burger" id="burger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </nav>
 
@@ -756,7 +793,9 @@ button{font-family:var(--font);cursor:pointer}
 <!-- ═══ Photo Lightbox ═══ -->
 <div class="photo-lightbox" id="photoLightbox">
   <button class="photo-lightbox-close" id="lightboxClose" aria-label="Close image">&times;</button>
-  <img id="lightboxImg" src="" alt="Review photo"/>
+  <button class="photo-lightbox-nav prev" id="lightboxPrev" aria-label="Previous image" hidden>&#8249;</button>
+  <button class="photo-lightbox-nav next" id="lightboxNext" aria-label="Next image" hidden>&#8250;</button>
+  <img id="lightboxImg" src="" alt="Product image"/>
 </div>
 
 <!-- ═══ Side Cart Panel ═══ -->
@@ -770,6 +809,10 @@ button{font-family:var(--font);cursor:pointer}
   <div class="side-cart-items" id="sideCartItems"></div>
   <div class="side-cart-footer">
     <div class="side-cart-totals" id="sideCartTotals"></div>
+    <div class="side-cart-urgency">
+      <div class="sc-urgency-line">&#9200;&ensp;Order by May 7th for Mother&rsquo;s Day delivery</div>
+      <div class="sc-trust-line">&#128274;&ensp;Secure checkout &middot; Free shipping on first order</div>
+    </div>
     <a id="sideCartCheckout" href="#" class="btn-gold">Checkout&ensp;&rarr;</a>
   </div>
 </div>
@@ -863,7 +906,7 @@ const PRODUCTS = [
     banners:['images/Martini_1.jpeg','images/Martini_2.jpeg','images/Martini_3.jpeg','images/espresso_instructions.jpeg']
   },
   {
-    id:'margarita', name:'Margarita Kit', price:'$69.99', badge:'', variantId:'51316421165375',
+    id:'margarita', name:'Margarita Kit', price:'$69.99', badge:'POPULAR NOW', variantId:'51316421165375',
     desc:'The ultimate package for margarita lovers. Craft the perfect margarita with a pro-level stainless steel shaker, fresh botanicals, and lime-infused salt for the perfect rim. Includes a step-by-step recipe book for classic, spicy, and fruity margaritas.',
     cartLink:'https://craftymixologist.com/cart/51316421165375:1',
     images:[
@@ -888,7 +931,7 @@ const PRODUCTS = [
     banners:['images/Moscow1.jpg','images/Moscow_2.jpg','images/Moscow_3.jpg','images/Moscow_instructions.jpg']
   },
   {
-    id:'olive', name:'Olive Oil Infusion Kit', price:'$49.99', badge:'', variantId:'51537599299903',
+    id:'olive', name:'Olive Oil Infusion Kit', price:'$49.99', badge:'POPULAR NOW', variantId:'51537599299903',
     desc:'Crafted for purists \u2014 no synthetic additives, only flavor-rich botanicals for serious home cooks and entertainers. This isn\u2019t just a gift set \u2014 it\u2019s an experience. Ideal for olive oil dipping, flavored cooking oils, or a beautiful Italian gift basket.',
     cartLink:'https://craftymixologist.com/cart/51537599299903:1',
     images:[
@@ -901,7 +944,7 @@ const PRODUCTS = [
     banners:['images/oil_instructions.jpeg','images/oil_use_1.jpeg','images/oil_use_2.jpeg','images/oil_use_3.jpeg']
   },
   {
-    id:'tea', name:'Tea Infusion Kit', price:'$49.99', badge:'', variantId:'51537665950015',
+    id:'tea', name:'Tea Infusion Kit', price:'$49.99', badge:'POPULAR NOW', variantId:'51537665950015',
     desc:'Discover 8 distinct flavor journeys with premium loose-leaf teas. Perfect for relaxing rituals, self-care moments, or cozy evenings. Mix and match to craft your own signature cup.',
     cartLink:'https://craftymixologist.com/cart/51537665950015:1',
     images:[
@@ -1687,15 +1730,70 @@ $track.addEventListener('mouseleave', () => { isDragging = false; $track.style.s
 // Photo lightbox
 const $lightbox = document.getElementById('photoLightbox');
 const $lbImg = document.getElementById('lightboxImg');
+const $lbPrev = document.getElementById('lightboxPrev');
+const $lbNext = document.getElementById('lightboxNext');
+let lbImages = [];
+let lbIndex = 0;
+
+function openLightbox(images, startIdx) {
+  lbImages = images || [];
+  lbIndex = startIdx || 0;
+  $lbImg.src = lbImages[lbIndex] || '';
+  var multi = lbImages.length > 1;
+  $lbPrev.hidden = !multi;
+  $lbNext.hidden = !multi;
+  $lightbox.classList.add('open');
+}
+function closeLightbox() { $lightbox.classList.remove('open'); }
+function lbStep(delta) {
+  if (!lbImages.length) return;
+  lbIndex = (lbIndex + delta + lbImages.length) % lbImages.length;
+  $lbImg.src = lbImages[lbIndex];
+}
+$lbPrev.addEventListener('click', e => { e.stopPropagation(); lbStep(-1); });
+$lbNext.addEventListener('click', e => { e.stopPropagation(); lbStep(1); });
+
+// Reviews open lightbox with single image
 $track.addEventListener('click', e => {
   const img = e.target.closest('.review-photos img');
   if (!img) return;
-  $lbImg.src = img.src;
-  $lightbox.classList.add('open');
+  openLightbox([img.src], 0);
 });
-document.getElementById('lightboxClose').addEventListener('click', () => { $lightbox.classList.remove('open'); });
-$lightbox.addEventListener('click', e => { if (e.target === $lightbox) $lightbox.classList.remove('open'); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && $lightbox.classList.contains('open')) $lightbox.classList.remove('open'); });
+
+// Product gallery: click main image opens lightbox with all product images
+document.getElementById('galleryMain').addEventListener('click', () => {
+  var p = PRODUCTS[activeVariant];
+  if (p && p.images && p.images.length) openLightbox(p.images.slice(), activeThumb || 0);
+});
+
+// Desktop magnifier: hover on main image scales + follows cursor
+(function() {
+  if (!window.matchMedia('(min-width: 768px)').matches) return;
+  var $main = document.getElementById('galleryMain');
+  if (!$main) return;
+  var img = $main.querySelector('img');
+  $main.addEventListener('mouseenter', () => $main.classList.add('zooming'));
+  $main.addEventListener('mouseleave', () => {
+    $main.classList.remove('zooming');
+    if (img) img.style.transformOrigin = 'center center';
+  });
+  $main.addEventListener('mousemove', (e) => {
+    if (!img) return;
+    var r = $main.getBoundingClientRect();
+    var x = ((e.clientX - r.left) / r.width) * 100;
+    var y = ((e.clientY - r.top) / r.height) * 100;
+    img.style.transformOrigin = x + '% ' + y + '%';
+  });
+})();
+
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+$lightbox.addEventListener('click', e => { if (e.target === $lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if (!$lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lbStep(-1);
+  if (e.key === 'ArrowRight') lbStep(1);
+});
 
 /* ═══════════════════════════════════════════════════════════════
    POPUP (shows once, 3s delay)
