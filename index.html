@@ -142,6 +142,8 @@ button{font-family:var(--font);cursor:pointer}
 
 .product-title{font-size:36px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px}
 .product-price{font-size:24px;font-weight:800;color:var(--gold);margin-bottom:8px}
+.atc-counter{font-size:13px;font-weight:600;color:#d97706;margin-bottom:12px}
+.atc-counter[hidden]{display:none}
 .product-desc{font-size:14px;color:var(--gray-500);line-height:1.6;margin-bottom:16px}
 .product-rating{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .product-rating .stars{color:var(--gold);font-size:16px;letter-spacing:1px}
@@ -581,6 +583,21 @@ button{font-family:var(--font);cursor:pointer}
     gtag('js', new Date());
     gtag('config', 'G-S0XEND3QF6');
   </script>
+  <!-- Firebase Realtime Database (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyDuzoPPV17h5DBo7aJUQFGB2RfTBqRzp1w",
+      authDomain: "crafty-mixologist-landing-page.firebaseapp.com",
+      databaseURL: "https://crafty-mixologist-landing-page-default-rtdb.firebaseio.com",
+      projectId: "crafty-mixologist-landing-page",
+      storageBucket: "crafty-mixologist-landing-page.firebasestorage.app",
+      messagingSenderId: "18539290966",
+      appId: "1:18539290966:web:182d0466c35645c50af6f7"
+    });
+    window.__atcDb = firebase.database();
+  </script>
 </head>
 <body>
 
@@ -676,6 +693,7 @@ button{font-family:var(--font);cursor:pointer}
         </div>
         <h1 class="product-title" id="prodTitle"></h1>
         <div class="product-price" id="prodPrice"></div>
+        <div class="atc-counter" id="atcCounter" hidden>&#128293;&ensp;<span id="atcCountVal">0</span> added to cart this week</div>
         <p class="product-desc" id="prodDesc"></p>
         <button class="product-desc-more" id="prodDescMore">Read more</button>
 
@@ -2026,6 +2044,7 @@ $addToCartBtn.addEventListener('click', () => {
   const current = cartKits.get(p.variantId) || 0;
   cartKits.set(p.variantId, current + selectedQty);
   lastAddedKitId = p.id;
+  if (typeof window.__incrementAtc === 'function') window.__incrementAtc();
   updateCartUI();
   // Intercept: show popup first if user hasn't claimed free shipping yet
   if (!hasEmailCode()) {
@@ -2039,6 +2058,66 @@ $addToCartBtn.addEventListener('click', () => {
 // Initialize cart UI (empty state)
 updateCartUI();
 selectVariant(3);
+
+/* ═══ Firebase ATC counter (real-time, weekly reset) ═══ */
+(function(){
+  if (!window.__atcDb) return;
+  var ID_TO_SLUG = { whiskey:'whiskey', tequila:'tequila', smoker:'smoker', espresso:'espresso-martini', margarita:'margarita', mule:'moscow-mule', olive:'olive-oil', tea:'tea', allinone:'all-in-one' };
+  var $counter = document.getElementById('atcCounter');
+  var $val = document.getElementById('atcCountVal');
+  var atcCounts = {};
+
+  // Get current Monday as YYYY-MM-DD
+  function currentWeekStart() {
+    var d = new Date();
+    var day = d.getDay(); // 0=Sun
+    var diff = (day === 0 ? -6 : 1 - day);
+    d.setDate(d.getDate() + diff);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  var weekStart = currentWeekStart();
+
+  function renderForCurrent() {
+    var p = PRODUCTS[activeVariant];
+    if (!p) return;
+    var slug = ID_TO_SLUG[p.id];
+    var entry = atcCounts[slug];
+    if (!entry || entry.count <= 0 || entry.weekStart !== weekStart) {
+      $counter.hidden = true;
+      return;
+    }
+    $val.textContent = entry.count;
+    $counter.hidden = false;
+  }
+
+  // Live read of all counts
+  window.__atcDb.ref('atc_counts').on('value', function(snap) {
+    atcCounts = snap.val() || {};
+    renderForCurrent();
+  });
+
+  // Re-render when variant changes
+  var _origSV = window.selectVariant;
+  window.selectVariant = function(idx) {
+    _origSV(idx);
+    renderForCurrent();
+  };
+
+  // Increment on Add to Cart
+  window.__incrementAtc = function() {
+    var p = PRODUCTS[activeVariant];
+    if (!p) return;
+    var slug = ID_TO_SLUG[p.id];
+    if (!slug) return;
+    var ref = window.__atcDb.ref('atc_counts/' + slug);
+    ref.transaction(function(curr) {
+      if (!curr || curr.weekStart !== weekStart) {
+        return { count: 1, weekStart: weekStart };
+      }
+      return { count: (curr.count || 0) + 1, weekStart: weekStart };
+    });
+  };
+})();
 
 // Deep-link: ?product=slug selects and scrolls to the matching product
 (function() {
