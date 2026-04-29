@@ -1206,7 +1206,7 @@ function closeSideCart() {
   $sideCart.classList.remove('open');
   $sideCartOverlay.classList.remove('open');
   var sb = document.getElementById('sticky-atc-bar');
-  if (sb) sb.style.display = '';
+  if (sb && window.innerWidth <= 768) sb.style.display = 'block';
   document.body.style.overflow = '';
 }
 
