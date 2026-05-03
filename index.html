@@ -858,19 +858,19 @@ button{font-family:var(--font);cursor:pointer}
 <div class="popup-overlay" id="popupOverlay">
   <div class="popup">
     <button class="popup-close" id="popupClose" aria-label="Close popup">&times;</button>
-    <h3>Get FREE Shipping</h3>
-    <p class="popup-sub">Enter your email to get free shipping on your first order.</p>
+    <h3>Get 15% Off</h3>
+    <p class="popup-sub">Join our email list for an exclusive 15% off your first order.</p>
     <form id="popupForm">
       <input type="email" id="popupEmail" name="email" placeholder="Your email address" required/>
       <label class="consent-row"><input type="checkbox" id="popupConsent" required/> I agree to receive emails</label>
-      <button type="submit" class="btn-gold">Claim Free Shipping</button>
+      <button type="submit" class="btn-gold">Claim 15% Off</button>
     </form>
     <div class="popup-thanks" id="popupThanks">
       <div class="popup-check">
         <svg width="48" height="48" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
       </div>
-      <h4>Free shipping unlocked!</h4>
-      <p>It&rsquo;s been applied to your order.</p>
+      <h4>You&rsquo;re in!</h4>
+      <p>Check your inbox for your 15% off code.</p>
     </div>
     <p class="popup-note">No spam. Unsubscribe anytime.</p>
   </div>
@@ -1081,21 +1081,16 @@ function getTotalKitCount() {
 }
 
 /* ═══ Free shipping state ═══ */
-function hasEmailCode() {
-  return !!sessionStorage.getItem('freeShipCode');
-}
-function isFreeShipActive() {
-  return hasEmailCode();
-}
-function renderShipBanner(hasItems, grandTotal) {
+function hasEmailCode() { return false; }
+function isFreeShipActive() { return false; }
+function renderShipBanner() {
   var $bar = document.getElementById('shippingProgress');
   if (!$bar) return;
-  if (!hasItems) {
-    $bar.classList.remove('visible');
-    $bar.innerHTML = '';
-    return;
-  }
-  $bar.classList.add('visible');
+  $bar.classList.remove('visible');
+  $bar.innerHTML = '';
+  return;
+  // legacy code kept dead-coded below; never executes
+  /*
   if (isFreeShipActive()) {
     var checkSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>';
     $bar.innerHTML = '<div class="ship-banner applied">' + checkSvg + 'FREE shipping applied!</div>';
@@ -1120,6 +1115,7 @@ function renderShipBanner(hasItems, grandTotal) {
   $bar.innerHTML = claimBtnHTML + progressHTML;
   var claimBtn = document.getElementById('cartClaimShipBtn');
   if (claimBtn) claimBtn.addEventListener('click', function() { showPopup(true); });
+  */
 }
 
 function getDiscountTier() {
@@ -1405,11 +1401,7 @@ function updateCartUI() {
     } else if (appliedDiscountAmt > 0) {
       totalsHTML += '<div class="side-cart-row" style="color:#16a34a"><span>Bundle Discount (' + Math.ceil(bundlePct*100) + '%)</span><span>-' + fmt(appliedDiscountAmt) + '</span></div>';
     }
-    var freeShipActive = isFreeShipActive();
-    var shippingCell = freeShipActive
-      ? '<span style="color:#16a34a;font-weight:700">FREE</span>'
-      : (grandTotal >= 75 ? 'Free' : 'Calculated at checkout');
-    totalsHTML += '<div class="side-cart-row"><span>Shipping</span><span>' + shippingCell + '</span></div>';
+    totalsHTML += '<div class="side-cart-row"><span>Shipping</span><span style="color:#16A34A;font-weight:600">FREE</span></div>';
     totalsHTML += '<div class="side-cart-row total"><span>Total</span><span class="side-cart-row-val">' + fmt(grandTotal) + '</span></div>';
   }
   $sideCartTotals.innerHTML = totalsHTML;
@@ -1841,46 +1833,37 @@ $track.addEventListener('mouseleave', () => { isDragging = false; $track.style.s
 ═══════════════════════════════════════════════════════════════ */
 const POPUP_KEY = 'crafty_popup_shown';
 const $overlay = document.getElementById('popupOverlay');
-const isMobile = window.matchMedia('(max-width: 768px)').matches;
+let popupTimer = null;
 
-function showPopup(force) {
-  if (!force && sessionStorage.getItem(POPUP_KEY)) return;
-  // Reset to form view in case this is a re-open after dismiss
+function popupAlreadyDone() { return sessionStorage.getItem(POPUP_KEY) === '1'; }
+
+function showPopup() {
+  if (popupAlreadyDone()) return;
+  // Don't overlay the side cart
+  if ($sideCart && $sideCart.classList.contains('open')) return;
   var form = document.getElementById('popupForm');
   var thanks = document.getElementById('popupThanks');
-  if (form && thanks && !hasEmailCode()) {
+  if (form && thanks) {
     form.style.display = '';
     thanks.style.display = 'none';
   }
   $overlay.classList.add('show');
-  sessionStorage.setItem(POPUP_KEY, '1');
 }
 
-if (!sessionStorage.getItem(POPUP_KEY)) {
-  // 30s timer on all devices
-  setTimeout(showPopup, 30000);
-  // Exit-intent on desktop only
-  if (!isMobile) {
-    document.addEventListener('mouseleave', function exitHandler(e) {
-      if (e.clientY <= 0 && !sessionStorage.getItem(POPUP_KEY)) {
-        showPopup();
-        document.removeEventListener('mouseleave', exitHandler);
-      }
-    });
-  }
-}
-
-function closePopup() {
+function dismissPopup() {
   $overlay.classList.remove('show');
   sessionStorage.setItem(POPUP_KEY, '1');
-  if (window.__openSideCartAfterPopup) {
-    window.__openSideCartAfterPopup = false;
-    openSideCart();
-  }
+  if (popupTimer) { clearTimeout(popupTimer); popupTimer = null; }
 }
-document.getElementById('popupClose').addEventListener('click', closePopup);
+
+// Trigger after 60 seconds — only if not yet dismissed
+if (!popupAlreadyDone()) {
+  popupTimer = setTimeout(showPopup, 60000);
+}
+
+document.getElementById('popupClose').addEventListener('click', dismissPopup);
 $overlay.addEventListener('click', (e) => {
-  if (e.target === $overlay) closePopup();
+  if (e.target === $overlay) dismissPopup();
 });
 
 
@@ -1937,7 +1920,6 @@ function handleSignup(emailEl, consentEl, formEl, thanksEl) {
   const sub = { email, date: new Date().toISOString() };
   saveSubscriber(sub);
   subscribeToKlaviyo(email);
-  sessionStorage.setItem('freeShipCode', 'true');
   formEl.style.display = 'none';
   thanksEl.style.display = 'block';
   sessionStorage.setItem(POPUP_KEY, '1');
@@ -1952,14 +1934,9 @@ document.getElementById('popupForm').addEventListener('submit', (e) => {
     document.getElementById('popupForm'),
     document.getElementById('popupThanks')
   );
-  // Auto-dismiss popup and continue to cart after 2s
-  setTimeout(() => {
-    $overlay.classList.remove('show');
-    if (window.__openSideCartAfterPopup) {
-      window.__openSideCartAfterPopup = false;
-      openSideCart();
-    }
-  }, 2000);
+  // Auto-dismiss popup after 2s so they can keep shopping
+  setTimeout(() => { $overlay.classList.remove('show'); }, 2000);
+  sessionStorage.setItem(POPUP_KEY, '1');
 });
 
 /* Export / Clear */
@@ -2072,13 +2049,9 @@ $addToCartBtn.addEventListener('click', () => {
   lastAddedKitId = p.id;
   if (typeof window.__incrementAtc === 'function') window.__incrementAtc();
   updateCartUI();
-  // Intercept: show popup first if user hasn't claimed free shipping yet
-  if (!hasEmailCode()) {
-    window.__openSideCartAfterPopup = true;
-    showPopup(true);
-  } else {
-    openSideCart();
-  }
+  // Cancel scheduled popup so it can't interrupt the cart flow
+  dismissPopup();
+  openSideCart();
 });
 
 // Initialize cart UI (empty state)
