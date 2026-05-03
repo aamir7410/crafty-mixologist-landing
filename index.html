@@ -445,9 +445,18 @@ button{font-family:var(--font);cursor:pointer}
 .popup .consent-row input{accent-color:var(--gold);width:16px;height:16px;cursor:pointer}
 .popup .btn-gold{width:100%}
 .popup-thanks{display:none;text-align:center;padding:16px 0}
-.popup-thanks h4{color:var(--gold);font-size:18px;margin-bottom:6px}
+.popup-thanks h4{color:var(--gold);font-size:18px;margin-bottom:14px}
 .popup-thanks p{color:var(--gray-500);font-size:14px}
 .popup-check{margin:0 auto 12px}
+.popup-code-box{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  background:var(--gold-bg);border:2px dashed var(--gold);border-radius:var(--radius);
+  padding:14px 20px;margin:0 auto 14px;max-width:280px;width:100%;cursor:pointer;
+  font-family:inherit;transition:all var(--transition)}
+.popup-code-box:hover{background:rgba(212,168,71,.12)}
+.popup-code-box #popupCode{font-size:24px;font-weight:800;letter-spacing:2px;color:var(--gold)}
+.popup-code-box .popup-code-copy{font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.6px}
+.popup-code-box.copied{border-color:#16a34a}
+.popup-code-box.copied #popupCode{color:#16a34a}
 .popup-note{font-size:11px;color:var(--gray-400);text-align:center;margin-top:8px}
 
 /*═══════════════════════════════════════════════════════════════
@@ -866,11 +875,13 @@ button{font-family:var(--font);cursor:pointer}
       <button type="submit" class="btn-gold">Claim 15% Off</button>
     </form>
     <div class="popup-thanks" id="popupThanks">
-      <div class="popup-check">
-        <svg width="48" height="48" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
-      </div>
-      <h4>You&rsquo;re in!</h4>
-      <p>Check your inbox for your 15% off code.</p>
+      <h4>Here&rsquo;s Your 15% Off Code</h4>
+      <button type="button" class="popup-code-box" id="popupCodeBox" aria-label="Copy code">
+        <span id="popupCode">WELCOME15</span>
+        <span class="popup-code-copy" id="popupCopyHint">Tap to copy</span>
+      </button>
+      <p>Apply at checkout. Valid on your first order.</p>
+      <button type="button" class="btn-gold" id="popupStartShopping" style="margin-top:12px">Start Shopping</button>
     </div>
     <p class="popup-note">No spam. Unsubscribe anytime.</p>
   </div>
@@ -1939,9 +1950,35 @@ document.getElementById('popupForm').addEventListener('submit', (e) => {
     document.getElementById('popupForm'),
     document.getElementById('popupThanks')
   );
-  // Auto-dismiss popup after 2s so they can keep shopping
-  setTimeout(() => { $overlay.classList.remove('show'); }, 2000);
+  // Don't auto-close — user clicks "Start Shopping" or the X to dismiss
   sessionStorage.setItem(POPUP_KEY, '1');
+});
+
+// Copy code to clipboard when the box is tapped
+document.getElementById('popupCodeBox').addEventListener('click', () => {
+  var code = document.getElementById('popupCode').textContent.trim();
+  var box = document.getElementById('popupCodeBox');
+  var hint = document.getElementById('popupCopyHint');
+  function showCopied() {
+    box.classList.add('copied');
+    var prev = hint.textContent;
+    hint.textContent = 'Copied!';
+    setTimeout(() => { box.classList.remove('copied'); hint.textContent = prev; }, 2000);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(showCopied, () => {});
+  } else {
+    // Fallback for older browsers
+    var ta = document.createElement('textarea');
+    ta.value = code; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showCopied(); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+});
+
+// Start Shopping closes the popup
+document.getElementById('popupStartShopping').addEventListener('click', () => {
+  $overlay.classList.remove('show');
 });
 
 /* Export / Clear */
