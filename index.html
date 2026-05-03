@@ -1216,8 +1216,13 @@ function updateCartUI() {
 
   // Discount tier banner
   if (kitCount > 0) {
+    var hasMom10 = getUrlDiscountCode() === 'MOM10';
     if (kitCount === 1 && tier.pct === 0) {
-      itemsHTML += '<div class="cart-discount-banner blue">Add 1 more kit for 10% off!</div>';
+      if (hasMom10) {
+        itemsHTML += '<div class="cart-discount-banner green">10% off applied &mdash; add 1 more kit for 15% off!</div>';
+      } else {
+        itemsHTML += '<div class="cart-discount-banner blue">Add 1 more kit for 10% off!</div>';
+      }
     } else if (kitCount === 2 && tier.pct > 0 && tier.pct < 0.15) {
       itemsHTML += '<div class="cart-discount-banner blue">Bundle Discount: ' + tier.label +
         ' &mdash; add 1 more kit for 15% off!</div>';
